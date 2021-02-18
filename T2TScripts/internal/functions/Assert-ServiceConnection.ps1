@@ -35,10 +35,10 @@
         AzureADPreview {}
         MSOnline {}
         MicrosoftTeams {}
-        SCC { 
-            if ( -not ($Sessions.ComputerName -match "ps.compliance.protection.outlook.com") ) { $null = $ServicesToConnect.add("SCC") } 
+        SCC {
+            if ( -not ($Sessions.ComputerName -match "ps.compliance.protection.outlook.com") ) { $null = $ServicesToConnect.add("SCC") }
         }
-        EXO { 
+        EXO {
             if ( $Sessions.ComputerName -notcontains "outlook.office365.com" ) { $null = $ServicesToConnect.add("EXO") }
         }
         ExchangeLocal {
@@ -48,11 +48,11 @@
             if ( $sessions.name -notmatch "WinRM" ) { $null = $ServicesToConnect.add("ExchangeRemote") }
         }
         AD {
-            if ( -not (Get-Module ActiveDirectory -ListAvailable) ) { 
+            if ( -not (Get-Module ActiveDirectory -ListAvailable) ) {
             
-                $null = $ServicesToConnect.add("AD") 
+                $null = $ServicesToConnect.add("AD")
             
-            } else { 
+            } else {
 
                     Import-Module ActiveDirectory
                     # Variable to be used when the machine is not
