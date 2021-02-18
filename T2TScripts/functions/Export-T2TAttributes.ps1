@@ -117,8 +117,8 @@
     Set-PSFConfig -FullName PSFramework.Logging.FileSystem.ModernLog -Value $True
     Write-PSFMessage  -Level Output -Message "Starting export script. All logs are being saved in $((Get-PSFConfig PSFramework.Logging.FileSystem.LogPath).Value)"
 
-    if ( $FolderPath -ne '' ) 
-    { 
+    if ( $FolderPath -ne '' )
+    {
     
     $outFile = "$FolderPath\UserListToImport.csv"
     $AUXFile = "$FolderPath\AUXEnable-Mailboxes.txt"
@@ -183,13 +183,13 @@
 
     [int]$counter = 0
     Foreach ($i in $RemoteMailboxes)
-    { 
+    {
         
         $counter++
         Write-Progress -Activity "Exporting mailbox attributes to CSV" -Status "Working on $($i.DisplayName)" -PercentComplete ($counter * 100 / $($RemoteMailboxes.Count) )
         
         $user = get-Recipient $i.alias # getting recipients from AD, instead of EXO
-        $object = New-Object System.Object 
+        $object = New-Object System.Object
         $object | Add-Member -type NoteProperty -name primarysmtpaddress -value $i.PrimarySMTPAddress
         $object | Add-Member -type NoteProperty -name alias -value $i.alias
         $object | Add-Member -type NoteProperty -name FirstName -value $User.FirstName
@@ -248,7 +248,7 @@
         $object | Add-Member -type NoteProperty -name ExchangeGuid -value $EXOMailbox.ExchangeGuid
         
         # Get mailbox ECL value
-        $ELCValue = 0 
+        $ELCValue = 0
         if ($EXOMailbox.LitigationHoldEnabled) {$ELCValue = $ELCValue + 8}
         if ($EXOMailbox.SingleItemRecoveryEnabled) {$ELCValue = $ELCValue + 16}
         if ($ELCValue -ge 0) { $object | Add-Member -type NoteProperty -name ELCValue -value $ELCValue}
@@ -256,8 +256,8 @@
         # Get the ArchiveGuid from EXO if it exist. The reason that we don't rely on
         # "-ArchiveStatus" parameter is that may not be trustable in certain scenarios
         # https://docs.microsoft.com/en-us/office365/troubleshoot/archive-mailboxes/archivestatus-set-none
-        if ( $EXOMailbox.ArchiveDatabase -ne '' -and 
-                $EXOMailbox.ArchiveGuid -ne "00000000-0000-0000-0000-000000000000" )    
+        if ( $EXOMailbox.ArchiveDatabase -ne '' -and
+                $EXOMailbox.ArchiveGuid -ne "00000000-0000-0000-0000-000000000000" )
         {
             
             $object | Add-Member -type NoteProperty -name ArchiveGuid -value $EXOMailbox.ArchiveGuid
@@ -328,7 +328,7 @@
         # Get Junk hashes, these are SHA-265 write-backed from EXO. Check if the user
         # has any hash, if yes we convert the HEX to String removing the "-"
         if ( $junk.msExchSafeSendersHash.Length -gt 0 )
-        {        
+        {
         
             $SafeSender = [System.BitConverter]::ToString($junk.msExchSafeSendersHash)
             $Safesender = $SafeSender.Replace("-","")
@@ -366,9 +366,9 @@
 
         }
 
-        $outArray += $object 
+        $outArray += $object
     
-    } 
+    }
     
     # Export to a CSV and clear up variables and sessions
     if ( $BypassAutoExpandingArchiveCheck.IsPresent ) {

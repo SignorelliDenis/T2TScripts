@@ -170,7 +170,7 @@
 
     [int]$counter = 0
     foreach ($user in $ImportUserList)
-    { 
+    {
         $counter++
         Write-Progress -Activity "Creating MEU objects and importing attributes from CSV" -Status "Working on $($user.DisplayName)" -PercentComplete ($counter * 100 / $($ImportUserList.Count) )
         
