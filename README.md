@@ -11,21 +11,22 @@ This repository contains two scripts to sync all necessary attributes between th
 
  Open a Windows Powershell with "Run as Administrator" and run:
 ``` powershell
-Install-Module T2TAttributes -Force
+Install-Module T2TScripts -Force
 ```
 Once the module is installed, you can run either of the commands and its parameters:
 ``` powershell
 Export-T2TAttributes
 Import-T2TAttributes
+Export-T2Tlogs
 ```
 
 If you want to check for module updates you can run:
 ``` powershell
-Find-Module T2TAttributes
+Find-Module T2TScripts
 ```
 If there is any newer version than the one you already have, you can run:
 ``` powershell
-Update-Module T2TAttributes -Force
+Update-Module T2TScripts -Force
 ```
 
 ## How it works:
