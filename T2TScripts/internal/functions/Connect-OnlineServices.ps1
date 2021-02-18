@@ -71,7 +71,7 @@
         ExchangeRemote {
             Invoke-PSFProtectedCommand -Action "Connecting to Exchange Onprem remotely." -Target "ExchangeRemote" -ScriptBlock {
                 Write-PSFMessage -Level Output -Message "Connecting to Exchange Onprem remotely."
-                try { 
+                try {
                     $exOnPremSession = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri http://$ExchangeHostname/PowerShell/ -Authentication Kerberos
                     Import-PSSession $exOnPremSession -AllowClobber -DisableNameChecking | Out-Null
                     Write-PSFMessage -Level Output -Message "Connected to Exchange Onprem remotely."
@@ -83,16 +83,16 @@
         AD {
             Invoke-PSFProtectedCommand -Action "Connecting to Active Directory." -Target "AD" -ScriptBlock {
                 Write-PSFMessage -Level Output -Message "Connecting to Active Directory."
-                try { 
+                try {
                     $sessionAD = New-PSSession -ComputerName $env:LogOnServer.Replace("\\","")
                     Invoke-Command { Import-Module ActiveDirectory } -Session $sessionAD
                     Export-PSSession -Session $sessionAD -CommandName *-AD* -OutputModule RemoteAD -AllowClobber -Force | Out-Null
                     Remove-PSSession -Session $sessionAD
                     
                     # Create copy of the module on the local computer
-                    Import-Module RemoteAD -Prefix Remote -DisableNameChecking -ErrorAction Stop 
+                    Import-Module RemoteAD -Prefix Remote -DisableNameChecking -ErrorAction Stop
                 
-                } catch { 
+                } catch {
                     
                     # Sometimes the following path is not registered as system variable for PS modules path, thus we catch explicitly the .psm1
                     Import-Module "$env:USERPROFILE\Documents\WindowsPowerShell\Modules\RemoteAD\RemoteAD.psm1" -Prefix Remote -DisableNameChecking

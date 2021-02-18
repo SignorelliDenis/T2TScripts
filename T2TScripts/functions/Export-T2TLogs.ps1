@@ -14,7 +14,7 @@
 	Default value is the user's Desktop with a file name like "yyyy-MM-dd HH_mm_ss" - T2T logs.csv"
 	
 	.PARAMETER OutputType
-	Defines the output types available. Can be a single output or combined. 
+	Defines the output types available. Can be a single output or combined.
 	Current available options are CSV, GridView.
 
 	.PARAMETER DaysOld
