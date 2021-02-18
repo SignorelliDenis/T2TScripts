@@ -1,0 +1,22 @@
+﻿
+# ignore the settings folder and files for VSCode and PSS
+.vscode/*
+*.psproj
+*TempPoint*
+
+# Ignore staging info from Visual Studio
+library/T2Tscripts/.vs/*
+library/T2Tscripts/T2Tscripts/bin/*
+library/T2Tscripts/T2Tscripts/obj/*
+
+# ignore PowerShell Studio MetaData
+T2Tscripts/T2Tscripts.psproj
+T2Tscripts/T2Tscripts.psproj.bak
+T2Tscripts/T2Tscripts.psprojs
+T2Tscripts/T2Tscripts.psproj
+
+# ignore the TestResults
+TestResults/*
+
+# ignore the publishing Directory
+publish/*

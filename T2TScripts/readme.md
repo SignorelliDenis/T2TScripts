@@ -1,4 +1,4 @@
-# Exchange Online: Cross-tenant migration scripts
+﻿# Exchange Online: Cross-tenant migration scripts
 
 *Any sample script in this repository is provided AS IS and not supported under any Microsoft standard support program, service and without warranty of any kind.*
 
