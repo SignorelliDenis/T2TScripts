@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\build",
+    "\\T2TScripts",
+    "\\T2TScripts\\functions",
+    "\\T2TScripts\\tests",
+    "\\T2TScripts\\tests\\general"
+  ],
+  "SelectedNode": "\\T2TScripts\\functions\\Export-T2TLogs.ps1",
+  "PreviewInSolutionExplorer": false
+}
