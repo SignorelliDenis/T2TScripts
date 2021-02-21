@@ -313,7 +313,7 @@
         $object | Add-Member -type NoteProperty -name ExternalEmailAddress -value $TargetToString.Replace("smtp:","")
 
 
-        if ( $LocalMachineIsNotExchange.IsPresent -and $LocalAD -eq '')
+        if ( $LocalMachineIsNotExchange.IsPresent -and $null -eq $LocalAD )
         {
 
             # Connect to AD exported module only if this machine isn't an Exchange
