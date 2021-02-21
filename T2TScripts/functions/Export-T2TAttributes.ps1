@@ -20,7 +20,7 @@
     Mandatory parameter used to inform the code which value will be used to scope the search.
 
     .PARAMETER DomainMappingCSV
-    Enter the CSV name where you mapped the source and target domains
+    Enter the CSV path which you mapped the source and target domains
 
     .PARAMETER BypassAutoExpandingArchiveCheck
     The script will check if you have Auto-Expanding archive enable on organization
@@ -117,16 +117,16 @@
     Set-PSFConfig -FullName PSFramework.Logging.FileSystem.ModernLog -Value $True
     Write-PSFMessage  -Level Output -Message "Starting export script. All logs are being saved in $((Get-PSFConfig PSFramework.Logging.FileSystem.LogPath).Value)"
 
-    if ( $FolderPath -ne '' )
+    if ( $FolderPath )
     {
     
     $outFile = "$FolderPath\UserListToImport.csv"
-    $AUXFile = "$FolderPath\AUXEnable-Mailboxes.txt"
+    $AUXFile = "$FolderPath\AUXUsers.txt"
     
     } else {
     
     $outFile = "$home\desktop\UserListToImport.csv"
-    $AUXFile = "$home\desktop\AUXEnable-Mailboxes.txt"
+    $AUXFile = "$home\desktop\AUXUsers.txt"
     
     }
     
@@ -211,12 +211,12 @@
             if ($OrgAUXStatus.AutoExpandingArchiveEnabled -eq '$True') {
 
                 # If AUX is enable at org side, doesn't metter if the mailbox has it explicitly enabled
-                $EXOMailbox = Get-EXOMailbox -Identity $i.Alias -PropertySets All | Select-Object ExchangeGuid,MailboxLocations,LitigationHoldEnabled,SingleItemRecoveryEnabled,ArchiveDatabase,ArchiveGuid
+                $EXOMailbox = Get-EXOMailbox -Identity $i.Alias -Properties ExchangeGuid,MailboxLocations,LitigationHoldEnabled,SingleItemRecoveryEnabled,ArchiveDatabase,ArchiveGuid
 
             } else {
 
                 # If AUX isn't enable at org side, we check if the mailbox has it explicitly enabled
-                $EXOMailbox = Get-EXOMailbox -Identity $i.Alias -PropertySets All | Select-Object ExchangeGuid,MailboxLocations,LitigationHoldEnabled,SingleItemRecoveryEnabled,ArchiveDatabase,ArchiveGuid,AutoExpandingArchiveEnabled
+                $EXOMailbox = Get-EXOMailbox -Identity $i.Alias -Properties ExchangeGuid,MailboxLocations,LitigationHoldEnabled,SingleItemRecoveryEnabled,ArchiveDatabase,ArchiveGuid,AutoExpandingArchiveEnabled
             
             }
 
