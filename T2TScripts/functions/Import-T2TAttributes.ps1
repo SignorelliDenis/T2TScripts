@@ -207,7 +207,7 @@
         $tmpUser | Set-MailUser -ExchangeGuid $user.ExchangeGuid @CustomAttributeParam -EmailAddresses @{ Add=$ProxyArray }
 
         # Set ELC value
-        if ( $LocalMachineIsNotExchange.IsPresent -and $LocalAD -eq '' )
+        if ( $LocalMachineIsNotExchange.IsPresent -and $null -eq $LocalAD )
         {
             
             Set-RemoteADUser -Identity $user.SamAccountName -Replace @{ msExchELCMailboxFlags = $user.ELCValue }
@@ -241,7 +241,7 @@
             
             $BytelistSafeSenderArray = $BytelistSafeSender.ToArray()
             
-                if ( $LocalMachineIsNotExchange.IsPresent -and $LocalAD -eq '' )
+                if ( $LocalMachineIsNotExchange.IsPresent -and $null -eq $LocalAD )
                 {
                     
                     Set-RemoteADUser -Identity $user.SamAccountName -Replace @{ msExchSafeSendersHash = $BytelistSafeSenderArray }
@@ -267,7 +267,7 @@
             
             $BytelistSafeRecipientArray = $BytelistSafeRecipient.ToArray()
             
-                if ( $LocalMachineIsNotExchange.IsPresent -and $LocalAD -eq '' )
+                if ( $LocalMachineIsNotExchange.IsPresent -and $null -eq $LocalAD )
                 {
                     
                     Set-RemoteADUser -Identity $user.SamAccountName -Replace @{ msExchSafeRecipientsHash = $BytelistSafeRecipientArray }
@@ -293,7 +293,7 @@
             
             $BytelistBlockedSenderArray = $BytelistBlockedSender.ToArray()
             
-                if ( $LocalMachineIsNotExchange.IsPresent -and $LocalAD -eq '' )
+                if ( $LocalMachineIsNotExchange.IsPresent -and $null -eq $LocalAD )
                 {
                     
                     Set-RemoteADUser -Identity $user.SamAccountName -Replace @{ msExchBlockedSendersHash = $BytelistBlockedSenderArray }
