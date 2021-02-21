@@ -4,7 +4,9 @@
 
 ## Overview:
 
+
 This repository contains two scripts as functions to sync all necessary attributes between the source and target tenant before the MRS move mailbox. Before starting using the resources provided in this repository, please review the [Microsoft official document about the cross-tenant EXO migration](https://docs.microsoft.com/en-us/microsoft-365/enterprise/cross-tenant-mailbox-migration). It’s very important that you understand how the migration works in order to use these functions.
+
 
 
  ## Installation
@@ -34,6 +36,7 @@ Update-Module T2TScripts -Force
 
 ## How it works:
 
+
 1 - Fill some Exchange custom attributes (1-15) with a specific value on the mailboxes that you want to migrate. This will become the filter for the function to get only mailboxes with the attribute that you choose.
 
 2 - Understand all parameters that you may use to run the function.
@@ -47,6 +50,7 @@ Update-Module T2TScripts -Force
 
 **Common requirements for both functions:**
 
+
 - Depending on the current powershell execution policy state, it could require to be set as Unrestricted.
 
 - You need Active Directory and Exchange Server On-Premises. In other words, the function was not developed to work in Azure AD cloud-only scenarios or with AD On-Premises in hybrid but with no Exchange On-Premises. 
@@ -56,6 +60,7 @@ Update-Module T2TScripts -Force
 - If you run the functions from an Exchange Server machine, the functons will leverage the local AD module present on Exchange. Otherwise, the functions will export a PSSession from the Domain Controller which your PC is authenticated.
 
 - The Exchange and AD PSSession are authenticated through Kerberos relying on the credential used on the Windows sign-in. Thus, be sure to sign-in using AD and Exchange admin credential.
+
 
 
 **Export-T2TAttributes:**
@@ -83,6 +88,7 @@ Update-Module T2TScripts -Force
 - All MEU objects will be created using the UPN suffix that you passed through `-UPNSuffix` param. If you need to create MEUs with different UPN suffix, you will need to segment the MEU creation based on the UPN suffix, it means run the function for each UPN suffix.
 
 
+
 ## Parameters:
 
 **Export-T2TAttributes**
@@ -99,6 +105,7 @@ Update-Module T2TScripts -Force
 | ExchangeHostname                        | Exchange server hostname that the function will connect to. | Required² |
 ||||
     
+
 ¹ *The Auto-Expanding archive is verified because MRS does not support move mailbox of auxiliar archive mailbox. You can see the [official article for more details](https://docs.microsoft.com/en-us/microsoft-365/enterprise/cross-tenant-mailbox-migration?view=o365-worldwide#known-issues). The function will dump all mailboxes that have auxiliar Auto-Expanding archive mailbox to a TXT file. Be aware that this check might increase the function duration.*
 
 ² *Required only if `-LocalMachineIsNotExchange` is used.*
@@ -155,6 +162,7 @@ The *Export-T2TAttributes* will dump to a CSV the following attributes:
 - LitigationHoldEnabled ³
 - SingleItemRecoveryEnabled ³
 
+
 ¹ *The custom attributes number and value that will be dumped is chosen according to the user’s input before running the function*
 
 ² *The function does not really dump the MailboxLocations attribute to the CSV but it dumps the Alias from any users that might have an Auto-Expanding archive mailbox to a TXT called AUXUser. Then you can use the AUXUser.txt to start the export PST using Content Search or eDiscovery and manually import these PST in the target tenant.*
@@ -168,4 +176,3 @@ All tasks performed by both functions will generate logs that are available thro
 ``` powershell
 Export-T2Tlogs
 ```
-
