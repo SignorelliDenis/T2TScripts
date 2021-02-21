@@ -112,6 +112,7 @@
         HelpMessage="Enter the remote exchange hostname")]
         [string]$ExchangeHostname
     )
+
     Set-PSFConfig -FullName PSFramework.Logging.FileSystem.ModernLog -Value $True
     Write-PSFMessage  -Level Output -Message "Starting script. All logs are being saved in: $((Get-PSFConfig PSFramework.Logging.FileSystem.LogPath).Value)"
 
@@ -119,7 +120,7 @@
     $AADCStopped =  Get-Requirements -Requirements AADConnect
     if ( $AADCStopped -eq 0 ) { Break }
 
-    if ( $Password -ne ) {
+    if ( $Password ) {
         
         $pwstr = $Password
 
