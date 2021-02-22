@@ -1,6 +1,7 @@
 ﻿# Changelog
-## 1.0.6 (2021-02-21)  
- - Update: Updated Export-T2Tlogs function splitting timestamp column, into indivual 'Date' and 'Time' columns. This is better for filtering and parsing.  
+## 1.0.6 (2021-02-22)  
+ - Update: Updated Export-T2Tlogs function splitting timestamp column, into indivual 'Date' and 'Time' columns. This is better for filtering and parsing.
+ - New: start tracking changes in changelog.md file in the repository.  
 
 ## 1.0.5 (2021-02-21)  
  - Fix: Readme spelling and some paragraphs.  
