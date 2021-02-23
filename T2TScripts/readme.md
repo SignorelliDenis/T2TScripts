@@ -179,4 +179,15 @@ The *Export-T2TAttributes* will dump to a CSV the following attributes:
 All tasks performed by both functions will generate logs that are available through the following function:
 ``` powershell
 Export-T2Tlogs
-```
+```  
+
+For example you can run:
+``` powershell
+PS C:\> Export-T2Tlogs -OutputType CSV,GridView -DaysOld 5
+```  
+
+In this example, the script will fetch all logs within the last 5 days, export to CSV to default location at the Desktop and also displays in powershell's GridView.  
+
+
+## Version History  
+[Change Log](/T2TScripts/changelog.md)

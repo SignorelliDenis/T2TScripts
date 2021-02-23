@@ -49,7 +49,7 @@
 	)
 	Import-module PSFramework
 	$loggingpath = (Get-PSFConfig PSFramework.Logging.FileSystem.LogPath).Value
-	$logFiles = Get-ChildItem -Path $loggingpath | Where-Object LastwriteTime -gt (Get-Date).adddays(-$DaysOld)
+	$logFiles = Get-ChildItem -Path $loggingpath | Where-Object LastwriteTime -gt (Get-Date).adddays(-1 * $DaysOld)
 	$csv = Import-Csv -Path $logFiles.FullName
 	Switch ( $OutputType)
 	{
