@@ -53,7 +53,9 @@
 	$csv = Import-Csv -Path $logFiles.FullName
 	Switch ( $OutputType)
 	{
-		CSV { $csv | Sort-Object timestamp | export-csv -Path $FilePath -NoTypeInformation }
-		GridView { $csv | Sort-Object timestamp | Out-GridView }
+		CSV { $csv | Select-Object @{N="Date";E={($_.timestamp -split " ")[0]}},@{N="Time";E={ Get-Date ($_.timestamp.Substring($_.timestamp.IndexOf(" ")).trim()) -Format HH:mm:ss }},`
+		"ComputerName","Username","Level","Message","Type","FunctionName","ModuleName","File","Line","Tags","TargetObject","Runspace","Callstack" | Sort-Object Date -Descending | export-csv -Path $FilePath -NoTypeInformation }
+		GridView { $csv | Select-Object @{N="Date";E={($_.timestamp -split " ")[0]}},@{N="Time";E={Get-Date ($_.timestamp.Substring($_.timestamp.IndexOf(" ")).trim()) -Format HH:mm:ss }},`
+		"ComputerName","Username","Level","Message","Type","FunctionName","ModuleName","File","Line","Tags","TargetObject","Runspace","Callstack" | Sort-Object Date -Descending | Out-GridView }
 	}
 }
