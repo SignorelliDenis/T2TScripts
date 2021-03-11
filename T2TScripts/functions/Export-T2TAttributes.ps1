@@ -140,9 +140,6 @@
         $ServicesToConnect = Assert-ServiceConnection -Services EXO, ExchangeRemote, AD
         # Connect to services if ServicesToConnect is not empty
         if ( $ServicesToConnect.Count ) { Connect-OnlineServices -AdminUPN $AdminUPN -Services $ServicesToConnect -ExchangeHostname $ExchangeHostname}
-        # This will make sure when you need to reauthenticate after 1 hour
-        # that it uses existing token and you don't have to write password
-        $global:UserPrincipalName=$AdminUPN
     
     } else {
         
@@ -247,7 +244,7 @@
         # on EXO the ExchangeGuid would not be write-backed to On-Premises
         $object | Add-Member -type NoteProperty -name ExchangeGuid -value $EXOMailbox.ExchangeGuid
         
-        # Get mailbox ECL value
+        # Get mailbox ELC value
         $ELCValue = 0
         if ($EXOMailbox.LitigationHoldEnabled) {$ELCValue = $ELCValue + 8}
         if ($EXOMailbox.SingleItemRecoveryEnabled) {$ELCValue = $ELCValue + 16}
@@ -268,26 +265,26 @@
 
         }
 
-        # Get any SMTP alias avoiding *.onmicrosoft
+        # Get only SMTP and X500 from proxyAddresses and define the targetAddress
         $ProxyArray = @()
         $TargetArray = @()
         $Proxy = $i.EmailAddresses
         foreach ($email in $Proxy)
         {
-            if ($email -notlike '*.onmicrosoft.com')
+            if (($email.Prefix -like 'SMTP' -or $email.Prefix -like 'X500') -and $email -notlike '*.onmicrosoft.com')
             {
 
                 $ProxyArray = $ProxyArray += $email
 
             }
-            if ($email -like '*.onmicrosoft.com')
+            if (($email.Prefix -like 'SMTP' -or $email.Prefix -like 'X500') -and $email -like '*.onmicrosoft.com')
             {
 
                 $TargetArray = $TargetArray += $email
 
             }
         }
-                
+
         # Join it using ";" and replace the old domain (source) to the new one (target)
         $ProxyToString = $ProxyArray -Join ";"
 
@@ -308,7 +305,7 @@
 
         $object | Add-Member -type NoteProperty -name EmailAddresses -value $ProxyToString
 
-        # Get ProxyAddress only for *.mail.onmicrosoft to define in the target AD the targetAddress value
+        # Get ProxyAddresses only for *.mail.onmicrosoft to define in the target AD the targetAddress value
         $TargetToString = [system.String]::Join(";",$TargetArray)
         $object | Add-Member -type NoteProperty -name ExternalEmailAddress -value $TargetToString.Replace("smtp:","")
 
@@ -371,14 +368,14 @@
     }
     
     # Export to a CSV and clear up variables and sessions
-    if ( $BypassAutoExpandingArchiveCheck.IsPresent ) {
-        
-        Write-PSFMessage -Level Output -Message  "Saving CSV on $($outfile)"
-    
+    if ( $AuxMessage ) {
+
+        Write-PSFMessage -Level Output -Message "Saving CSV on $($outfile)"
+        Write-PSFMessage -Level Output -Message "Saving TXT on $($AUXFile)"
+
     } else {
     
         Write-PSFMessage -Level Output -Message "Saving CSV on $($outfile)"
-        Write-PSFMessage -Level Output -Message "Saving TXT on $($AUXFile)"
     
     }
     
