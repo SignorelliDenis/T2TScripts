@@ -1,4 +1,8 @@
 ﻿# Changelog
+## 1.0.8 (2021-03-11)
+- Update: Get only SMTP and X500 values from the source proxyAddresses object. Other values such as EUM and X400 might break the query and are useless.
+- Fix: The AUXFile output message was showing even if no AUXFile was created. Added an if condition to show the message only if the AUXFile really exist.
+
 ## 1.0.7 (2021-02-23)  
  - Update: Just updated cosmetic addition to readme files, adding Export-T2Tlogs examples.
  - New: Added 'Version History' at the bottom of readme files.
