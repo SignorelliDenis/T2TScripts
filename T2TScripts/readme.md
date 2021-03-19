@@ -104,11 +104,12 @@ If you face installation issues such as *Unable to resolve package source* you c
 | CustomAttributeValue                    | Exchange Custom Attribute value where the function will use to filter. | Required |
 | DomainMappingCSV                        | Enter the CSV path which you mapped the source and target domains. | Required |
 | BypassAutoExpandingArchiveCheck         | Switch to check if there are Auto-Expanding archive mailboxes.¹ | Optional |
-| FolderPath                              | Custom output path for the csv. if no value is defined it will be saved on Desktop. | Optional |
+| IncludeSIP                              | Switch to get SIP values from proxyAddresses. Without this switch the function returns only SMTP and X500 | Optional |
 | LocalMachineIsNotExchange               | Switch to be used when the function is executed from a non-Exchange Server machine. | Optional |
 | ExchangeHostname                        | Exchange server hostname that the function will connect to. | Required² |
+| FolderPath                              | Custom output path for the csv. if no value is defined it will be saved on Desktop. | Optional |
 ||||
-    
+
 
 ¹ *The Auto-Expanding archive is verified because MRS does not support move mailbox of auxiliar archive mailbox. You can see the [official article for more details](https://docs.microsoft.com/en-us/microsoft-365/enterprise/cross-tenant-mailbox-migration?view=o365-worldwide#known-issues). The function will dump all mailboxes that have auxiliar Auto-Expanding archive mailbox to a TXT file. Be aware that this check might increase the function duration.*
 
@@ -147,7 +148,7 @@ The *Export-T2TAttributes* will dump to a CSV the following attributes:
 
 - ExchangeGuid
 - EmailAddresses
-- ExternalEmailAddress
+- ExternalEmailAddress ¹
 - legacyExchangeDN
 - PrimarySMTPAddress
 - Alias
@@ -160,18 +161,20 @@ The *Export-T2TAttributes* will dump to a CSV the following attributes:
 - msExchSafeSendersHash
 - msExchSafeRecipientsHash
 - msExchBlockedSendersHash
-- CustomAttribute ¹
-- CustomAttribute Value ¹
-- MailboxLocations ²
-- LitigationHoldEnabled ³
-- SingleItemRecoveryEnabled ³
+- CustomAttribute ²
+- CustomAttribute Value ²
+- MailboxLocations ³
+- LitigationHoldEnabled ⁴
+- SingleItemRecoveryEnabled ⁴
 
 
-¹ *The custom attributes number and value that will be dumped is chosen according to the user’s input before running the function*
+¹ *The ExternalEmailAddress is defined by the **mail.onmicrosoft.com** [(MOERA)](https://docs.microsoft.com/en-us/troubleshoot/azure/active-directory/proxyaddresses-attribute-populate#terminology) SMTP address found on the source user object proxyAddresses property.*
 
-² *The function does not really dump the MailboxLocations attribute to the CSV but it dumps the Alias from any users that might have an Auto-Expanding archive mailbox to a TXT called AUXUser. Then you can use the AUXUser.txt to start the export PST using Content Search or eDiscovery and manually import these PST in the target tenant.*
+² *The custom attributes number and value that will be dumped is chosen according to the user’s input before running the function*
 
-³ *These properties are converted to a number which represents the ELC mailbox flag.*
+³ *The function does not really dump the MailboxLocations attribute to the CSV but it dumps the Alias from any users that might have an Auto-Expanding archive mailbox to a TXT called AUXUser. Then you can use the AUXUser.txt to start the export PST using Content Search or eDiscovery and manually import these PST in the target tenant.*
+
+⁴ *These properties are converted to a number which represents the ELC mailbox flag.*
 
 
 ## Logs
