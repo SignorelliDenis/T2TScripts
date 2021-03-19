@@ -167,8 +167,7 @@ The *Export-T2TAttributes* will dump to a CSV the following attributes:
 - LitigationHoldEnabled ⁴
 - SingleItemRecoveryEnabled ⁴
 
-
-¹ *The ExternalEmailAddress is defined by the **mail.onmicrosoft.com** [(MOERA)](https://docs.microsoft.com/en-us/troubleshoot/azure/active-directory/proxyaddresses-attribute-populate#terminology) SMTP address found on the source user object proxyAddress property.*
+¹ *The ExternalEmailAddress is defined by the **mail.onmicrosoft.com** [(MOERA)](https://docs.microsoft.com/en-us/troubleshoot/azure/active-directory/proxyaddresses-attribute-populate#terminology) SMTP address found on the source user object proxyAddresses property.*
 
 ² *The custom attributes number and value that will be dumped is chosen according to the user’s input before running the function*
 
