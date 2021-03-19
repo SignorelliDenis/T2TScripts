@@ -20,7 +20,7 @@
     Mandatory parameter used to inform the code which value will be used to scope the search.
 
     .PARAMETER DomainMappingCSV
-    Enter the CSV path which you mapped the source and target domains
+    Enter the CSV path which you mapped the source and target domains. You file header should have 2 columns and be: 'Source','Target'
 
     .PARAMETER BypassAutoExpandingArchiveCheck
     The script will check if you have Auto-Expanding archive enable on organization
@@ -39,6 +39,10 @@
     Mandatory parameter if the switch -LocalMachineIsNotExchange was used.
     Used to inform the Exchange Server FQDN that the script will connect.
 
+    .PARAMETER IncludeSIP
+    Mandatory parameter if the switch -LocalMachineIsNotExchange was used.
+    Used to inform the Exchange Server FQDN that the script will connect.
+
     .EXAMPLE
     PS C:\> Export-T2TAttributes -CustomAttributeNumber 10 -CustomAttributeValue "T2T" -DomainMappingCSV sourcetargetmap.csv -FolderPath C:\LoggingPath
     The function will export all users matching the value "T2T" on the CustomAttribute 10, and based on all the users found, we will
@@ -52,7 +56,7 @@
 
     .NOTES
     Title: Export-T2TAttributes.ps1
-    Version: 1.2
+    Version: 1.0.9
     Date: 2021.02.04
     Authors: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
     Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
@@ -103,17 +107,21 @@
         
         [Parameter(Mandatory=$false)]
         [switch]$BypassAutoExpandingArchiveCheck,
-
-        [Parameter(Mandatory=$false)]
-        [string]$FolderPath,
         
         [Parameter(ParameterSetName="RemoteExchange",Mandatory=$false)]
         [switch]$LocalMachineIsNotExchange,
         
         [Parameter(ParameterSetName="RemoteExchange",Mandatory=$true,
         HelpMessage="Enter the remote exchange hostname")]
-        [string]$ExchangeHostname
+        [string]$ExchangeHostname,
+
+        [Parameter(Mandatory=$False)]
+        [switch]$IncludeSIP,
+
+        [Parameter(Mandatory=$false)]
+        [string]$FolderPath
     )
+
     Set-PSFConfig -FullName PSFramework.Logging.FileSystem.ModernLog -Value $True
     Write-PSFMessage  -Level Output -Message "Starting export script. All logs are being saved in $((Get-PSFConfig PSFramework.Logging.FileSystem.LogPath).Value)"
 
@@ -222,7 +230,7 @@
         if ( $BypassAutoExpandingArchiveCheck.IsPresent ) {
         
             # Save necessary properties from EXO object to variable avoiding AUX check
-            Write-PSFMessage -Level Output -Message "Bypassing MailboxLocation check for Auto-Expand archive"
+            Write-PSFMessage -Level Output -Message "Bypassing MailboxLocation check for Auto-Expanding archive"
 
         } else {
 
@@ -234,8 +242,8 @@
             {
 
                 $AuxMessage = "[$(Get-Date -format "HH:mm:ss")] User $($i.Alias) has an auxiliar Auto-Expanding archive mailbox. Be aware that any auxiliar archive mailbox will not be migrated"
-				$AuxMessage | Out-File -FilePath $AUXFile -Append
-				Write-PSFHostColor -String $AuxMessage -DefaultColor Cyan
+                $AuxMessage | Out-File -FilePath $AUXFile -Append
+                Write-PSFHostColor -String $AuxMessage -DefaultColor Cyan
                 
             }
         }
@@ -265,13 +273,20 @@
 
         }
 
-        # Get only SMTP and X500 from proxyAddresses and define the targetAddress
+        # Get only SMTP, X500 and SIP if the switch is present
+        # from proxyAddresses and define the targetAddress
         $ProxyArray = @()
         $TargetArray = @()
         $Proxy = $i.EmailAddresses
         foreach ($email in $Proxy)
         {
             if (($email.Prefix -like 'SMTP' -or $email.Prefix -like 'X500') -and $email -notlike '*.onmicrosoft.com')
+            {
+
+                $ProxyArray = $ProxyArray += $email
+
+            }
+            if ($IncludeSIP.IsPresent -and $email.Prefix -like 'SIP')
             {
 
                 $ProxyArray = $ProxyArray += $email
@@ -286,9 +301,9 @@
         }
 
         # Join it using ";" and replace the old domain (source) to the new one (target)
-        $ProxyToString = $ProxyArray -Join ";"
+        $ProxyToString = $ProxyArray -Join ";" -Replace "SMTP","smtp"
 
-        # Map from the CSV which source domain will become which source domain
+        # Map from the CSV which source domain will become which target domain
         Foreach ($Domain in $MappingCSV) {
 
             # Add @ before the domain to avoid issues with subdomains
@@ -309,13 +324,12 @@
         $TargetToString = [system.String]::Join(";",$TargetArray)
         $object | Add-Member -type NoteProperty -name ExternalEmailAddress -value $TargetToString.Replace("smtp:","")
 
-
+        # Connect to AD exported module only if this machine isn't an Exchange
         if ( $LocalMachineIsNotExchange.IsPresent -and $null -eq $LocalAD )
         {
 
-            # Connect to AD exported module only if this machine isn't an Exchange
             $Junk = Get-RemoteADUser -Identity $i.SamAccountName -Properties *
-        
+
         } else {
 
             $Junk = Get-ADUser -Identity $i.SamAccountName -Properties *
