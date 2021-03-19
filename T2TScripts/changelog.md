@@ -1,5 +1,9 @@
 ﻿# Changelog
-## 1.0.8 (2021-03-11)
+## 1.0.9 (2021-03-19)  
+- Update: Changing export logic, to export all proxy addresses to lower-case. 
+- Fix: Fix import Write-Progress logic to not break and divide by zero.
+
+## 1.0.8 (2021-03-11)  
 - Update: Get only SMTP and X500 values from the source proxyAddresses object. Other values such as EUM and X400 might break the query and are useless.
 - Fix: The AUXFile output message was showing even if no AUXFile was created. Added an if condition to show the message only if the AUXFile really exist.
 

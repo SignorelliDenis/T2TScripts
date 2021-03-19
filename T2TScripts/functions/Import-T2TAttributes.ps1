@@ -172,10 +172,11 @@
     for ($i=0; $i -lt $pwstr.Length; $i++) {$pw.AppendChar($pwstr[$i])}
 
     [int]$counter = 0
+    $UsersCount = ($ImportUserList | Measure-Object).count
     foreach ($user in $ImportUserList)
     {
         $counter++
-        Write-Progress -Activity "Creating MEU objects and importing attributes from CSV" -Status "Working on $($user.DisplayName)" -PercentComplete ($counter * 100 / $($ImportUserList.Count) )
+        Write-Progress -Activity "Creating MEU objects and importing attributes from CSV" -Status "Working on $($user.DisplayName)" -PercentComplete ($counter * 100 / $UsersCount )
         
         $tmpUser = $null
             
