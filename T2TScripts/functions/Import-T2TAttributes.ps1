@@ -47,7 +47,7 @@
 
     .NOTES
     Title: Import-T2TAttributes.ps1
-    Version: 1.2
+    Version: 1.0.9
     Date: 2021.01.03
     Author: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
     Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
@@ -155,7 +155,7 @@
     $pw = new-object "System.Security.SecureString";
     #$CustomAttribute = "CustomAttribute$CustomAttributeNumber"
 
-    # Connecto to Exchange and AD
+    #Region check current connection status, and connect if needed
     if ( $LocalMachineIsNotExchange ) {
 
         $ServicesToConnect = Assert-ServiceConnection -Services AD, ExchangeRemote
@@ -168,10 +168,12 @@
         # Connect to services if ServicesToConnect is not empty
         if ( $ServicesToConnect.Count ) { Connect-OnlineServices -Services $ServicesToConnect }
     }
+    #endregion
 
     for ($i=0; $i -lt $pwstr.Length; $i++) {$pw.AppendChar($pwstr[$i])}
 
     [int]$counter = 0
+
     foreach ($user in $ImportUserList)
     {
         $counter++

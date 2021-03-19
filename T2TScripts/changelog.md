@@ -1,4 +1,9 @@
 ﻿# Changelog
+## 1.0.9 (2021-03-19)
+- New: Include a new parameter to get SIP addresses from the proxyAddresses property (Export-T2TScripts).
+- Fix: Write Progress counter where there is only one object (Import-T2TScripts).
+- Fix: Add a replace from SMTP to smtp to avoid conflict with the primarySMTPAddress already configured previous (Export-T2TScripts).
+
 ## 1.0.8 (2021-03-11)
 - Update: Get only SMTP and X500 values from the source proxyAddresses object. Other values such as EUM and X400 might break the query and are useless.
 - Fix: The AUXFile output message was showing even if no AUXFile was created. Added an if condition to show the message only if the AUXFile really exist.
