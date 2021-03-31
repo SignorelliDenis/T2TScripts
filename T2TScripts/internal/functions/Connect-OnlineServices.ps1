@@ -47,7 +47,7 @@
                 Write-PSFMessage -Level Output -Message "Connecting to Exchange Online"
                 try {
 
-		            Connect-ExchangeOnline -UserPrincipalName $AdminUPN -ShowProgress:$True -ShowBanner:$False -Prefix EX
+                    Connect-ExchangeOnline -UserPrincipalName $AdminUPN -ShowProgress:$True -ShowBanner:$False -Prefix EX
                     Write-PSFMessage -Level Output -Message "Connected to Exchange Online"
 
                 }

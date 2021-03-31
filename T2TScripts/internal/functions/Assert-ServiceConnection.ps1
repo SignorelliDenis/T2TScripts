@@ -57,7 +57,7 @@
                     Import-Module ActiveDirectory
                     # Variable to be used when the machine is not
                     # an Exchange but the AD module is installed
-                    [switch]$LocalAD = $True
+                    [switch]$Global:LocalAD = $True
 
             }
         }

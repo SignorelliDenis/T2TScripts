@@ -106,7 +106,7 @@
         [string]$FilePath,
 
         [Parameter(ParameterSetName="RemoteExchange",Mandatory=$false)]
-        [switch]LocalMachineIsNotExchange,
+        [switch]$LocalMachineIsNotExchange,
         
         [Parameter(ParameterSetName="RemoteExchange",Mandatory=$true,
         HelpMessage="Enter the remote exchange hostname")]
