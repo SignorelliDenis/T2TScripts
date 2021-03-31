@@ -1,4 +1,4 @@
-function Import-Manager {
+﻿function Import-Manager {
     <#
     .SYNOPSIS
     Import Manager Attribute
