@@ -4,10 +4,10 @@ function Import-Manager {
     Import Manager Attribute
     
     .DESCRIPTION
-    Function called by Import-T2TAttributes if we found the Manager property on the UserListToImport.csv 
+    Function called by Import-T2TAttributes if we found the Manager property on the UserListToImport.csv
     
     .PARAMETER CSVPath
-    Path where the function can find the UserListToImport.csv 
+    Path where the function can find the UserListToImport.csv
     
     .EXAMPLE
     PS C:\> Import-Manager

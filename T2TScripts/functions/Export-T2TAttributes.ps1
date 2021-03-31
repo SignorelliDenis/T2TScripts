@@ -28,7 +28,7 @@
     This check might increase the script duration. You can opt-out using this switch
 
     .PARAMETER FolderPath
-    Optional parameter used to inform which path will be used to save the 
+    Optional parameter used to inform which path will be used to save the
     CSV. If no path is chosen, the script will save on the Desktop path.
 
     .PARAMETER LocalMachineIsNotExchange
@@ -40,11 +40,11 @@
     Used to inform the Exchange Server FQDN that the script will connect.
 
     .PARAMETER IncludeSIP
-    Switch to get SIP values from proxyAddresses. Without 
+    Switch to get SIP values from proxyAddresses. Without
     this switch the function returns only SMTP and X500.
 
     .PARAMETER IncludeManager
-    Switch to get values from Manager attribute. Be sure to 
+    Switch to get values from Manager attribute. Be sure to
     scope users and managers if this switch will be used.
 
     .EXAMPLE
@@ -149,7 +149,7 @@
     $CustomAttribute = "CustomAttribute$CustomAttributeNumber"
     $MappingCSV = Import-CSV -Path $DomainMappingCSV
 
-    # Before move on getting the manager attribute 
+    # Before move on getting the manager attribute
     # We need to know if we have the ADObjectId class
     if ($IncludeManager.IsPresent) {
 
@@ -233,7 +233,7 @@
 
         }
 
-        # Under ADObjectId class (Exchange or Exchange management tools) the output is 
+        # Under ADObjectId class (Exchange or Exchange management tools) the output is
         # array when getting manager property so just we need to declare the name element
         if ( $IncludeManager.IsPresent -and $ADObjectId -ne $Null -and $user.Manager -ne $Null ) {
 
