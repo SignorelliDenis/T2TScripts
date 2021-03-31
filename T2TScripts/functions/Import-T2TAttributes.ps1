@@ -1,4 +1,4 @@
-Function Import-T2TAttributes {
+﻿Function Import-T2TAttributes {
     <#
     .SYNOPSIS
     The script will create on the target AD On-Prem the MEU objects getting all
