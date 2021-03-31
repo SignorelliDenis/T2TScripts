@@ -88,4 +88,3 @@
     Get-PSSession | Remove-PSSession
     return $AADCStoped
 }
-
