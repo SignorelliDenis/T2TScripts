@@ -104,7 +104,8 @@ If you face installation issues such as *Unable to resolve package source* you c
 | CustomAttributeValue                    | Exchange Custom Attribute value where the function will use to filter. | Required |
 | DomainMappingCSV                        | Enter the CSV path which you mapped the source and target domains. | Required |
 | BypassAutoExpandingArchiveCheck         | Switch to check if there are Auto-Expanding archive mailboxes.¹ | Optional |
-| IncludeSIP                              | Switch to get SIP values from proxyAddresses. Without this switch the function returns only SMTP and X500 | Optional |
+| IncludeSIP                              | Switch to get SIP values from proxyAddresses. Without this switch the function returns only SMTP and X500. | Optional |
+| IncludeManager                          | Switch to get values from Manager attribute. Be sure to scope users and managers if this switch will be used. | Optional |
 | LocalMachineIsNotExchange               | Switch to be used when the function is executed from a non-Exchange Server machine. | Optional |
 | ExchangeHostname                        | Exchange server hostname that the function will connect to. | Required² |
 | FolderPath                              | Custom output path for the csv. if no value is defined it will be saved on Desktop. | Optional |
@@ -117,7 +118,7 @@ If you face installation issues such as *Unable to resolve package source* you c
 
 Example: Running from a non-Exchange Server
 ```Powershell
-PS C:\> Export-T2TAttributes -AdminUPN admin@contoso.com -CustomAttributeNumber 1 -CustomAttributeValue T2T -DomainMappingCSV "C:\sourcetarget.csv" -LocalMachineIsNotExchange -ExchangeHostname ExchHostname
+PS C:\> Export-T2TAttributes -AdminUPN admin@contoso.com -CustomAttributeNumber 1 -CustomAttributeValue T2T -DomainMappingCSV "C:\sourcetarget.csv" -IncludeSIP -IncludeManager -LocalMachineIsNotExchange -ExchangeHostname ExchHostname
 ```
 
 
@@ -146,35 +147,36 @@ PS C:\> Import-T2TAttributes -UPNSuffix fabrikam.com -Password "P@$$w04d_Fabr!ka
 
 The *Export-T2TAttributes* will dump to a CSV the following attributes:
 
-- ExchangeGuid
-- EmailAddresses
-- ExternalEmailAddress ¹
-- legacyExchangeDN
-- PrimarySMTPAddress
 - Alias
+- ArchiveGuid
+- CustomAttribute ¹
+- CustomAttribute Value ¹
+- DisplayName
+- EmailAddresses
+- ExchangeGuid
+- ExternalEmailAddress ²
 - FirstName
 - LastName
-- DisplayName
-- Name
-- SamAccountName
-- ArchiveGuid
-- msExchSafeSendersHash
-- msExchSafeRecipientsHash
+- legacyExchangeDN
+- LitigationHoldEnabled ³
+- MailboxLocations ⁴
+- Manager
 - msExchBlockedSendersHash
-- CustomAttribute ²
-- CustomAttribute Value ²
-- MailboxLocations ³
-- LitigationHoldEnabled ⁴
-- SingleItemRecoveryEnabled ⁴
+- msExchSafeRecipientsHash
+- msExchSafeSendersHash
+- Name
+- PrimarySMTPAddress
+- SamAccountName
+- SingleItemRecoveryEnabled ³
 
 
-¹ *The ExternalEmailAddress is defined by the **mail.onmicrosoft.com** [(MOERA)](https://docs.microsoft.com/en-us/troubleshoot/azure/active-directory/proxyaddresses-attribute-populate#terminology) SMTP address found on the source user object proxyAddresses property.*
+¹ *The custom attributes number and value that will be dumped is chosen according to the user’s input before running the function*
 
-² *The custom attributes number and value that will be dumped is chosen according to the user’s input before running the function*
+² *The ExternalEmailAddress is defined by the **mail.onmicrosoft.com** [(MOERA)](https://docs.microsoft.com/en-us/troubleshoot/azure/active-directory/proxyaddresses-attribute-populate#terminology) SMTP address found on the source user object proxyAddresses property.*
 
-³ *The function does not really dump the MailboxLocations attribute to the CSV but it dumps the Alias from any users that might have an Auto-Expanding archive mailbox to a TXT called AUXUser. Then you can use the AUXUser.txt to start the export PST using Content Search or eDiscovery and manually import these PST in the target tenant.*
+³ *These properties are converted to a number which represents the ELC mailbox flag.*
 
-⁴ *These properties are converted to a number which represents the ELC mailbox flag.*
+⁴ *The function does not really dump the MailboxLocations attribute to the CSV but it dumps the Alias from any users that might have an Auto-Expanding archive mailbox to a TXT called AUXUser. Then you can use the AUXUser.txt to start the export PST using Content Search or eDiscovery and manually import these PST in the target tenant.*
 
 
 ## Logs

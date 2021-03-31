@@ -47,7 +47,7 @@
 
     .NOTES
     Title: Import-T2TAttributes.ps1
-    Version: 1.2
+    Version: 1.1.0
     Date: 2021.01.03
     Author: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
     Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
@@ -132,11 +132,11 @@
 
     if ( $FilePath ) {
         
-        $ImportUserList = Import-CSV "$FilePath"
+        $global:ImportUserList = Import-CSV "$FilePath"
 
     } else {
 
-        $ImportUserList = Import-CSV "$home\desktop\UserListToImport.csv"
+        $global:ImportUserList = Import-CSV "$home\desktop\UserListToImport.csv"
 
     }
 
@@ -153,11 +153,11 @@
 
     $UPNSuffix = "@$UPNSuffix"
     $pw = new-object "System.Security.SecureString";
-    #$CustomAttribute = "CustomAttribute$CustomAttributeNumber"
 
-    # Connecto to Exchange and AD
+    #Region connections
     if ( $LocalMachineIsNotExchange ) {
 
+        $Global:LocalMachineIsNotExchange = $LocalMachineIsNotExchange
         $ServicesToConnect = Assert-ServiceConnection -Services AD, ExchangeRemote
         # Connect to services if ServicesToConnect is not empty
         if ( $ServicesToConnect.Count ) { Connect-OnlineServices -Services $ServicesToConnect -ExchangeHostname $ExchangeHostname }
@@ -168,6 +168,7 @@
         # Connect to services if ServicesToConnect is not empty
         if ( $ServicesToConnect.Count ) { Connect-OnlineServices -Services $ServicesToConnect }
     }
+    #endregion
 
     for ($i=0; $i -lt $pwstr.Length; $i++) {$pw.AppendChar($pwstr[$i])}
 
@@ -216,9 +217,9 @@
         } else {
 
             Set-ADUser -Identity $user.SamAccountName -Replace @{ msExchELCMailboxFlags=$user.ELCValue }
-		        
+
         }
-                        
+
         # Set ArchiveGuid if user has source cloud archive. We don't really care if the
         # archive will be moved, it's up to the batch to decide, we just sync the attribute
         if ( $null -ne $user.ArchiveGuid -and $user.ArchiveGuid -ne '' )
@@ -306,8 +307,13 @@
                 }
         
             }
+
         Write-PSFMessage -Level InternalComment -Message "$($user.alias) MailUser successfully created."
     }
+
+    # Import Manager value if the CSV contains the manager header
+    $IncludeManager = $ImportUserList[0].psobject.Properties | Where { $_.Name -eq "Manager" }
+    if ( $IncludeManager ) { Import-Manager }
 
     Write-PSFMessage -Level Output -Message "The import is completed. Please confirm that all users are correctly created before enable the Azure AD Sync Cycle."
     Write-PSFMessage -Level Output -Message "You can re-enable Azure AD Connect using the following cmdlet: 'Set-ADSyncScheduler -SyncCycleEnabled 1'"

@@ -28,8 +28,8 @@
     This check might increase the script duration. You can opt-out using this switch
 
     .PARAMETER FolderPath
-    Optional parameter used to inform which path will be used to save the CSV.
-    If no path is chosen, the script will save on the Desktop path.
+    Optional parameter used to inform which path will be used to save the
+    CSV. If no path is chosen, the script will save on the Desktop path.
 
     .PARAMETER LocalMachineIsNotExchange
     Optional parameter used to inform that you are running the script from a
@@ -40,8 +40,12 @@
     Used to inform the Exchange Server FQDN that the script will connect.
 
     .PARAMETER IncludeSIP
-    Mandatory parameter if the switch -LocalMachineIsNotExchange was used.
-    Used to inform the Exchange Server FQDN that the script will connect.
+    Switch to get SIP values from proxyAddresses. Without
+    this switch the function returns only SMTP and X500.
+
+    .PARAMETER IncludeManager
+    Switch to get values from Manager attribute. Be sure to
+    scope users and managers if this switch will be used.
 
     .EXAMPLE
     PS C:\> Export-T2TAttributes -CustomAttributeNumber 10 -CustomAttributeValue "T2T" -DomainMappingCSV sourcetargetmap.csv -FolderPath C:\LoggingPath
@@ -56,7 +60,7 @@
 
     .NOTES
     Title: Export-T2TAttributes.ps1
-    Version: 1.0.9
+    Version: 1.1.0
     Date: 2021.02.04
     Authors: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
     Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
@@ -119,6 +123,9 @@
         [switch]$IncludeSIP,
 
         [Parameter(Mandatory=$false)]
+        [switch]$IncludeManager,
+
+        [Parameter(Mandatory=$false)]
         [string]$FolderPath
     )
 
@@ -141,8 +148,16 @@
     $outArray = @()
     $CustomAttribute = "CustomAttribute$CustomAttributeNumber"
     $MappingCSV = Import-CSV -Path $DomainMappingCSV
+
+    # Before move on getting the manager attribute
+    # We need to know if we have the ADObjectId class
+    if ($IncludeManager.IsPresent) {
+
+        $ADObjectId = Get-TypeData -TypeName "Microsoft.Exchange.Data.ObjectId"
+
+    }
     
-    #Region check current connection status, and connect if needed
+    # Region check current connection status, and connect if needed
     if ( $LocalMachineIsNotExchange.IsPresent ) {
         
         $ServicesToConnect = Assert-ServiceConnection -Services EXO, ExchangeRemote, AD
@@ -156,7 +171,6 @@
         if ( $ServicesToConnect.Count ) { Connect-OnlineServices -AdminUPN $AdminUPN -Services $ServicesToConnect }
     
     }
-    #endregion
     
     # Save all properties from MEU object to variable
     $RemoteMailboxes = Get-RemoteMailbox -resultsize unlimited | Where-Object {$_.$CustomAttribute -like $CustomAttributeValue}
@@ -193,7 +207,7 @@
         $counter++
         Write-Progress -Activity "Exporting mailbox attributes to CSV" -Status "Working on $($i.DisplayName)" -PercentComplete ($counter * 100 / $($RemoteMailboxes.Count) )
         
-        $user = get-Recipient $i.alias # getting recipients from AD, instead of EXO
+        $user = get-Recipient $i.alias
         $object = New-Object System.Object
         $object | Add-Member -type NoteProperty -name primarysmtpaddress -value $i.PrimarySMTPAddress
         $object | Add-Member -type NoteProperty -name alias -value $i.alias
@@ -205,7 +219,33 @@
         $object | Add-Member -type NoteProperty -name legacyExchangeDN -value $i.legacyExchangeDN
         $object | Add-Member -type NoteProperty -name CustomAttribute -value $CustomAttribute
         $object | Add-Member -type NoteProperty -name CustomAttributeValue -value $CustomAttributeValue
-    
+        
+        # If we have don't have ADObjectId class, we must resolve the CN to alias
+        if ( $IncludeManager.IsPresent -and $ADObjectId -eq $Null -and $user.Manager -ne $Null ) {
+
+            $Manager = ( Get-Recipient $user.Manager ).Alias
+            $object | Add-Member -type NoteProperty -name Manager -value $Manager
+
+        }
+        if ( $IncludeManager.IsPresent -and $ADObjectId -eq $Null -and $user.Manager -eq $Null ) {
+
+            $object | Add-Member -type NoteProperty -name Manager -value $Null
+
+        }
+
+        # Under ADObjectId class (Exchange or Exchange management tools) the output is
+        # array when getting manager property so just we need to declare the name element
+        if ( $IncludeManager.IsPresent -and $ADObjectId -ne $Null -and $user.Manager -ne $Null ) {
+
+            $object | Add-Member -type NoteProperty -name Manager -value $user.Manager.Name
+
+        }
+        if ( $IncludeManager.IsPresent -and $ADObjectId -ne $Null -and $user.Manager -eq $Null ) {
+
+            $object | Add-Member -type NoteProperty -name Manager -value $Null
+
+        }
+
         if ( $BypassAutoExpandingArchiveCheck.IsPresent ) {
         
             # Save necessary properties from EXO object to variable avoiding AUX check
@@ -280,19 +320,19 @@
         $Proxy = $i.EmailAddresses
         foreach ($email in $Proxy)
         {
-            if (($email.Prefix -like 'SMTP' -or $email.Prefix -like 'X500') -and $email -notlike '*.onmicrosoft.com')
+            if (($email -like 'SMTP:*' -or $email -like 'X500:*') -and $email -notlike '*.onmicrosoft.com')
             {
 
                 $ProxyArray = $ProxyArray += $email
 
             }
-            if ($IncludeSIP.IsPresent -and $email.Prefix -like 'SIP')
+            elseif ($IncludeSIP.IsPresent -and $email -like 'SIP:*')
             {
 
                 $ProxyArray = $ProxyArray += $email
 
             }
-            if (($email.Prefix -like 'SMTP' -or $email.Prefix -like 'X500') -and $email -like '*.onmicrosoft.com')
+            elseif ($email -like 'SMTP:*' -and $email -like '*.onmicrosoft.com')
             {
 
                 $TargetArray = $TargetArray += $email
@@ -324,8 +364,8 @@
         $TargetToString = [system.String]::Join(";",$TargetArray)
         $object | Add-Member -type NoteProperty -name ExternalEmailAddress -value $TargetToString.Replace("smtp:","")
 
-        # Connect to AD exported module only if this machine isn't an Exchange
-        if ( $LocalMachineIsNotExchange.IsPresent -and $null -eq $LocalAD )
+        # Connect to AD exported module only if this machine has not AD Module installed
+        if ( $LocalMachineIsNotExchange.IsPresent -and $LocalAD -eq '' )
         {
 
             $Junk = Get-RemoteADUser -Identity $i.SamAccountName -Properties *
