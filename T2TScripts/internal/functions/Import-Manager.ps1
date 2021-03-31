@@ -11,6 +11,7 @@
     
     .EXAMPLE
     PS C:\> Import-Manager
+    Import the manager attribute valies from from the UserListToImport.csv
     #>
 
     Write-PSFMessage -Level Output -Message  "Starting Manager attribute import"
