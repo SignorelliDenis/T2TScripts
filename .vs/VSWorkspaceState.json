@@ -4,6 +4,8 @@
     "\\build",
     "\\T2TScripts",
     "\\T2TScripts\\functions",
+    "\\T2TScripts\\internal",
+    "\\T2TScripts\\internal\\functions",
     "\\T2TScripts\\tests",
     "\\T2TScripts\\tests\\general"
   ],

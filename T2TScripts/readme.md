@@ -79,6 +79,7 @@ If you face installation issues such as *Unable to resolve package source* you c
     source1.com,target1.com
     sub.source.com,sub.target.com
     ```
+    Note: Any domain which is not included in the CSV domain mapping file will not be converted. Thus, be sure that you are covering all yours accepted domains
 
 - The function will connect to the Exchange Online using v2 module. If you don't have it installed, this module will install it for you as long as the PC may reach the PowerShell gallery.  
 
@@ -104,6 +105,7 @@ If you face installation issues such as *Unable to resolve package source* you c
 | CustomAttributeValue                    | Exchange Custom Attribute value where the function will use to filter. | Required |
 | DomainMappingCSV                        | Enter the CSV path which you mapped the source and target domains. | Required |
 | BypassAutoExpandingArchiveCheck         | Switch to check if there are Auto-Expanding archive mailboxes.¹ | Optional |
+| IncludeContacts                         | Switch to get mail contacts. Mail contact dump also relies on the Custom Attibute filter | Optional |
 | IncludeSIP                              | Switch to get SIP values from proxyAddresses. Without this switch the function returns only SMTP and X500. | Optional |
 | IncludeManager                          | Switch to get values from Manager attribute. Be sure to scope users and managers if this switch will be used. | Optional |
 | LocalMachineIsNotExchange               | Switch to be used when the function is executed from a non-Exchange Server machine. | Optional |
@@ -128,9 +130,11 @@ PS C:\> Export-T2TAttributes -AdminUPN admin@contoso.com -CustomAttributeNumber 
 |-----------------------------------------|-------------------------|---------------|
 | UPNSuffix                               | UPN domain for the new MEU objects e.g: contoso.com  | Required |
 | Password                                | Choose a password for all new MEU objects. If no password is chosen, the function will define '?r4mdon-_p@ss0rd!' as password. | Optional |
-| ResetPassword                           | Require password change on first user access. | Optional |
-| OrganizationalInit                      | Source domain used in your organization such as contoso.com. | Optional |
-| FilePath                                | Custom output path for import the csv. if no value is defined the function will try to get it from the Desktop. | Optional |
+| ResetPassword                           | Switch to require password change on next logon. | Optional |
+| OU                                      | Create MEU objects in a specific Organization Unit. Valid values are name, CN, DN or GUID. If not defined, the MEU object will be created on Users container. | Optional |
+| OUContacts                              | Create Contact objects in a specific Organization Unit. Valid values are name, CN, DN or GUID. If not defined, the MEU object will be created on Users container. | Optional |
+| UserListToImport                        | Custom output path to import the UserListToImport.csv. if no value is defined the function will try to get it from the Desktop. | Optional |
+| ContactListToImport                     | Custom output path to import the ContactListToImport.csv. if no value is defined the function will try to get it from the Desktop. | Optional |
 | LocalMachineIsNotExchange               | Switch to be used when the function is executed from a non-Exchange Server machine. | Optional |
 | ExchangeHostname                        | Exchange server hostname that the function will connect to. | Required¹ |
 ||||
@@ -139,7 +143,7 @@ PS C:\> Export-T2TAttributes -AdminUPN admin@contoso.com -CustomAttributeNumber 
 
 Example: Running from an Exchange Server
 ```Powershell
-PS C:\> Import-T2TAttributes -UPNSuffix fabrikam.com -Password "P@$$w04d_Fabr!karn" -ResetPassword:$True -OrganizationalInit "Fabrikam-Users"
+PS C:\> Import-T2TAttributes -UPNSuffix fabrikam.com -Password "P@$$w04d_Fabr!karn" -ResetPassword -OU "Fabrikam-Users" -OUContacts "Fabrikam-Contacts"
 ```
 
 

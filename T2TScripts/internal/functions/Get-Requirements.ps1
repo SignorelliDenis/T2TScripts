@@ -1,4 +1,4 @@
-﻿function Get-Requirements {
+﻿Function Get-Requirements {
     <#
     .SYNOPSIS
     Checks requirements
@@ -36,10 +36,10 @@
 
             } else {
             
-                Write-PSFMessage -Level Output -Message  "AD sync cycle should be stopped before moving forward"
+                Write-PSFMessage -Level Output -Message  "AD sync cycle should be stopped before moving forward."
             
                 $title1    = Write-PSFMessage -Level Output -Message  ""
-                $question1 = Write-PSFMessage -Level Output -Message  "Type 'Yes' if you want that we automatically stop AD Sync cycle or type 'No' if you want to stop yourself"
+                $question1 = Write-PSFMessage -Level Output -Message  "Type 'Yes' if you want that we automatically stop AD Sync cycle or type 'No' if you want to stop yourself."
                 $choices1  = '&Yes', '&No'
                 $decision1 = $Host.UI.PromptForChoice($title1, $question1, $choices1, 1)
 
@@ -77,14 +77,15 @@
                         
                 } else {
                     
-                    Write-PSFMessage -Level Output -Message  "Please stop the AD sync cycle and run the script again"
                     $AADCStoped = 0
-                    
+                    Write-PSFMessage -Level Output -Message  "Please stop the AD sync cycle and run the script again."
+
                 }
             }
+            Get-PSSession | Remove-PSSession
         }
     }
 
-    Get-PSSession | Remove-PSSession
     return $AADCStoped
+
 }
