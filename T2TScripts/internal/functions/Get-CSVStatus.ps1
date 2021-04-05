@@ -1,4 +1,4 @@
-Function Get-CSVStatus {
+﻿Function Get-CSVStatus {
     <#
     .SYNOPSIS
     Checks CSV Status
@@ -7,7 +7,7 @@ Function Get-CSVStatus {
     This functions is used to import CSV and check if the CSV was successfully imported.
     
     .PARAMETER User
-    Import UserListToImport.csv 
+    Import UserListToImport.csv
 
     .PARAMETER Contact
 
@@ -38,7 +38,7 @@ Function Get-CSVStatus {
                 $global:ImportUserList = Import-CSV "$UserListToImport" -ErrorAction Stop
                 Write-PSFMessage -Level Output -Message  "The UserListToImport.csv successfully imported."
             }
-            catch 
+            catch
             {
 
                 $UserListToImportCheck = 0
@@ -48,14 +48,14 @@ Function Get-CSVStatus {
 
             } else {
 
-                Try 
+                Try
                 {
 
                     $global:ImportUserList = Import-CSV "$home\desktop\UserListToImport.csv" -ErrorAction Stop
                     Write-PSFMessage -Level Output -Message  "The UserListToImport.csv successfully imported from $($home)\Desktop."
 
                 }
-                catch 
+                catch
                 {
 
                     $UserListToImportCheck = 0
@@ -73,7 +73,7 @@ Function Get-CSVStatus {
         $ContactListToImportCheck = 1
         if ( $ContactListToImport ) {
 
-            Try 
+            Try
             {
                 
                 $global:ImportContactList = Import-CSV "$ContactListToImport" -ErrorAction Stop
@@ -81,7 +81,7 @@ Function Get-CSVStatus {
                 $ContactListToImportCheck = 1
 
             }
-            catch 
+            catch
             {
 
                 $ContactListToImportCheck = 0
@@ -91,7 +91,7 @@ Function Get-CSVStatus {
 
         } else {
 
-            Try 
+            Try
             {
 
                 $global:ImportContactList = Import-CSV "$home\desktop\ContactListToImport.csv" -ErrorAction Stop
@@ -99,7 +99,7 @@ Function Get-CSVStatus {
                 $ContactListToImportCheck = 1
 
             }
-            catch 
+            catch
             {
 
                 $ContactListToImportCheck = 0
@@ -119,7 +119,7 @@ Function Get-CSVStatus {
             Import-CSV -Path $DomainMappingCSV -ErrorAction Stop
 
         }
-        catch 
+        catch
         {
 
             $CSVMappingExist = 0

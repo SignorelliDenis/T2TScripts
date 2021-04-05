@@ -26,7 +26,7 @@
     Mandatory parameter used to inform the code which value will be used to scope the search.
 
     .PARAMETER DomainMappingCSV
-    Enter the CSV path which you mapped the source and target domains. 
+    Enter the CSV path which you mapped the source and target domains.
     You file header should have 2 columns and be: 'Source','Target'
 
     .PARAMETER BypassAutoExpandingArchiveCheck
@@ -47,7 +47,7 @@
     Used to inform the Exchange Server FQDN that the script will connect.
 
     .PARAMETER IncludeContacts
-    Switch to get mail contacts. Mail contact dump 
+    Switch to get mail contacts. Mail contact dump
     also relies on the Custom Attibute filter.
 
     .PARAMETER IncludeSIP

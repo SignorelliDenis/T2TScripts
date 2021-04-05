@@ -29,7 +29,7 @@
     be created on Users container.
 
     .PARAMETER OUContacts
-    Optional parameter if you want to create Mail Contacts objects in a specific OU. Valid values 
+    Optional parameter if you want to create Mail Contacts objects in a specific OU. Valid values
     are name, Canonical name, Distinguished name (DN) or GUID. If not defined, the user object will
     be created on Users container.
 
@@ -222,7 +222,7 @@
 
         }
 
-        # Set ArchiveGuid if user has source cloud archive. We don't really care if the 
+        # Set ArchiveGuid if user has source cloud archive. We don't really care if the
         # archive will be moved, it's up to the batch to decide, we just import the attribute
         if ( $null -ne $user.ArchiveGuid -and $user.ArchiveGuid -ne '' )
         {

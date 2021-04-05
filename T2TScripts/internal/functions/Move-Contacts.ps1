@@ -1,4 +1,4 @@
-Function Move-Contacts {
+﻿Function Move-Contacts {
     <#
     .SYNOPSIS
     Function to handle export and import of mail enable contacts.

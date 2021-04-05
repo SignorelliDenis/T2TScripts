@@ -36,7 +36,7 @@
 
                 if ( $LocalMachineIsNotExchange.IsPresent -and $i.Manager ) {
 
-                    Try 
+                    Try
                     {
 
                         Set-RemoteADUser -Identity $i.SamAccountName -Manager $i.Manager -ErrorAction Stop
@@ -51,7 +51,7 @@
                 }
                 elseif ( $i.Manager ) {
 
-                    Try 
+                    Try
                     {
 
                         Set-ADUser -Identity $i.SamAccountName -Manager $i.Manager -ErrorAction Stop
@@ -78,7 +78,7 @@
                 $counter++
                 Write-Progress -Activity "MailContacts - Importing Manager Attribute" -Status "Working on $($i.DisplayName)" -PercentComplete ($counter * 100 / $ManagerCount )
 
-                Try 
+                Try
                 {
 
                     Set-Contact -Identity $i.Alias -Manager $i.Manager -ErrorAction Stop
