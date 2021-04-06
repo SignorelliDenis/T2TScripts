@@ -89,7 +89,8 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "")]
     [CmdletBinding(DefaultParameterSetName="Default")]
     Param(
-        [Parameter(Mandatory=$False)]
+        [Parameter(Mandatory=$False,
+        HelpMessage="Enter the user admin to connect to Exchange Online")]
         [string]$AdminUPN,
         
         [Parameter(Mandatory=$true,
@@ -105,26 +106,37 @@
         HelpMessage="Enter the CSV name where you mapped the source and target domains")]
         [string]$DomainMappingCSV,
 
-        [Parameter(Mandatory=$False)]
+        [Parameter(Mandatory=$False,
+        HelpMessage="SwitchParameter to get mail contacts. Mail contact dump 
+        also relies on the Custom Attibute filter")]
         [switch]$IncludeContacts,
 
-        [Parameter(Mandatory=$False)]
+        [Parameter(Mandatory=$False,
+        HelpMessage="SwitchParameter to get SIP values from proxyAddresses.  
+        Only SMTP and X500 are dumped by default")]
         [switch]$IncludeSIP,
 
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory=$false,
+        HelpMessage="SwitchParameter to dump the manager AD attribute value")]
         [switch]$IncludeManager,
 
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory=$false,
+        HelpMessage="SwitchParameter used to bypass the Auto-Expanding 
+        Archive check as it can increase the function duration")]
         [switch]$BypassAutoExpandingArchiveCheck,
         
-        [Parameter(ParameterSetName="RemoteExchange",Mandatory=$false)]
+        [Parameter(ParameterSetName="RemoteExchange",Mandatory=$false,
+        HelpMessage="SwitchParameter to indicate that the 
+        machine running the function is not an Exchange Server")]
         [switch]$LocalMachineIsNotExchange,
         
         [Parameter(ParameterSetName="RemoteExchange",Mandatory=$true,
         HelpMessage="Enter the remote exchange hostname")]
         [string]$ExchangeHostname,
 
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory=$false,
+        HelpMessage="Enter the file path used to save the 
+        function output. Default value is the Desktop path")]
         [string]$FolderPath
     )
 

@@ -1,7 +1,10 @@
 ﻿Function Move-Contacts {
     <#
     .SYNOPSIS
-    Function to handle export and import of mail enable contacts.
+    Function to handle export and import of mail enable contacts
+
+    .PARAMETER Sync
+    Decide to perform the export or import of mail contacts
 
     .DESCRIPTION
     Similar to the Export-T2TAttributes, this function dumps attributes
@@ -12,7 +15,7 @@
 
     .EXAMPLE
     PS C:\> Move-Contacts -Sync Export
-
+    The cmdlet above perform an export of mail contacts filtered by the custom attribute chosen.
     #>
 
     [CmdletBinding()]

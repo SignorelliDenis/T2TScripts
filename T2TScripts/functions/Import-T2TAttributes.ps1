@@ -86,12 +86,12 @@
         [string]$UPNSuffix,
         
         [Parameter(Mandatory=$false,
-        HelpMessage="Enter the password for the new MEU objects. If no password is chosen,
-        the script will define '?r4mdon-_p@ss0rd!' as password")]
+        HelpMessage="Enter the password for the new MEU objects. If no password 
+        is chosen, the script will define '?r4mdon-_p@ss0rd!' as password")]
         [string]$Password,
         
         [Parameter(Mandatory=$false,
-        HelpMessage="Require password change on first user access")]
+        HelpMessage=" SwitchParameter Require password change on first user access")]
         [switch]$ResetPassword,
         
         [Parameter(Mandatory=$false,
@@ -114,7 +114,9 @@
         the script will search on Desktop path for the ContactListToImport.csv")]
         [string]$ContactListToImport,
 
-        [Parameter(ParameterSetName="RemoteExchange",Mandatory=$false)]
+        [Parameter(ParameterSetName="RemoteExchange",Mandatory=$false,
+        HelpMessage=" SwitchParameter to indicate that the
+        machine running the function is not an Exchange Server")]
         [switch]$LocalMachineIsNotExchange,
         
         [Parameter(ParameterSetName="RemoteExchange",Mandatory=$true,
