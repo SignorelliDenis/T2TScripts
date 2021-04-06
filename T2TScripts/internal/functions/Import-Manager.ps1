@@ -6,7 +6,7 @@
     .DESCRIPTION
         Function called by Import-T2TAttributes if we found the Manager property on the UserListToImport.csv and/or ContactsListToImport.csv
     
-    .PARAMETER $ObjType
+    .PARAMETER ObjType
         Type of object that the function will work, valid values are MEU or Contact
     
     .EXAMPLE
