@@ -1,21 +1,23 @@
 ﻿Function Get-CSVStatus {
     <#
     .SYNOPSIS
-    Checks CSV Status
+        Checks CSV Status
     
     .DESCRIPTION
-    This functions is used to import CSV and check if the CSV was successfully imported.
+        This functions is used to import CSV and check if the CSV was successfully imported.
     
     .PARAMETER User
-    Import UserListToImport.csv
+        Import UserListToImport.csv and check if the file was successfully imported
 
     .PARAMETER Contact
+        Import ContactListToImport.csv and check if the file was successfully imported
 
     .PARAMETER MappingFile
+        Import the domain mapping file and check if the file was successfully imported
     
     .EXAMPLE
-    PS C:\> Get-CSVStatus -MappingFile
-    Import the CSV mapping file and provide a return to the main function if the file was successfully imported.
+        PS C:\> Get-CSVStatus -MappingFile
+        Import the CSV mapping file and provide a return to the main function if the file was successfully imported.
     #>
 
     [CmdletBinding()]

@@ -1,24 +1,23 @@
 ﻿Function Import-Manager {
     <#
     .SYNOPSIS
-    Import Manager Attribute
+        Import Manager Attribute
     
     .DESCRIPTION
-    Function called by Import-T2TAttributes if we found the Manager property on the UserListToImport.csv and/or ContactsListToImport.csv
+        Function called by Import-T2TAttributes if we found the Manager property on the UserListToImport.csv and/or ContactsListToImport.csv
     
     .PARAMETER $ObjType
-    Type of object that the function will work, valid values are MEU or Contact
+        Type of object that the function will work, valid values are MEU or Contact
     
     .EXAMPLE
-    PS C:\> Import-Manager -ObjType MEU, Contacts
-    Import the manager attribute valies from from the UserListToImport.csv and ContactsListToImport.csv
+        PS C:\> Import-Manager -ObjType MEU, Contacts
+        Import the manager attribute valies from from the UserListToImport.csv and ContactsListToImport.csv
     #>
 
     [CmdletBinding()]
     param (
     [ValidateSet('MEU','Contact')]
-    [String[]]
-    $ObjType
+    [String]$ObjType
     )
 
     Switch ( $ObjType ) {
