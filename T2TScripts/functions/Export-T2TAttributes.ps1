@@ -1,82 +1,82 @@
-﻿Function Export-T2TAttributes{
+﻿Function Export-T2TAttributes {
     <#
     .SYNOPSIS
-    This script will dump all necessary attributes that cross-tenant MRS migration requires.
-    No changes will be performed by this code.
+        This script will dump all necessary attributes that cross-tenant MRS migration requires.
+        No changes will be performed by this code.
     
     .DESCRIPTION
-    This script will dump all necessary attributes that cross-tenant MRS migration requires.
-    No changes will be performed by this code.
+        This script will dump all necessary attributes that cross-tenant MRS migration requires.
+        No changes will be performed by this code.
 
     .PARAMETER AdminUPN
-    Optional parameter used to connect to to Exchange Online. Only the UPN is
-    stored to avoid token expiration during the session, no password is stored.
+        Optional parameter used to connect to to Exchange Online. Only the UPN is
+        stored to avoid token expiration during the session, no password is stored.
 
     .PARAMETER CustomAttributeNumber
-    Mandatory parameter used to inform the code which custom
-    attributes will be used to scope the search. Valid range: 1-15.
+        Mandatory parameter used to inform the code which custom
+        attributes will be used to scope the search. Valid range: 1-15.
 
     .PARAMETER CustomAttributeValue
-    Mandatory parameter used to inform the code which value will be used to scope the search.
+        Mandatory parameter used to inform the code which value will be used to scope the search.
 
     .PARAMETER DomainMappingCSV
-    Enter the CSV path which you mapped the source and target domains.
-    You file header should have 2 columns and be: 'Source','Target'
+        Enter the CSV path which you mapped the source and target domains.
+        You file header should have 2 columns and be: 'Source','Target'
 
     .PARAMETER BypassAutoExpandingArchiveCheck
-    The script will check if you have Auto-Expanding archive enable on organization
-    level, if yes each mailbox will be check if there is an Auto-Expanding archive mailbox
-    This check might increase the script duration. You can opt-out using this switch
+        The script will check if you have Auto-Expanding archive enable on organization
+        level, if yes each mailbox will be check if there is an Auto-Expanding archive mailbox
+        This check might increase the script duration. You can opt-out using this switch
 
     .PARAMETER FolderPath
-    Optional parameter used to inform which path will be used to save the
-    CSV. If no path is chosen, the script will save on the Desktop path.
+        Optional parameter used to inform which path will be used to save the
+        CSV. If no path is chosen, the script will save on the Desktop path.
 
     .PARAMETER LocalMachineIsNotExchange
-    Optional parameter used to inform that you are running the script from a
-    non-Exchange Server machine. This parameter will require the -ExchangeHostname.
+        Optional parameter used to inform that you are running the script from a
+        non-Exchange Server machine. This parameter will require the -ExchangeHostname.
 
     .PARAMETER ExchangeHostname
-    Mandatory parameter if the switch -LocalMachineIsNotExchange was used.
-    Used to inform the Exchange Server FQDN that the script will connect.
+        Mandatory parameter if the switch -LocalMachineIsNotExchange was used.
+        Used to inform the Exchange Server FQDN that the script will connect.
 
     .PARAMETER IncludeContacts
-    Switch to get mail contacts. Mail contact dump
-    also relies on the Custom Attibute filter.
+        Switch to get mail contacts. Mail contact dump
+        also relies on the Custom Attibute filter.
 
     .PARAMETER IncludeSIP
-    Switch to get SIP values from proxyAddresses. Without
-    this switch the function returns only SMTP and X500.
+        Switch to get SIP values from proxyAddresses. Without
+        this switch the function returns only SMTP and X500.
 
     .PARAMETER IncludeManager
-    Switch to get values from Manager attribute. Be sure to
-    scope users and managers if this switch will be used.
+        Switch to get values from Manager attribute. Be sure to
+        scope users and managers if this switch will be used.
 
     .EXAMPLE
-    PS C:\> Export-T2TAttributes -CustomAttributeNumber 10 -CustomAttributeValue "T2T" -DomainMappingCSV sourcetargetmap.csv -FolderPath C:\LoggingPath
-    The function will export all users matching the value "T2T" on the CustomAttribute 10, and based on all the users found, we will
-    mapping source and target domains according to the CSV provided. All changes and CSV files will be generated in "C:\LoggingPath" folder.
+        PS C:\> Export-T2TAttributes -CustomAttributeNumber 10 -CustomAttributeValue "T2T" -DomainMappingCSV sourcetargetmap.csv -FolderPath C:\LoggingPath
+        The function will export all users matching the value "T2T" on the CustomAttribute 10, and based on all the users found, we will
+        mapping source and target domains according to the CSV provided. All changes and CSV files will be generated in "C:\LoggingPath" folder.
 
     .EXAMPLE
-    PS C:\> Export-T2TAttributes -CustomAttributeNumber 10 -CustomAttributeValue "T2T" -DomainMappingCSV sourcetargetmap.csv -LocalMachineIsNotExchange -ExchangeHostname ExServer1
-    The function will connect to the onprem Exchange Server "ExServer1" and export all users matching the value
-    "T2T" on the CustomAttribute 10, and based on all the users found, we will mapping source and target domains
-    according to the CSV provided. All changes and CSV files will be generated in "C:\LoggingPath" folder.
+        PS C:\> Export-T2TAttributes -CustomAttributeNumber 10 -CustomAttributeValue "T2T" -DomainMappingCSV sourcetargetmap.csv -LocalMachineIsNotExchange -ExchangeHostname ExServer1
+        The function will connect to the onprem Exchange Server "ExServer1" and export all users matching the value
+        "T2T" on the CustomAttribute 10, and based on all the users found, we will mapping source and target domains
+        according to the CSV provided. All changes and CSV files will be generated in "C:\LoggingPath" folder.
 
     .REQUIREMENT
-    1.ExchangeOnlineManagement module (EXO v2)
-    2.PSFramework module
-    3.To make things easier, run this script from Exchange On-Premises machine powershell,
-    the script will automatically import the Exchange On-Prem module. If you don't want
-    to run the script from an Exchange machine, use the switch -LocalMachineIsNotExchange
-    and enter the Exchange Server hostname.
+        1.ExchangeOnlineManagement module (EXO v2)
+        2.PSFramework module
+        3.To make things easier, run this script from Exchange On-Premises machine powershell,
+        the script will automatically import the Exchange On-Prem module. If you don't want
+        to run the script from an Exchange machine, use the switch -LocalMachineIsNotExchange
+        and enter the Exchange Server hostname.
 
     .NOTES
-    Title: Export-T2TAttributes.ps1
-    Version: 1.2.0
-    Date: 2021.02.04
-    Authors: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
-    Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
+        Title: Export-T2TAttributes.ps1
+        Version: 1.2.0
+        Date: 2021.02.04
+        Authors: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
+        Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
 
     #########################################################################
     # This sample script is provided AS IS without warranty of any kind and #
