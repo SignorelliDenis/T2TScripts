@@ -1,11 +1,5 @@
 ﻿Function Export-T2TAttributes{
     <#
-
-    #########################################################################
-    # This sample script is provided AS IS without warranty of any kind and #
-    # not supported under any Microsoft standard support program or service #
-    #########################################################################
-
     .SYNOPSIS
     This script will dump all necessary attributes that cross-tenant MRS migration requires.
     No changes will be performed by this code.
@@ -84,6 +78,10 @@
     Authors: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
     Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
 
+    #########################################################################
+    # This sample script is provided AS IS without warranty of any kind and #
+    # not supported under any Microsoft standard support program or service #
+    #########################################################################
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "")]
@@ -107,12 +105,12 @@
         [string]$DomainMappingCSV,
 
         [Parameter(Mandatory=$False,
-        HelpMessage="SwitchParameter to get mail contacts. Mail contact dump 
+        HelpMessage="SwitchParameter to get mail contacts. Mail contact dump
         also relies on the Custom Attibute filter")]
         [switch]$IncludeContacts,
 
         [Parameter(Mandatory=$False,
-        HelpMessage="SwitchParameter to get SIP values from proxyAddresses.  
+        HelpMessage="SwitchParameter to get SIP values from proxyAddresses.
         Only SMTP and X500 are dumped by default")]
         [switch]$IncludeSIP,
 
@@ -121,12 +119,12 @@
         [switch]$IncludeManager,
 
         [Parameter(Mandatory=$false,
-        HelpMessage="SwitchParameter used to bypass the Auto-Expanding 
+        HelpMessage="SwitchParameter used to bypass the Auto-Expanding
         Archive check as it can increase the function duration")]
         [switch]$BypassAutoExpandingArchiveCheck,
         
         [Parameter(ParameterSetName="RemoteExchange",Mandatory=$false,
-        HelpMessage="SwitchParameter to indicate that the 
+        HelpMessage="SwitchParameter to indicate that the
         machine running the function is not an Exchange Server")]
         [switch]$LocalMachineIsNotExchange,
         
@@ -135,7 +133,7 @@
         [string]$ExchangeHostname,
 
         [Parameter(Mandatory=$false,
-        HelpMessage="Enter the file path used to save the 
+        HelpMessage="Enter the file path used to save the
         function output. Default value is the Desktop path")]
         [string]$FolderPath
     )
