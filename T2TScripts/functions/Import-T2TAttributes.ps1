@@ -54,7 +54,14 @@
     from the file "C:\temp\UserListToImport.csv", create the new MailUsers with the new UPNSuffix
     of "fabrikam.com", and enable the check mark to "Reset the password on next logon".
 
-    .REQUIREMENT
+    .NOTES
+    Title: Import-T2TAttributes.ps1
+    Version: 1.2.0
+    Date: 2021.01.03
+    Author: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
+    Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
+
+    REQUIREMENT
     1.To make things easier, run this script from Exchange On-Premises machine powershell,
     the script will automatically import the Exchange On-Prem module. If you don't want
     to run the script from an Exchange machine, use the switch -LocalMachineIsNotExchange
@@ -62,13 +69,6 @@
     2.The script encourage you to stop the Azure AD Sync cycle before the execution. The
     script can disable the sync for you as long as you provide the Azure AD Connect
     hostname. Otherwiser, you can disable by your self manually and then re-run the script.
-
-    .NOTES
-    Title: Import-T2TAttributes.ps1
-    Version: 1.2.0
-    Date: 2021.01.03
-    Author: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
-    Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
 
     #########################################################################
     # This sample script is provided AS IS without warranty of any kind and #

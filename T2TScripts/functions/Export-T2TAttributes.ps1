@@ -63,20 +63,20 @@
         "T2T" on the CustomAttribute 10, and based on all the users found, we will mapping source and target domains
         according to the CSV provided. All changes and CSV files will be generated in "C:\LoggingPath" folder.
 
-    .REQUIREMENT
-        1.ExchangeOnlineManagement module (EXO v2)
-        2.PSFramework module
-        3.To make things easier, run this script from Exchange On-Premises machine powershell,
-        the script will automatically import the Exchange On-Prem module. If you don't want
-        to run the script from an Exchange machine, use the switch -LocalMachineIsNotExchange
-        and enter the Exchange Server hostname.
-
     .NOTES
         Title: Export-T2TAttributes.ps1
         Version: 1.2.0
         Date: 2021.02.04
         Authors: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
         Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
+
+    REQUIREMENT
+        1.ExchangeOnlineManagement module (EXO v2)
+        2.PSFramework module
+        3.To make things easier, run this script from Exchange On-Premises machine powershell,
+        the script will automatically import the Exchange On-Prem module. If you don't want
+        to run the script from an Exchange machine, use the switch -LocalMachineIsNotExchange
+        and enter the Exchange Server hostname.
 
     #########################################################################
     # This sample script is provided AS IS without warranty of any kind and #
