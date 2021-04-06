@@ -1,7 +1,15 @@
 ﻿# Changelog
+## 1.2.0 (2021-04-06)
+- New: Include a new parameter to dump mail contacts called -IncludeContacts. A function called Move-Contacts was created to handle the export and import of mail contacts.
+- Fix: [[README.md] Wrong parameter: OrganizationalInit](https://github.com/SignorelliDenis/T2TScripts/issues/27)
+- Fix: [[Export-T2TAttributes] Remove ADObjectId class check](https://github.com/SignorelliDenis/T2TScripts/issues/26)
+- Fix: [[Import-T2TAttributes] Rename -FilePath to -UserListToImport](https://github.com/SignorelliDenis/T2TScripts/issues/24)
+- Update: [[Export-T2TAttributes] PrimarySMTPAddress is defined by UPN](https://github.com/SignorelliDenis/T2TScripts/issues/25)
+- Update: [Move UserListToImport.csv Import CSV to a new function](https://github.com/SignorelliDenis/T2TScripts/issues/23)
+- Update: [Import-CSV : Could not find file 'C:\...\UserListToImport.csv'](https://github.com/SignorelliDenis/T2TScripts/issues/22)
 
-## 1.1.0 (2021-04-31)
-- New: Include a new parameter to get vaule from manager attribute in Export-T2TScripts. From the Import-T2TScripts perspective, the function calls another internal function called Import-Manager to import the manager value attribute. 
+## 1.1.0 (2021-03-31)
+- New: Include a new parameter to get value from manager attribute in Export-T2TScripts. From the Import-T2TScripts perspective, the function calls another internal function called Import-Manager to import the manager attribute value.
 - Fix: [Running Export-T2TAttributes from a non-Exchange is not dumping proxyAddresses](https://github.com/SignorelliDenis/T2TScripts/issues/19)
 - Fix: [Export-T2TAttributes - Get-RemoteADUser is not recognized as a cmdlet](https://github.com/SignorelliDenis/T2TScripts/issues/18)
 

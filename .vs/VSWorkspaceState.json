@@ -4,9 +4,10 @@
     "\\build",
     "\\T2TScripts",
     "\\T2TScripts\\functions",
+    "\\T2TScripts\\internal",
+    "\\T2TScripts\\internal\\functions",
     "\\T2TScripts\\tests",
     "\\T2TScripts\\tests\\general"
   ],
-  "SelectedNode": "\\T2TScripts\\functions\\Import-T2TAttributes.ps1",
   "PreviewInSolutionExplorer": false
 }

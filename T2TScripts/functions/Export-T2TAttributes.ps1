@@ -1,99 +1,94 @@
-﻿Function Export-T2TAttributes{
+﻿Function Export-T2TAttributes {
     <#
     .SYNOPSIS
-    This script will dump all necessary attributes that cross-tenant MRS migration requires.
-    No changes will be performed by this code.
+        This script will dump all necessary attributes that cross-tenant MRS migration requires.
+        No changes will be performed by this code.
     
     .DESCRIPTION
-    This script will dump all necessary attributes that cross-tenant MRS migration requires.
-    No changes will be performed by this code.
+        This script will dump all necessary attributes that cross-tenant MRS migration requires.
+        No changes will be performed by this code.
 
     .PARAMETER AdminUPN
-    Optional parameter used to connect to to Exchange Online. Only the UPN is
-    stored to avoid token expiration during the session, no password is stored.
+        Optional parameter used to connect to to Exchange Online. Only the UPN is
+        stored to avoid token expiration during the session, no password is stored.
 
     .PARAMETER CustomAttributeNumber
-    Mandatory parameter used to inform the code which custom
-    attributes will be used to scope the search. Valid range: 1-15.
+        Mandatory parameter used to inform the code which custom
+        attributes will be used to scope the search. Valid range: 1-15.
 
     .PARAMETER CustomAttributeValue
-    Mandatory parameter used to inform the code which value will be used to scope the search.
+        Mandatory parameter used to inform the code which value will be used to scope the search.
 
     .PARAMETER DomainMappingCSV
-    Enter the CSV path which you mapped the source and target domains. You file header should have 2 columns and be: 'Source','Target'
+        Enter the CSV path which you mapped the source and target domains.
+        You file header should have 2 columns and be: 'Source','Target'
 
     .PARAMETER BypassAutoExpandingArchiveCheck
-    The script will check if you have Auto-Expanding archive enable on organization
-    level, if yes each mailbox will be check if there is an Auto-Expanding archive mailbox
-    This check might increase the script duration. You can opt-out using this switch
+        The script will check if you have Auto-Expanding archive enable on organization
+        level, if yes each mailbox will be check if there is an Auto-Expanding archive mailbox
+        This check might increase the script duration. You can opt-out using this switch
 
     .PARAMETER FolderPath
-    Optional parameter used to inform which path will be used to save the
-    CSV. If no path is chosen, the script will save on the Desktop path.
+        Optional parameter used to inform which path will be used to save the
+        CSV. If no path is chosen, the script will save on the Desktop path.
 
     .PARAMETER LocalMachineIsNotExchange
-    Optional parameter used to inform that you are running the script from a
-    non-Exchange Server machine. This parameter will require the -ExchangeHostname.
+        Optional parameter used to inform that you are running the script from a
+        non-Exchange Server machine. This parameter will require the -ExchangeHostname.
 
     .PARAMETER ExchangeHostname
-    Mandatory parameter if the switch -LocalMachineIsNotExchange was used.
-    Used to inform the Exchange Server FQDN that the script will connect.
+        Mandatory parameter if the switch -LocalMachineIsNotExchange was used.
+        Used to inform the Exchange Server FQDN that the script will connect.
+
+    .PARAMETER IncludeContacts
+        Switch to get mail contacts. Mail contact dump
+        also relies on the Custom Attibute filter.
 
     .PARAMETER IncludeSIP
-    Switch to get SIP values from proxyAddresses. Without
-    this switch the function returns only SMTP and X500.
+        Switch to get SIP values from proxyAddresses. Without
+        this switch the function returns only SMTP and X500.
 
     .PARAMETER IncludeManager
-    Switch to get values from Manager attribute. Be sure to
-    scope users and managers if this switch will be used.
+        Switch to get values from Manager attribute. Be sure to
+        scope users and managers if this switch will be used.
 
     .EXAMPLE
-    PS C:\> Export-T2TAttributes -CustomAttributeNumber 10 -CustomAttributeValue "T2T" -DomainMappingCSV sourcetargetmap.csv -FolderPath C:\LoggingPath
-    The function will export all users matching the value "T2T" on the CustomAttribute 10, and based on all the users found, we will
-    mapping source and target domains according to the CSV provided. All changes and CSV files will be generated in "C:\LoggingPath" folder.
+        PS C:\> Export-T2TAttributes -CustomAttributeNumber 10 -CustomAttributeValue "T2T" -DomainMappingCSV sourcetargetmap.csv -FolderPath C:\LoggingPath
+        The function will export all users matching the value "T2T" on the CustomAttribute 10, and based on all the users found, we will
+        mapping source and target domains according to the CSV provided. All changes and CSV files will be generated in "C:\LoggingPath" folder.
 
     .EXAMPLE
-    PS C:\> Export-T2TAttributes -CustomAttributeNumber 10 -CustomAttributeValue "T2T" -DomainMappingCSV sourcetargetmap.csv -FolderPath C:\LoggingPath -LocalMachineIsNotExchange -ExchangeHostname ExServer1
-    The function will connect to the onprem Exchange Server "ExServer1" and export all users matching the value
-    "T2T" on the CustomAttribute 10, and based on all the users found, we will mapping source and target domains
-    according to the CSV provided. All changes and CSV files will be generated in "C:\LoggingPath" folder.
+        PS C:\> Export-T2TAttributes -CustomAttributeNumber 10 -CustomAttributeValue "T2T" -DomainMappingCSV sourcetargetmap.csv -LocalMachineIsNotExchange -ExchangeHostname ExServer1
+        The function will connect to the onprem Exchange Server "ExServer1" and export all users matching the value
+        "T2T" on the CustomAttribute 10, and based on all the users found, we will mapping source and target domains
+        according to the CSV provided. All changes and CSV files will be generated in "C:\LoggingPath" folder.
 
     .NOTES
-    Title: Export-T2TAttributes.ps1
-    Version: 1.1.0
-    Date: 2021.02.04
-    Authors: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
-    Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
+        Title: Export-T2TAttributes.ps1
+        Version: 1.2.0
+        Date: 2021.02.04
+        Authors: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
+        Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
 
-    REQUIREMENTS
-    
-    1 - ExchangeOnlineManagement module (EXO v2)
-
-    2 - PSFramework module
-
-    3 - To make things easier, run this script from Exchange On-Premises machine powershell,
+    REQUIREMENT
+        1.ExchangeOnlineManagement module (EXO v2)
+        2.PSFramework module
+        3.To make things easier, run this script from Exchange On-Premises machine powershell,
         the script will automatically import the Exchange On-Prem module. If you don't want
         to run the script from an Exchange machine, use the switch -LocalMachineIsNotExchange
         and enter the Exchange Server hostname.
 
-    ##############################################################################################
-    #This sample script is not supported under any Microsoft standard support program or service.
-    #This sample script is provided AS IS without warranty of any kind.
-    #Microsoft further disclaims all implied warranties including, without limitation, any implied
-    #warranties of merchantability or of fitness for a particular purpose. The entire risk arising
-    #out of the use or performance of the sample script and documentation remains with you. In no
-    #event shall Microsoft, its authors, or anyone else involved in the creation, production, or
-    #delivery of the scripts be liable for any damages whatsoever (including, without limitation,
-    #damages for loss of business profits, business interruption, loss of business information,
-    #or other pecuniary loss) arising out of the use of or inability to use the sample script or
-    #documentation, even if Microsoft has been advised of the possibility of such damages.
-    ##############################################################################################
+    #########################################################################
+    # This sample script is provided AS IS without warranty of any kind and #
+    # not supported under any Microsoft standard support program or service #
+    #########################################################################
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "")]
     [CmdletBinding(DefaultParameterSetName="Default")]
     Param(
-        [Parameter(Mandatory=$False)]
+        [Parameter(Mandatory=$False,
+        HelpMessage="Enter the user admin to connect to Exchange Online")]
         [string]$AdminUPN,
         
         [Parameter(Mandatory=$true,
@@ -108,30 +103,46 @@
         [Parameter(Mandatory=$true,
         HelpMessage="Enter the CSV name where you mapped the source and target domains")]
         [string]$DomainMappingCSV,
-        
-        [Parameter(Mandatory=$false)]
+
+        [Parameter(Mandatory=$False,
+        HelpMessage="SwitchParameter to get mail contacts. Mail contact dump
+        also relies on the Custom Attibute filter")]
+        [switch]$IncludeContacts,
+
+        [Parameter(Mandatory=$False,
+        HelpMessage="SwitchParameter to get SIP values from proxyAddresses.
+        Only SMTP and X500 are dumped by default")]
+        [switch]$IncludeSIP,
+
+        [Parameter(Mandatory=$false,
+        HelpMessage="SwitchParameter to dump the manager AD attribute value")]
+        [switch]$IncludeManager,
+
+        [Parameter(Mandatory=$false,
+        HelpMessage="SwitchParameter used to bypass the Auto-Expanding
+        Archive check as it can increase the function duration")]
         [switch]$BypassAutoExpandingArchiveCheck,
         
-        [Parameter(ParameterSetName="RemoteExchange",Mandatory=$false)]
+        [Parameter(ParameterSetName="RemoteExchange",Mandatory=$false,
+        HelpMessage="SwitchParameter to indicate that the
+        machine running the function is not an Exchange Server")]
         [switch]$LocalMachineIsNotExchange,
         
         [Parameter(ParameterSetName="RemoteExchange",Mandatory=$true,
         HelpMessage="Enter the remote exchange hostname")]
         [string]$ExchangeHostname,
 
-        [Parameter(Mandatory=$False)]
-        [switch]$IncludeSIP,
-
-        [Parameter(Mandatory=$false)]
-        [switch]$IncludeManager,
-
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory=$false,
+        HelpMessage="Enter the file path used to save the
+        function output. Default value is the Desktop path")]
         [string]$FolderPath
     )
 
     Set-PSFConfig -FullName PSFramework.Logging.FileSystem.ModernLog -Value $True
-    Write-PSFMessage  -Level Output -Message "Starting export script. All logs are being saved in $((Get-PSFConfig PSFramework.Logging.FileSystem.LogPath).Value)"
+    Write-PSFMessage  -Level Output -Message "Starting export script. All logs are being saved in: $((Get-PSFConfig PSFramework.Logging.FileSystem.LogPath).Value)"
 
+    # region local variables
+    $outArray = @()
     if ( $FolderPath )
     {
     
@@ -144,20 +155,18 @@
     $AUXFile = "$home\desktop\AUXUsers.txt"
     
     }
-    
-    $outArray = @()
-    $CustomAttribute = "CustomAttribute$CustomAttributeNumber"
-    $MappingCSV = Import-CSV -Path $DomainMappingCSV
 
-    # Before move on getting the manager attribute
-    # We need to know if we have the ADObjectId class
-    if ($IncludeManager.IsPresent) {
+    # region global variables
+    $Global:CustomAttribute = "CustomAttribute$CustomAttributeNumber"
+    $Global:CustomAttributeValue = $Global:CustomAttributeValue
+    $Global:DomainMappingCSV
 
-        $ADObjectId = Get-TypeData -TypeName "Microsoft.Exchange.Data.ObjectId"
+    # Check if $DomainMappingCSV is valid
+    $CSVMappingExist =  Get-CSVStatus -MappingFile
+    if ( $CSVMappingExist -eq 0 ) { Break }
+    $Global:MappingCSV = Import-CSV -Path $DomainMappingCSV
 
-    }
-    
-    # Region check current connection status, and connect if needed
+    # region connections
     if ( $LocalMachineIsNotExchange.IsPresent ) {
         
         $ServicesToConnect = Assert-ServiceConnection -Services EXO, ExchangeRemote, AD
@@ -172,10 +181,13 @@
     
     }
     
+    # Dump contacts. TO DO: Run this function in parallel. Job is
+    # not an option as this function relies on global variables
+    if ( $IncludeContacts.IsPresent ) { Move-Contacts -Sync Export }
+
     # Save all properties from MEU object to variable
     $RemoteMailboxes = Get-RemoteMailbox -resultsize unlimited | Where-Object {$_.$CustomAttribute -like $CustomAttributeValue}
     Write-PSFMessage -Level Output -Message "$($RemoteMailboxes.Count) mailboxes with $($CustomAttribute) as $($CustomAttributeValue) were returned"
-    
     
     # Saving AUX org status if bypass switch is not present
     if ( $BypassAutoExpandingArchiveCheck.IsPresent ) {
@@ -201,15 +213,15 @@
     Write-PSFMessage -Level Output -Message "Getting EXO mailboxes necessary attributes. This may take some time..."
 
     [int]$counter = 0
+    $UsersCount = ($RemoteMailboxes | Measure-Object).count
     Foreach ($i in $RemoteMailboxes)
     {
         
         $counter++
-        Write-Progress -Activity "Exporting mailbox attributes to CSV" -Status "Working on $($i.DisplayName)" -PercentComplete ($counter * 100 / $($RemoteMailboxes.Count) )
+        Write-Progress -Activity "Exporting mailbox attributes to CSV" -Status "Working on $($i.DisplayName)" -PercentComplete ($counter * 100 / $UsersCount )
         
         $user = get-Recipient $i.alias
         $object = New-Object System.Object
-        $object | Add-Member -type NoteProperty -name primarysmtpaddress -value $i.PrimarySMTPAddress
         $object | Add-Member -type NoteProperty -name alias -value $i.alias
         $object | Add-Member -type NoteProperty -name FirstName -value $User.FirstName
         $object | Add-Member -type NoteProperty -name LastName -value $User.LastName
@@ -220,27 +232,14 @@
         $object | Add-Member -type NoteProperty -name CustomAttribute -value $CustomAttribute
         $object | Add-Member -type NoteProperty -name CustomAttributeValue -value $CustomAttributeValue
         
-        # If we have don't have ADObjectId class, we must resolve the CN to alias
-        if ( $IncludeManager.IsPresent -and $ADObjectId -eq $Null -and $user.Manager -ne $Null ) {
+        # We must resolve the manager's CN to alias
+        if ( $IncludeManager.IsPresent -and $user.Manager -ne $Null ) {
 
             $Manager = ( Get-Recipient $user.Manager ).Alias
             $object | Add-Member -type NoteProperty -name Manager -value $Manager
 
         }
-        if ( $IncludeManager.IsPresent -and $ADObjectId -eq $Null -and $user.Manager -eq $Null ) {
-
-            $object | Add-Member -type NoteProperty -name Manager -value $Null
-
-        }
-
-        # Under ADObjectId class (Exchange or Exchange management tools) the output is
-        # array when getting manager property so just we need to declare the name element
-        if ( $IncludeManager.IsPresent -and $ADObjectId -ne $Null -and $user.Manager -ne $Null ) {
-
-            $object | Add-Member -type NoteProperty -name Manager -value $user.Manager.Name
-
-        }
-        if ( $IncludeManager.IsPresent -and $ADObjectId -ne $Null -and $user.Manager -eq $Null ) {
+        if ( $IncludeManager.IsPresent -and $user.Manager -eq $Null ) {
 
             $object | Add-Member -type NoteProperty -name Manager -value $Null
 
@@ -256,12 +255,14 @@
             if ($OrgAUXStatus.AutoExpandingArchiveEnabled -eq '$True') {
 
                 # If AUX is enable at org side, doesn't metter if the mailbox has it explicitly enabled
-                $EXOMailbox = Get-EXOMailbox -Identity $i.Alias -Properties ExchangeGuid,MailboxLocations,LitigationHoldEnabled,SingleItemRecoveryEnabled,ArchiveDatabase,ArchiveGuid
+                $EXOMailbox = Get-EXOMailbox -Identity $i.Alias -Properties ExchangeGuid,MailboxLocations, `
+                LitigationHoldEnabled,SingleItemRecoveryEnabled,ArchiveDatabase,ArchiveGuid
 
             } else {
 
                 # If AUX isn't enable at org side, we check if the mailbox has it explicitly enabled
-                $EXOMailbox = Get-EXOMailbox -Identity $i.Alias -Properties ExchangeGuid,MailboxLocations,LitigationHoldEnabled,SingleItemRecoveryEnabled,ArchiveDatabase,ArchiveGuid,AutoExpandingArchiveEnabled
+                $EXOMailbox = Get-EXOMailbox -Identity $i.Alias -Properties ExchangeGuid,MailboxLocations,LitigationHoldEnabled, `
+                SingleItemRecoveryEnabled,ArchiveDatabase,ArchiveGuid,AutoExpandingArchiveEnabled
             
             }
 
@@ -281,7 +282,8 @@
             $EXOMailbox.MailboxLocations -like '*;AuxArchive;*') )
             {
 
-                $AuxMessage = "[$(Get-Date -format "HH:mm:ss")] User $($i.Alias) has an auxiliar Auto-Expanding archive mailbox. Be aware that any auxiliar archive mailbox will not be migrated"
+                $AuxMessage = "[$(Get-Date -format "HH:mm:ss")] User $($i.Alias) has an auxiliar Auto-Expanding archive mailbox. `
+                Be aware that any auxiliar archive mailbox will not be migrated"
                 $AuxMessage | Out-File -FilePath $AUXFile -Append
                 Write-PSFHostColor -String $AuxMessage -DefaultColor Cyan
                 
@@ -302,7 +304,7 @@
         # "-ArchiveStatus" parameter is that may not be trustable in certain scenarios
         # https://docs.microsoft.com/en-us/office365/troubleshoot/archive-mailboxes/archivestatus-set-none
         if ( $EXOMailbox.ArchiveDatabase -ne '' -and
-                $EXOMailbox.ArchiveGuid -ne "00000000-0000-0000-0000-000000000000" )
+             $EXOMailbox.ArchiveGuid -ne "00000000-0000-0000-0000-000000000000" )
         {
             
             $object | Add-Member -type NoteProperty -name ArchiveGuid -value $EXOMailbox.ArchiveGuid
@@ -343,6 +345,8 @@
         # Join it using ";" and replace the old domain (source) to the new one (target)
         $ProxyToString = $ProxyArray -Join ";" -Replace "SMTP","smtp"
 
+        $PrimarySMTP = $i.PrimarySmtpAddress
+
         # Map from the CSV which source domain will become which target domain
         Foreach ($Domain in $MappingCSV) {
 
@@ -350,15 +354,21 @@
             $SourceDomain = $Domain.Source.Insert(0,"@")
             $TargetDomain = $Domain.Target.Insert(0,"@")
 
-            if ($ProxyToString -match $Domain.source) {
+            if ( $ProxyToString -match $Domain.source ) {
 
                 $ProxyToString = $ProxyToString -replace $SourceDomain,$TargetDomain
 
             }
 
+            if ( $PrimarySMTP -match $Domain.source ) {
+
+                $PrimarySMTP = $PrimarySMTP -replace $SourceDomain,$TargetDomain
+
+            }
         }
 
         $object | Add-Member -type NoteProperty -name EmailAddresses -value $ProxyToString
+        $object | Add-Member -type NoteProperty -name PrimarySMTPAddress -value $PrimarySMTP
 
         # Get ProxyAddresses only for *.mail.onmicrosoft to define in the target AD the targetAddress value
         $TargetToString = [system.String]::Join(";",$TargetArray)
@@ -418,21 +428,21 @@
         }
 
         $outArray += $object
-    
+
     }
-    
-    # Export to a CSV and clear up variables and sessions
+
+    # Export to a CSV and clean up variables and sessions
     if ( $AuxMessage ) {
 
         Write-PSFMessage -Level Output -Message "Saving CSV on $($outfile)"
         Write-PSFMessage -Level Output -Message "Saving TXT on $($AUXFile)"
 
     } else {
-    
+
         Write-PSFMessage -Level Output -Message "Saving CSV on $($outfile)"
-    
+
     }
-    
+
     $outArray | Export-CSV $outfile -notypeinformation
     Remove-Variable * -ErrorAction SilentlyContinue
     Get-PSSession | Remove-PSSession

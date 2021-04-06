@@ -1,53 +1,94 @@
-﻿function Import-Manager {
+﻿Function Import-Manager {
     <#
     .SYNOPSIS
-    Import Manager Attribute
+        Import Manager Attribute
     
     .DESCRIPTION
-    Function called by Import-T2TAttributes if we found the Manager property on the UserListToImport.csv
+        Function called by Import-T2TAttributes if we found the Manager property on the UserListToImport.csv and/or ContactsListToImport.csv
     
-    .PARAMETER CSVPath
-    Path where the function can find the UserListToImport.csv
+    .PARAMETER ObjType
+        Type of object that the function will work, valid values are MEU or Contact
     
     .EXAMPLE
-    PS C:\> Import-Manager
-    Import the manager attribute valies from from the UserListToImport.csv
+        PS C:\> Import-Manager -ObjType MEU, Contacts
+        Import the manager attribute valies from from the UserListToImport.csv and ContactsListToImport.csv
     #>
 
-    Write-PSFMessage -Level Output -Message  "Starting Manager attribute import"
+    [CmdletBinding()]
+    param (
+    [ValidateSet('MEU','Contact')]
+    [String]$ObjType
+    )
+
+    Switch ( $ObjType ) {
+
+        MEU {
+
+            Write-PSFMessage -Level Output -Message  "Starting Manager attribute import"
     
-    [int]$counter = 0
-    foreach ( $i in $ImportUserList ) {
+            [int]$counter = 0
+            $ManagerCount = ($ImportUserList | Measure-Object).count
+            foreach ( $i in $ImportUserList ) {
 
-        $counter++
-        Write-Progress -Activity "Importing Manager Attribute" -Status "Working on $($i.DisplayName)" -PercentComplete ($counter * 100 / $($ImportUserList.Count) )
+                $counter++
+                Write-Progress -Activity "Importing Manager Attribute" -Status "Working on $($i.DisplayName)" -PercentComplete ($counter * 100 / $ManagerCount )
 
-        if ( $LocalMachineIsNotExchange.IsPresent -and $i.Manager ) {
+                if ( $LocalMachineIsNotExchange.IsPresent -and $i.Manager ) {
 
-            Try {
+                    Try
+                    {
 
-                Set-RemoteADUser -Identity $i.SamAccountName -Manager $i.Manager -ErrorAction Stop
+                        Set-RemoteADUser -Identity $i.SamAccountName -Manager $i.Manager -ErrorAction Stop
 
-            }
-            catch
-            {
+                    }
+                    catch
+                    {
 
-                Write-PSFMessage -Level Output -Message "Failed to add the user's $($i.DisplayName) manager attribute"
+                        Write-PSFMessage -Level Output -Message "Failed to add the user's $($i.DisplayName) manager attribute"
 
+                    }
+                }
+                elseif ( $i.Manager ) {
+
+                    Try
+                    {
+
+                        Set-ADUser -Identity $i.SamAccountName -Manager $i.Manager -ErrorAction Stop
+
+                    }
+                    catch
+                    {
+
+                        Write-PSFMessage -Level Output -Message "Failed to add the user's $($i.DisplayName) manager attribute"
+
+                    }
+                }
             }
         }
-        elseif ( $i.Manager ) {
 
-            Try {
+        Contact {
 
-                Set-ADUser -Identity $i.SamAccountName -Manager $i.Manager -ErrorAction Stop
+            Write-PSFMessage -Level Output -Message  "MailContacts - Starting manager attribute import"
+    
+            [int]$counter = 0
+            $ManagerCount = ($ImportContactList | Measure-Object).count
+            foreach ( $i in $ImportContactList ) {
 
-            }
-            catch
-            {
+                $counter++
+                Write-Progress -Activity "MailContacts - Importing Manager Attribute" -Status "Working on $($i.DisplayName)" -PercentComplete ($counter * 100 / $ManagerCount )
 
-                Write-PSFMessage -Level Output -Message "Failed to add the user's $($i.DisplayName) manager attribute"
+                Try
+                {
 
+                    Set-Contact -Identity $i.Alias -Manager $i.Manager -ErrorAction Stop
+
+                }
+                catch
+                {
+
+                    Write-PSFMessage -Level Output -Message "MailContacts - Failed to add the user's $($i.DisplayName) manager attribute"
+
+                }
             }
         }
     }
