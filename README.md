@@ -71,15 +71,16 @@ If you face installation issues such as *Unable to resolve package source* you c
 
 - You must fill a custom attribute field with some value by your preference in order to be used by the function as a filter to get only mailboxes that have the custom attribute and value filled by you. This will provide more security once the function will not get anything else than you want to.
 
-- You must fill a CSV that maps which souce domain will become which target domain. Start the first line as *source,target* and then map each source domain for each target domain, e.g:
+- You must fill a CSV that maps which souce domain will become which target domain. Start the first line as *source,target* and then map each source domain for each target domain, including the `mail.onmicrosoft.com` e.g:
 
     ```DomainMapping.csv
     source,target
-    contoso.com,fabrikam.com
+    fabrikam.com,contoso.com
+    fabrikam.mail.onmicrosoft.com,contoso.mail.onmicrosoft.com
     source1.com,target1.com
     sub.source.com,sub.target.com
     ```
-    Note: Any domain which is not included in the CSV domain mapping file will not be converted. Thus, be sure that you are covering all yours accepted domains
+    Notes: Any domain which is not included in the CSV domain mapping file will not be converted. Thus, be sure that you are covering all yours accepted domains.
 
 - The function will connect to the Exchange Online using v2 module. If you don't have it installed, this module will install it for you as long as the PC may reach the PowerShell gallery.  
 
@@ -176,7 +177,7 @@ The *Export-T2TAttributes* will dump to a CSV the following attributes:
 
 ¹ *The custom attributes number and value that will be dumped is chosen according to the user’s input before running the function*
 
-² *The ExternalEmailAddress is defined by the **mail.onmicrosoft.com** [(MOERA)](https://docs.microsoft.com/en-us/troubleshoot/azure/active-directory/proxyaddresses-attribute-populate#terminology) SMTP address found on the source user object proxyAddresses property.*
+² *The ExternalEmailAddress is defined by the **mail.onmicrosoft.com** [(MOERA)](https://docs.microsoft.com/en-us/troubleshoot/azure/active-directory/proxyaddresses-attribute-populate#terminology) SMTP address found on the source user object proxyAddresses property. The function will convert the MOERA address according to the domain mapping CSV but only to the proxyAddresses property. The ExternalEmailAddress value remains the same.
 
 ³ *These properties are converted to a number which represents the ELC mailbox flag.*
 
