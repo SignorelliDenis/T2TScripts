@@ -177,7 +177,7 @@ The *Export-T2TAttributes* will dump to a CSV the following attributes:
 
 ¹ *The custom attributes number and value that will be dumped is chosen according to the user’s input before running the function*
 
-² *The ExternalEmailAddress is defined by the **mail.onmicrosoft.com** [(MOERA)](https://docs.microsoft.com/en-us/troubleshoot/azure/active-directory/proxyaddresses-attribute-populate#terminology) SMTP address found on the source user object proxyAddresses property. The function will convert the MOERA address according to the domain mapping CSV but only to the proxyAddresses property. The ExternalEmailAddress value remains the same.
+² *The ExternalEmailAddress is defined by the **mail.onmicrosoft.com** [(MOERA)](https://docs.microsoft.com/en-us/troubleshoot/azure/active-directory/proxyaddresses-attribute-populate#terminology) SMTP address found on the source user object proxyAddresses property. The function will convert the MOERA address according to the domain mapping CSV but only to the proxyAddresses property. The ExternalEmailAddress value remains the same.*
 
 ³ *These properties are converted to a number which represents the ELC mailbox flag.*
 
