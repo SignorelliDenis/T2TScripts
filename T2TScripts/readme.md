@@ -71,7 +71,7 @@ If you face installation issues such as *Unable to resolve package source* you c
 
 - You must fill a custom attribute field with some value by your preference in order to be used by the function as a filter to get only mailboxes that have the custom attribute and value filled by you. This will provide more security once the function will not get anything else than you want to.
 
-- You must fill a CSV that maps which souce domain will become which target domain. Start the first line as *source,target* and then map each source domain for each target domain, including the `mail.onmicrosoft.com` e.g:
+- You must fill a CSV that maps which souce domain will become which target domain. Start the first line as *source,target* and then map each source domain for each target domain, including `mail.onmicrosoft.com` e.g:
 
     ```DomainMapping.csv
     source,target
