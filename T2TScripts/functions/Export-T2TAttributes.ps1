@@ -65,7 +65,7 @@
 
     .NOTES
         Title: Export-T2TAttributes.ps1
-        Version: 1.2.0
+        Version: 1.2.1
         Date: 2021.02.04
         Authors: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
         Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
@@ -229,6 +229,7 @@
         $object | Add-Member -type NoteProperty -name Name -value $i.Name
         $object | Add-Member -type NoteProperty -name SamAccountName -value $i.SamAccountName
         $object | Add-Member -type NoteProperty -name legacyExchangeDN -value $i.legacyExchangeDN
+        $object | Add-Member -type NoteProperty -name RemoteRecipientType -value $i.RemoteRecipientType
         $object | Add-Member -type NoteProperty -name CustomAttribute -value $CustomAttribute
         $object | Add-Member -type NoteProperty -name CustomAttributeValue -value $CustomAttributeValue
         
@@ -322,19 +323,19 @@
         $Proxy = $i.EmailAddresses
         foreach ($email in $Proxy)
         {
-            if (($email -like 'SMTP:*' -or $email -like 'X500:*') -and $email -notlike '*.onmicrosoft.com')
+            if ($email -like 'SMTP:*' -or $email -like 'X500:*')
             {
 
                 $ProxyArray = $ProxyArray += $email
 
             }
-            elseif ($IncludeSIP.IsPresent -and $email -like 'SIP:*')
+            if ($IncludeSIP.IsPresent -and $email -like 'SIP:*')
             {
 
                 $ProxyArray = $ProxyArray += $email
 
             }
-            elseif ($email -like 'SMTP:*' -and $email -like '*.onmicrosoft.com')
+            if ($email -like 'SMTP:*' -and $email -like '*.onmicrosoft.com')
             {
 
                 $TargetArray = $TargetArray += $email
