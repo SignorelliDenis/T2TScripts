@@ -80,7 +80,7 @@ If you face installation issues such as *Unable to resolve package source* you c
     source1.com,target1.com
     sub.source.com,sub.target.com
     ```
-    Notes: Any domain which is not included in the CSV domain mapping file will not be converted. Thus, be sure that you are covering all yours accepted domains.
+    Note: Any domain which is not included in the CSV domain mapping file will not be converted. Thus, be sure that you are covering all yours accepted domains.
 
 - The function will connect to the Exchange Online using v2 module. If you don't have it installed, this module will install it for you as long as the PC may reach the PowerShell gallery.  
 
