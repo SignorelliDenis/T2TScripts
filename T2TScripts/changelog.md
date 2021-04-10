@@ -1,4 +1,9 @@
 ﻿# Changelog
+
+## 1.2.1 (2021-04-08)
+- Fix: [MigrationPermanentException: The target mailbox doesn't have an SMTP proxy matching '.mail.onmicrosoft.com'](https://github.com/SignorelliDenis/T2TScripts/issues/30)
+- Update: [Export-T2TAttributes] Dump the RemoteRecipientType property. This property might be user further.
+
 ## 1.2.0 (2021-04-06)
 - New: Include a new parameter to dump mail contacts called -IncludeContacts. A function called Move-Contacts was created to handle the export and import of mail contacts.
 - Fix: [[README.md] Wrong parameter: OrganizationalInit](https://github.com/SignorelliDenis/T2TScripts/issues/27)
