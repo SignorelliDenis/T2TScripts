@@ -3,7 +3,7 @@
 	RootModule = 'T2Tscripts.psm1'
 	
 	# Version number of this module.
-	ModuleVersion = '1.2.1'
+	ModuleVersion = '2.0.0'
 	
 	# ID used to uniquely identify this module
 	GUID = '2725e92d-30e7-475f-b4d7-edd47e81f9b3'
