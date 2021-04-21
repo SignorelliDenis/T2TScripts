@@ -41,17 +41,18 @@ Update-Module T2TScripts -Force
 ## Timeline
 
 The EXO cross-tenant migration involves many steps from the requirements until the post Moverequest. You can refer to the following timeline to understand how the *T2TScripts* should be used:
+
 ![T2TScripts – Timeline EXO migration](https://user-images.githubusercontent.com/43185536/115444226-97842e80-a214-11eb-9ea2-e7a6210dddce.png)
 
 Refer to the following links to review the parameters, requirements and instruction for each function:
 
-    - [Export-T2TAttributes](/T2TScripts/functions/Export-T2TAttributes.md)
+- [Export-T2TAttributes](/T2TScripts/functions/Export-T2TAttributes.md)
 
-    - [Import-T2TAttributes](/T2TScripts/functions/Import-T2TAttributes.md)
+- [Import-T2TAttributes](/T2TScripts/functions/Import-T2TAttributes.md)
 
-    - [Update-T2TPostMigration](/T2TScripts/functions/Update-T2TPostMigration.md)
+- [Update-T2TPostMigration](/T2TScripts/functions/Update-T2TPostMigration.md)
 
-    - [Export-T2TLogs](/T2TScripts/functions/Export-T2TLogs.md)
+- [Export-T2TLogs](/T2TScripts/functions/Export-T2TLogs.md)
 
 
 ## How it works
@@ -71,5 +72,6 @@ Refer to the following links to review the parameters, requirements and instruct
 8 - From the source environment, run the `Update-T2TAttributes -Source`. The function will require the MigratedUsers.csv generated in the step 7.
 
 
-## Version History  
+## Version History
+
 [Change Log](/T2TScripts/changelog.md)
