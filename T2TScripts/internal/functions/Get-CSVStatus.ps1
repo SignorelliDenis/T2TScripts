@@ -9,6 +9,9 @@
     .PARAMETER User
         Import UserListToImport.csv and check if the file was successfully imported
 
+    .PARAMETER UsersMigrated
+        Import UsersMigrated.csv and check if the file was successfully imported
+
     .PARAMETER Contact
         Import ContactListToImport.csv and check if the file was successfully imported
 
@@ -24,6 +27,8 @@
     param (
         [Parameter(Mandatory=$false)]
         [switch]$User,
+        [Parameter(Mandatory=$false)]
+        [switch]$UsersMigrated,
         [Parameter(Mandatory=$false)]
         [switch]$Contact,
         [Parameter(Mandatory=$false)]
@@ -67,6 +72,46 @@
             }
 
         return $UserListToImportCheck
+
+        }
+
+    if ( $UsersMigrated.IsPresent ) {
+
+        $MigratedUsersImportCheck = 1
+        if ( $MigratedUsers ) {
+        
+            Try {
+
+                $Global:updatelist = Import-CSV "$MigratedUsers" -ErrorAction Stop
+                Write-PSFMessage -Level Output -Message  "The MigratedUsers.csv successfully imported."
+            }
+            catch
+            {
+
+                $MigratedUsersImportCheck = 0
+                Write-PSFMessage -Level Output -Message  "The MigratedUsers.csv does not exist. Please import a valid CSV file e re-run the function."
+
+            }
+
+            } else {
+
+                Try
+                {
+
+                    $Global:updatelist = Import-CSV "$home\desktop\MigratedUsers.csv" -ErrorAction Stop
+                    Write-PSFMessage -Level Output -Message  "The MigratedUsers.csv successfully imported from $($home)\Desktop."
+
+                }
+                catch
+                {
+
+                    $MigratedUsersImportCheck = 0
+                    Write-PSFMessage -Level Output -Message  "The MigratedUsers.csv was not found in $($home)\Desktop'. Please import a valid CSV file e re-run the function."
+
+                }
+            }
+
+        return $MigratedUsersImportCheck
 
         }
 

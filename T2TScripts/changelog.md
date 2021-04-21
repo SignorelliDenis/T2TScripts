@@ -1,5 +1,12 @@
 ﻿# Changelog
 
+## 2.0.0 (2021-04-20)
+- New: [Function to handle the post-migration called Update-T2TPostMigration](/T2TScripts/functions/Update-T2TPostMigration.md)
+- Fix: [v2.0.0 Update-T2TPostMigration -Destination Image](https://github.com/SignorelliDenis/T2TScripts/issues/36)
+- Fix: [v2.0.0 Update-T2TPostMigration-Source.png Image](https://github.com/SignorelliDenis/T2TScripts/issues/37)
+- Fix: [v2.0.0 Timeline Image](https://github.com/SignorelliDenis/T2TScripts/issues/35)
+- Fix: [[Import-T2TAttributes] - New-MailUser : ExternalEmailAddress has an invalid value](https://github.com/SignorelliDenis/T2TScripts/issues/34)
+
 ## 1.2.1 (2021-04-08)
 - Fix: [MigrationPermanentException: The target mailbox doesn't have an SMTP proxy matching '.mail.onmicrosoft.com'](https://github.com/SignorelliDenis/T2TScripts/issues/30)
 - Update: [Export-T2TAttributes] Dump the RemoteRecipientType property. This property might be user further.
