@@ -102,7 +102,7 @@ The **Export-T2TAttributes** will dump to a CSV the following RemoteMailbox attr
 ⁴ *The function does not really dump the MailboxLocations attribute to the CSV but it dumps the Alias from any users that might have an Auto-Expanding archive mailbox to a TXT called AUXUser. Then you can use the AUXUser.txt to start the export PST using Content Search or eDiscovery and manually import these PST in the target tenant.*
 
 
-## Contacts Attributes
+## Contact Attributes
 
 If IncludeContacts is used The **Export-T2TAttributes** will dump to a CSV the following Contacts attributes:
 
