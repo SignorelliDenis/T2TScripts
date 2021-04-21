@@ -11,8 +11,6 @@
         we must disable the remotemailbox and enable the MEU, but doing so all
         Exchange attributes will be deleted so the function needs to re-assign.
 
-    .PARAMETER
-
     .EXAMPLE
         PS C:\> Update-Source
     #>
