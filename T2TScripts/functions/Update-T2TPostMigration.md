@@ -76,4 +76,5 @@ The following flowchart describes how the function acts when using `-Destination
 - If the `-UsePrimarySMTPAsTargetAddress` is used, the source on-prem object will have the ExternalEmailAddress set as PrimarySMTPAddress, for example bill@contoso.com. If not used, it will be the MOERA domain such as bill@mail.contoso.onmicrosoft.com. The goal of this parameter is to force messages from source to destination to follow the destination MX record avoiding the MOERA MX record which points to Office 365, in other words in a scenario where the target MX recort point to On-Prem. This can also be achieved by a Send Connector (On-Prem) and Outbound Connector (EXO) using smart host.
 
 The following flowchart describes how the function acts when using `-Source`:
+
 ![Update-T2TPostMigration-Source](https://user-images.githubusercontent.com/43185536/115555908-593c4d00-a2b0-11eb-9189-faa8a6619610.png)
