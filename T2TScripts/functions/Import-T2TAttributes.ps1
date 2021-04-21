@@ -321,7 +321,7 @@
 
     Write-PSFMessage -Level Output -Message "The import is completed. Please confirm that all users are correctly created before enable the Azure AD Sync Cycle."
     Write-PSFMessage -Level Output -Message "You can re-enable Azure AD Connect using the following cmdlet: 'Set-ADSyncScheduler -SyncCycleEnabled 1'"
-    Remove-Variable * -ErrorAction SilentlyContinue
     Get-PSSession | Remove-PSSession
+    Remove-Variable * -ErrorAction SilentlyContinue
 
 }

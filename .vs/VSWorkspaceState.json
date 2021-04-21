@@ -9,6 +9,6 @@
     "\\T2TScripts\\tests",
     "\\T2TScripts\\tests\\general"
   ],
-  "SelectedNode": "\\T2TScripts\\functions\\Export-T2TAttributes.ps1",
+  "SelectedNode": "\\T2TScripts\\functions\\Import-T2TAttributes.ps1",
   "PreviewInSolutionExplorer": false
 }

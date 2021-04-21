@@ -218,7 +218,7 @@
     {
         
         $counter++
-        Write-Progress -Activity "Exporting mailbox attributes to CSV" -Status "Working on $($i.DisplayName)" -PercentComplete ($counter * 100 / $UsersCount )
+        Write-Progress -Activity "Exporting mailbox attributes to CSV" -Status "Working on $($i.DisplayName)" -PercentComplete ( $counter * 100 / $UsersCount )
         
         $user = get-Recipient $i.alias
         $object = New-Object System.Object
@@ -294,7 +294,7 @@
         # Get mailbox guid from EXO because if the mailbox was created from scratch
         # on EXO the ExchangeGuid would not be write-backed to On-Premises
         $object | Add-Member -type NoteProperty -name ExchangeGuid -value $EXOMailbox.ExchangeGuid
-        
+
         # Get mailbox ELC value
         $ELCValue = 0
         if ($EXOMailbox.LitigationHoldEnabled) {$ELCValue = $ELCValue + 8}
@@ -307,9 +307,9 @@
         if ( $EXOMailbox.ArchiveDatabase -ne '' -and
              $EXOMailbox.ArchiveGuid -ne "00000000-0000-0000-0000-000000000000" )
         {
-            
+
             $object | Add-Member -type NoteProperty -name ArchiveGuid -value $EXOMailbox.ArchiveGuid
-        
+
         } else {
 
             $object | Add-Member -type NoteProperty -name ArchiveGuid -value $Null
@@ -319,7 +319,6 @@
         # Get only SMTP, X500 and SIP if the switch is present
         # from proxyAddresses and define the targetAddress
         $ProxyArray = @()
-        $TargetArray = @()
         $Proxy = $i.EmailAddresses
         foreach ($email in $Proxy)
         {
@@ -338,7 +337,7 @@
             if ($email -like 'SMTP:*' -and $email -like '*.onmicrosoft.com')
             {
 
-                $TargetArray = $TargetArray += $email
+                [string]$TargetString = $email -replace "smtp:",""
 
             }
         }
@@ -366,14 +365,24 @@
                 $PrimarySMTP = $PrimarySMTP -replace $SourceDomain,$TargetDomain
 
             }
+
+            if ( $TargetString -match $Domain.source ) {
+
+                $TargetPostMigration = $TargetString -replace $SourceDomain,$TargetDomain
+
+            }
         }
 
         $object | Add-Member -type NoteProperty -name EmailAddresses -value $ProxyToString
         $object | Add-Member -type NoteProperty -name PrimarySMTPAddress -value $PrimarySMTP
 
-        # Get ProxyAddresses only for *.mail.onmicrosoft to define in the target AD the targetAddress value
-        $TargetToString = [system.String]::Join(";",$TargetArray)
-        $object | Add-Member -type NoteProperty -name ExternalEmailAddress -value $TargetToString.Replace("smtp:","")
+        # Get ProxyAddress only for *.mail.onmicrosoft to define in the target AD the
+        # targetAddress value. This value should not be converted through the domain mapping CSV.
+        $object | Add-Member -type NoteProperty -name ExternalEmailAddress -value $TargetString
+
+        # Get proxyAddress only for *.mail.onmicrosoft to define in the target AD the targetAddress
+        # value post-migration. This value should be converted through the domain mapping CSV.
+        $object | Add-Member -type NoteProperty -name ExternalEmailAddressPostMove -value $TargetPostMigration
 
         # Connect to AD exported module only if this machine has not AD Module installed
         if ( $LocalMachineIsNotExchange.IsPresent -and $LocalAD -eq '' )
@@ -432,7 +441,7 @@
 
     }
 
-    # Export to a CSV and clean up variables and sessions
+    # region export the CSV
     if ( $AuxMessage ) {
 
         Write-PSFMessage -Level Output -Message "Saving CSV on $($outfile)"
@@ -444,9 +453,10 @@
 
     }
 
+    # region clean up variables and sessions
     $outArray | Export-CSV $outfile -notypeinformation
-    Remove-Variable * -ErrorAction SilentlyContinue
+    Disconnect-ExchangeOnline -Confirm:$false -InformationAction Ignore -ErrorAction SilentlyContinue
     Get-PSSession | Remove-PSSession
-    Disconnect-ExchangeOnline -Confirm:$false
+    Remove-Variable * -ErrorAction SilentlyContinue
 
 }
