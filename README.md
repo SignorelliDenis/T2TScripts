@@ -44,9 +44,13 @@ The EXO cross-tenant migration involves many steps from the requirements until t
 ![T2TScripts – Timeline EXO migration](https://user-images.githubusercontent.com/43185536/115444226-97842e80-a214-11eb-9ea2-e7a6210dddce.png)
 
 Refer to the following links to review the parameters, requirements and instruction for each function:
+
     - [Export-T2TAttributes](/T2TScripts/functions/Export-T2TAttributes.md)
+
     - [Import-T2TAttributes](/T2TScripts/functions/Import-T2TAttributes.md)
+
     - [Update-T2TPostMigration](/T2TScripts/functions/Update-T2TPostMigration.md)
+
     - [Export-T2TLogs](/T2TScripts/functions/Export-T2TLogs.md)
 
 
