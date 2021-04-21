@@ -8,6 +8,8 @@
         This function is called by Update-T2TPostMigration
         function through the parameter -Destination
 
+    .PARAMETER
+
     .EXAMPLE
         PS C:\> Update-Target
     #>
