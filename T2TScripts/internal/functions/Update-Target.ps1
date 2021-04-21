@@ -10,6 +10,7 @@
 
     .EXAMPLE
         PS C:\> Update-Target
+        The following example run this function.
     #>
 
     # region import CSV

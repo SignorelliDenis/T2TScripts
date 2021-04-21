@@ -13,6 +13,7 @@
 
     .EXAMPLE
         PS C:\> Update-Source
+        The following example run this function.
     #>
 
     # region local variables
