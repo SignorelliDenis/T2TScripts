@@ -9,7 +9,7 @@
     .PARAMETER User
         Import UserListToImport.csv and check if the file was successfully imported
 
-    .PARAMETER User
+    .PARAMETER UsersMigrated
         Import UsersMigrated.csv and check if the file was successfully imported
 
     .PARAMETER Contact
