@@ -1,4 +1,4 @@
-Function Update-Target {
+﻿Function Update-Target {
     <#
     .SYNOPSIS
         Function to update the targetAddress and
@@ -72,7 +72,7 @@ Function Update-Target {
                                 $BreakLoop.Remove($i)
 
                             }
-                        } 
+                        }
                     }
                     catch
                     {

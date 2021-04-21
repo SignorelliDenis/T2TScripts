@@ -1,4 +1,4 @@
-Function Update-Source {
+﻿Function Update-Source {
     <#
     .SYNOPSIS
         Function to convert RemoteMailbox to MailUser
@@ -48,7 +48,7 @@ Function Update-Source {
         if ( $i.MoveRequestStatus -eq 'Completed' ) {
 
             # save user properties to variable before disable remote mailbox
-            try 
+            try
             {
                 $user = Get-RemoteMailbox -Identity $i.Alias -ErrorAction Stop
                 if ( $LocalMachineIsNotExchange.IsPresent -and $LocalAD -eq '' ) {

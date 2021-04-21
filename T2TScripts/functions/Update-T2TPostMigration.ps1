@@ -1,4 +1,4 @@
-Function Update-T2TPostMigration {
+﻿Function Update-T2TPostMigration {
     <#
     .SYNOPSIS
         Function developed to update objects once post-moverequest.
@@ -43,7 +43,7 @@ Function Update-T2TPostMigration {
 
 
     .EXAMPLE
-        PS C:\> Update-T2TPostMigration -Destination -EXOAdmin admin@contoso.com 
+        PS C:\> Update-T2TPostMigration -Destination -EXOAdmin admin@contoso.com
         The function will export all users matching the value "T2T" on the CustomAttribute 10, and based on all the users found, we will
         mapping source and target domains according to the CSV provided. All changes and CSV files will be generated in "C:\LoggingPath" folder.
 
@@ -135,8 +135,8 @@ Function Update-T2TPostMigration {
         # Connect to services if ServicesToConnect is not empty
         if ( $ServicesToConnect.Count ) { Connect-OnlineServices -AdminUPN $AdminUPN -Services $ServicesToConnect -ExchangeHostname $ExchangeHostname }
     
-    } 
-    elseif ( $Destination.IsPresent ) 
+    }
+    elseif ( $Destination.IsPresent )
     {
         
         $ServicesToConnect = Assert-ServiceConnection -Services EXO, ExchangeLocal
@@ -144,15 +144,15 @@ Function Update-T2TPostMigration {
         if ( $ServicesToConnect.Count ) { Connect-OnlineServices -AdminUPN $AdminUPN -Services $ServicesToConnect }
     
     }
-    elseif ( $LocalMachineIsNotExchange.IsPresent -and $Source.IsPresent ) 
+    elseif ( $LocalMachineIsNotExchange.IsPresent -and $Source.IsPresent )
     {
         
         $ServicesToConnect = Assert-ServiceConnection -Services ExchangeRemote
         # Connect to services if ServicesToConnect is not empty
         if ( $ServicesToConnect.Count ) { Connect-OnlineServices -AdminUPN $AdminUPN -Services $ServicesToConnect -ExchangeHostname $ExchangeHostname }
     
-    } 
-    elseif ( $Source.IsPresent ) 
+    }
+    elseif ( $Source.IsPresent )
     {
         
         $ServicesToConnect = Assert-ServiceConnection -Services ExchangeLocal
