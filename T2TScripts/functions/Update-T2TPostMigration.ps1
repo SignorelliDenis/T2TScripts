@@ -57,7 +57,7 @@
         Title: Update-T2TPostMigration.ps1
         Version: 2.0.0
         Date: 2021.04.21
-        Authors: Denis Vilaça Signorelli (denis.signorelli@microsoft.com)
+        Authors: Denis Vilaï¿½a Signorelli (denis.signorelli@microsoft.com)
 
     REQUIREMENT
         1.ExchangeOnlineManagement module (EXO v2)

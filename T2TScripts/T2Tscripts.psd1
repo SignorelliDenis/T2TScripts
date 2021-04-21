@@ -43,6 +43,7 @@
 	FunctionsToExport = @(
 		'Export-T2TAttributes'
 		'Import-T2TAttributes'
+		'Update-T2TPostMigration'
 		'Export-T2TLogs'
 	)
 	
