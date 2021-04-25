@@ -23,8 +23,8 @@
     $outArray = @()
     [System.Collections.ArrayList]$MEU = @()
     [System.Collections.ArrayList]$BreakLoop = @()
-    $MEU = $ImportUserList.ExternalEmailAddressPostMove
-    $BreakLoop = $ImportUserList.ExternalEmailAddressPostMove
+    $MEU = @(($ImportUserList).ExternalEmailAddressPostMove)
+    $BreakLoop = @(($ImportUserList).ExternalEmailAddressPostMove)
     
     # Loop until all move requests from the MigratedUsers.csv
     # are Completed, CompletedWithWarning or Failed
