@@ -1,5 +1,10 @@
 ﻿# Changelog
 
+## 2.0.1 (2021-04-25)
+- Fix: [[Update-Target] Cannot convert the "" value of type "System.String" to type "System.Collections.ArrayList"](https://github.com/SignorelliDenis/T2TScripts/issues/41)
+- Update: [Update-T2TPostMigration] Documentation Improvement
+
+
 ## 2.0.0 (2021-04-20)
 - New: [Function to handle the post-migration called Update-T2TPostMigration](/T2TScripts/functions/Update-T2TPostMigration.md)
 - Fix: [v2.0.0 Update-T2TPostMigration -Destination Image](https://github.com/SignorelliDenis/T2TScripts/issues/36)

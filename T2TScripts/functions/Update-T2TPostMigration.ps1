@@ -55,7 +55,7 @@
 
     .NOTES
         Title: Update-T2TPostMigration.ps1
-        Version: 2.0.0
+        Version: 2.0.1
         Date: 2021.04.21
         Authors: Denis Vila�a Signorelli (denis.signorelli@microsoft.com)
 

@@ -4,14 +4,14 @@ The **Update-T2TPostMigration** function is intended to update all necessary att
 
 ## Scenario
 
-Before explaining how the function works, you should be familiar with what exactly happen when the MRS completes the cross tenant move. Imagine that the user bill@fabrikam.com was migrated to bill@contoso.com:
+Before explaining how the function works, you should be familiar with what exactly happen when the MRS completes the cross tenant move. Consider that the user bill@fabrikam.com was migrated to bill@contoso.com:
 
 - Source cloud MailUser: Once the move is completed, MRS converts the mailbox object to MailUser and add the MOERA domain bill@contoso.mail.onmicrosoft.com as ExternalEmailAddress.
 - Target cloud Mailbox: MailUser is converted to Mailbox and MRS add the PrimarySMTAddress bill@contoso.com.
-- Source On-Prem RemoteMailbox: Remains as RemoteMailbox object type still pointing to the ExternalEmailAddress bill@fabrikam.com and doesn't update to the target MOERA domain bill@contoso.mail.onmicrosoft.com.
+- Source On-Prem RemoteMailbox: Remains as RemoteMailbox object type, still pointing to the ExternalEmailAddress bill@fabrikam.com and doesn't update to the target MOERA domain bill@contoso.mail.onmicrosoft.com.
 - Target On-Prem MailUser: Remains as MailUser object type and doesn't update the ExternalEmailAddress to bill@contoso.com and remains the old value pointing to the source MOERA domain bill@fabrikam.mail.onmicrosoft.com
 
-Basically we have four issues in the post-migration: wrong ExternalEmailAddress and object type in the both sides. If ExternalEmailAddress values are not updated once the migration is completed, this will cause email looping and free/busy issues if you have on-prem mailboxes. The goal of this function is exactly address these four issues as soon as the move request is finished.
+Basically we have four issues in the post-migration: wrong ExternalEmailAddress and object type on both sides. If ExternalEmailAddress values are not updated once the migration is completed, this will cause email looping and free/busy issues if you have on-prem mailboxes. The **Update-T2TPostMigration** goal is exactly address these four issues as soon as the move request is finished.
 
 ## How it works
 
