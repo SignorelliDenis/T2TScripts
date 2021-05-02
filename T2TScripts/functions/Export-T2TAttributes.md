@@ -39,12 +39,13 @@ This is the first function that should be used in the cross-tenant migration pro
 | CustomAttributeNumber                   | Exchange Custom Attribute number (1-15) where the function will use to filter. | Required |
 | CustomAttributeValue                    | Exchange Custom Attribute value where the function will use to filter. | Required |
 | DomainMappingCSV                        | Enter the CSV path which you mapped the source and target domains. | Required |
-| BypassAutoExpandingArchiveCheck         | Switch to bypass the check if there are Auto-Expanding¹ archive mailboxes. If not used the function will perform the check and this can increase the duration time. | Optional |
 | IncludeContacts                         | Switch to get mail contacts. Mail contact dump also relies on the Custom Attibute filter. | Optional |
 | IncludeSIP                              | Switch to get SIP values from proxyAddresses. If not used the function returns only SMTP and X500. | Optional |
 | IncludeManager                          | Switch to get values from Manager attribute. Be sure to scope users and managers if this switch will be used. | Optional |
+| BypassAutoExpandingArchiveCheck         | Switch to bypass the check if there are Auto-Expanding¹ archive mailboxes. If not used the function will perform the check and this can increase the duration time. | Optional |
 | LocalMachineIsNotExchange               | Switch to be used when the function is executed from a non-Exchange Server machine. | Optional |
 | ExchangeHostname                        | Exchange server hostname that the function will connect to. | Required² |
+| PreferredDC                             | Domain Controller FQDN. Use this parameter to avoid replication issues in environments with too many DCs or to avoid multiple domains issues. | Optional |
 | FolderPath                              | Custom output path for the csv. if no value is defined it will be saved as **UserListToImport.csv** on Desktop. | Optional |
 ||||
 
@@ -55,9 +56,9 @@ This is the first function that should be used in the cross-tenant migration pro
 
 ## Examples
 
-Running from a non-Exchange Server filtering mailboxes by the custom attribute 1 with value "T2T", including the SIP values:
+Running from a non-Exchange Server filtering mailboxes by the custom attribute 1 with value "T2T", including the SIP values and connecting to a specific domain controller:
 ```Powershell
-PS C:\> Export-T2TAttributes -AdminUPN admin@contoso.com -CustomAttributeNumber 1 -CustomAttributeValue T2T -DomainMappingCSV "C:\sourcetarget.csv" -IncludeSIP -LocalMachineIsNotExchange -ExchangeHostname ExchHostname
+PS C:\> Export-T2TAttributes -AdminUPN admin@contoso.com -CustomAttributeNumber 1 -CustomAttributeValue T2T -DomainMappingCSV "C:\sourcetarget.csv" -IncludeSIP -LocalMachineIsNotExchange -ExchangeHostname ExchHostname -PreferredDC DC01.contoso.com
 ```
 
 Running from an Exchange Server filtering mailboxes by the custom attribute 5 with value "Move", including the manager attribute and the contacts:
