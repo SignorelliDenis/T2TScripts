@@ -19,6 +19,8 @@
     # region local variables
     $MigratedUsersImportCheck = Get-CSVStatus -UsersMigrated
     if ( $MigratedUsersImportCheck -eq 0 ) { Break }
+    if ( $SnapshotPath ) { $outFile = "$SnapshotPath" }
+    else { $outFile = "$home\desktop\" }
     $UsersCount = ($updatelist | Measure-Object).count
     [int]$counter = 0
     $Properties = @(
@@ -39,27 +41,40 @@
         'extensionAttribute15'
     )
     
-    
     # region loop each user
-    foreach ( $i in $updatelist ) {
+    foreach ( $i in $updatelist )
+    {
 
         $counter++
         Write-Progress -Activity "Converting RemoteMailbox to MEU and changing ExternalEmailAddress" -Status "Working on $($i.ExternalEmailAddress)" -PercentComplete ( $counter * 100 / $UsersCount )
 
-        if ( $i.MoveRequestStatus -eq 'Completed' ) {
+        if ( $i.MoveRequestStatus -eq 'Completed' )
+        {
 
             # save user properties to variable before disable remote mailbox
             try
             {
-                $user = Get-RemoteMailbox -Identity $i.Alias -ErrorAction Stop
-                if ( $LocalMachineIsNotExchange.IsPresent -and $LocalAD -eq '' ) {
+                if ( $SnapshotToXML.IsPresent )
+                {
+                    $user = Get-RemoteMailbox -Identity $i.Alias -ErrorAction Stop
+                    if ( $? )
+                    {
+                        $user | Export-Clixml -Path "$outFile\$($i.Alias).xml" -Force -Confirm:$false
+                    }
+                }
+                else
+                {
+                    $user = Get-RemoteMailbox -Identity $i.Alias -ErrorAction Stop
+                }
 
-                    $aduser = Get-RemoteADUser $i.Alias -Properties * | Select-Object -Property $Properties -ErrorAction Stop
-
-                } else {
-
-                    $aduser = Get-ADUser $i.Alias -Properties * | Select-Object -Property $Properties -ErrorAction Stop
-
+                # save properties to variable but what we care about is custom attributes
+                if ( $LocalMachineIsNotExchange.IsPresent -and $LocalAD -eq '' )
+                {
+                    $aduser = Get-RemoteADUser $i.Alias -Server $PreferredDC -Properties * | Select-Object -Property $Properties -ErrorAction Stop
+                }
+                else
+                {
+                    $aduser = Get-ADUser $i.Alias -Server $PreferredDC -Properties * | Select-Object -Property $Properties -ErrorAction Stop
                 }
             }
             catch
@@ -67,42 +82,43 @@
                 Write-PSFMessage  -Level Output -Message "The RemoteMailbox $($i.PrimarySMTPAddress) was not found."
             }
 
-
             # disable remote mailbox
-            if ( $user ) {
-                
+            if ( $user )
+            {
                 Disable-RemoteMailbox -Identity $i.Alias -Confirm:$false
-                if ( $? ) {
-                    
+                if ( $? )
+                {
                     Write-PSFMessage  -Level Output -Message "RemoteMailbox $($i.PrimarySMTPAddress) successfully converted to MailUser."
 
                     # if -UsePrimarySMTPAsTargetAddress is preset,
                     # honor it, otherwise set MOERA as targetAddress
-                    if ( $UsePrimarySMTPAsTargetAddress.IsPresent ) {
-
+                    if ( $UsePrimarySMTPAsTargetAddress.IsPresent )
+                    {
                         Enable-MailUser -Identity $i.Alias -ExternalEmailAddress $i.PrimarySMTPAddress | Out-Null
-
-                    } else {
-
+                    }
+                    else
+                    {
                         Enable-MailUser -Identity $i.Alias -ExternalEmailAddress $i.ExternalEmailAddress | Out-Null
-
                     }
 
                     # convert legacyDN to X500 and set proxyAddresses
                     $x500 = "x500:" + $user.legacyExchangeDN
                     $proxy = $user.EmailAddresses
                     $ProxyArray = @()
-                    $ProxyArray = $Proxy -split ","
+                    $ProxyArray = $Proxy -split "," -replace "SMTP:","smtp:"
                     $ProxyArray = $ProxyArray + $x500
                     Set-MailUser -Identity $i.Alias -EmailAddresses @{ Add = $ProxyArray } -HiddenFromAddressListsEnabled $user.HiddenFromAddressListsEnabled
 
                     # if there were custom attribues before, re-add them
                     $Replace = @{}
-                    foreach ( $element in $Properties ) {
-                        if ( $aduser.$element ) {
+                    foreach ( $element in $Properties )
+                    {
+                        if ( $aduser.$element )
+                        {
                             $Replace.Add( $element, $aduser.$element )
-                            }
                         }
+                    }
+
                     if ( $Replace ) { Set-ADUser -Identity $i.Alias -Replace $Replace }
                 }
             }

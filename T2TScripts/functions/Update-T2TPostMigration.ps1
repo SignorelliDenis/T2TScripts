@@ -25,6 +25,14 @@
     .PARAMETER Source
         Required switch parameter to update the objects in the source environment.
 
+    .PARAMETER SnapshotToXML
+        Switch to dump RemoteMailbox attributes and export to an XML
+        file before the conversion from RemoteMailbox to MailUser.
+
+    .PARAMETER SnapshotPath
+        Define the folder path such as: C:\Temp\Export. If param isn't defined
+        and -SnapshotToXML is used, the XML files will be saved on desktop.
+
     .PARAMETER MigratedUsers
         Custom path to import the MigratedUsers.csv. if no value is
         defined the function will try to get it from the Desktop.
@@ -41,6 +49,9 @@
         Mandatory parameter if the switch -LocalMachineIsNotExchange was used.
         Used to inform the Exchange Server FQDN that the script will connect.
 
+    .PARAMETER PreferredDC
+        Preferred domain controller to connect with. Consider using this parameter
+        to avoid replication issues in environments with too many domain controllers.
 
     .EXAMPLE
         PS C:\> Update-T2TPostMigration -Destination -EXOAdmin admin@contoso.com
@@ -55,9 +66,9 @@
 
     .NOTES
         Title: Update-T2TPostMigration.ps1
-        Version: 2.0.1
+        Version: 2.0.2
         Date: 2021.04.21
-        Authors: Denis Vila�a Signorelli (denis.signorelli@microsoft.com)
+        Author: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
 
     REQUIREMENT
         1.ExchangeOnlineManagement module (EXO v2)
@@ -100,73 +111,124 @@
         [switch]$Source,
 
         [Parameter(ParameterSetName="Source",Mandatory=$false,
-        HelpMessage="Enter a custom import path for the csv. if no value is defined
-        the script will search on Desktop path for the MigratedUsers.csv")]
-        [string]$MigratedUsers,
-
-        [Parameter(ParameterSetName="Source",Mandatory=$false,
         HelpMessage="Switch to indicate if the targetAddress (ExternalEmailAddress) will
         be the PrimarySMTPAddress. If not used, the default value is the MOERA domain")]
         [switch]$UsePrimarySMTPAsTargetAddress,
 
-        [Parameter(Mandatory=$false,
-        HelpMessage="SwitchParameter to indicate that the
-        machine running the function is not an Exchange Server")]
+        [Parameter(ParameterSetName="Source",Mandatory=$false,
+        HelpMessage="Switch to Dump RemoteMailbox attributes and export to an XML file")]
+        [switch]$SnapshotToXML,
+
+        [Parameter(ParameterSetName="Source",Mandatory=$false,
+        HelpMessage="Define the folder path such as: C:\Temp\Export if param is not
+        defined and -SnapshotToXML is used, the XML files will be saved on desktop")]
+        [string]$SnapshotPath,
+
+        [Parameter(ParameterSetName="Source",Mandatory=$false,
+        HelpMessage="Enter a custom import path for the csv. if no value is defined
+        the script will search on Desktop path for the MigratedUsers.csv")]
+        [string]$MigratedUsers,
+
+        [Parameter(Mandatory=$false,HelpMessage="SwitchParameter to indicate
+        that the machine running the function is not an Exchange Server")]
         [switch]$LocalMachineIsNotExchange,
 
+        [Parameter(Mandatory=$false,HelpMessage="Enter the remote exchange hostname")]
+        [string]$ExchangeHostname,
+
         [Parameter(Mandatory=$false,
-        HelpMessage="Enter the remote exchange hostname")]
-        [string]$ExchangeHostname
+        HelpMessage="Enter the preferred domain controller FQDN to connect with")]
+        [string]$PreferredDC
     )
 
     Set-PSFConfig -FullName PSFramework.Logging.FileSystem.ModernLog -Value $True
     Write-PSFMessage  -Level Output -Message "Starting script. All logs are being saved in: $((Get-PSFConfig PSFramework.Logging.FileSystem.LogPath).Value)"
 
+    if ( $LocalMachineIsNotExchange.IsPresent -and $ExchangeHostname -like '' )
+    {
+        $ExchangeHostname = Read-Host "$(Get-Date -Format "HH:mm:ss") - Please enter the Exchange Server hostname"
+    }
+
     # region global variables
     if ( $MigratedUsers ) { $Global:MigratedUsers | Out-Null }
     if ( $MigratedUsersOutputPath ) { $Global:FolderPath | Out-Null}
+    if ( $SnapshotToXML ) { $Global:SnapshotToXML | Out-Null }
+    if ( $SnapshotPath ) { $Global:SnapshotPath | Out-Null }
     if ( $UsePrimarySMTPAsTargetAddress ) { $Global:UsePrimarySMTPAsTargetAddress | Out-Null }
     if ( $LocalMachineIsNotExchange ) { $Global:LocalMachineIsNotExchange | Out-Null }
+    if ( $PreferredDC ) { $Global:PreferredDC | Out-Null }
 
     # region connections
-    if ( $LocalMachineIsNotExchange.IsPresent -and $Destination.IsPresent ) {
-        
+    if ( $LocalMachineIsNotExchange.IsPresent -and $Destination.IsPresent )
+    {
         $ServicesToConnect = Assert-ServiceConnection -Services EXO, ExchangeRemote
         # Connect to services if ServicesToConnect is not empty
-        if ( $ServicesToConnect.Count ) { Connect-OnlineServices -AdminUPN $AdminUPN -Services $ServicesToConnect -ExchangeHostname $ExchangeHostname }
-    
+        if ( $ServicesToConnect.Count )
+        {
+            Connect-OnlineServices -AdminUPN $AdminUPN -Services $ServicesToConnect -ExchangeHostname $ExchangeHostname
+        }
     }
     elseif ( $Destination.IsPresent )
     {
         
         $ServicesToConnect = Assert-ServiceConnection -Services EXO, ExchangeLocal
         # Connect to services if ServicesToConnect is not empty
-        if ( $ServicesToConnect.Count ) { Connect-OnlineServices -AdminUPN $AdminUPN -Services $ServicesToConnect }
-    
+        if ( $ServicesToConnect.Count )
+        {
+            Connect-OnlineServices -AdminUPN $AdminUPN -Services $ServicesToConnect
+        }
     }
     elseif ( $LocalMachineIsNotExchange.IsPresent -and $Source.IsPresent )
     {
         
-        $ServicesToConnect = Assert-ServiceConnection -Services ExchangeRemote
+        $ServicesToConnect = Assert-ServiceConnection -Services ExchangeRemote, AD
         # Connect to services if ServicesToConnect is not empty
-        if ( $ServicesToConnect.Count ) { Connect-OnlineServices -AdminUPN $AdminUPN -Services $ServicesToConnect -ExchangeHostname $ExchangeHostname }
-    
+        if ( $ServicesToConnect.Count )
+        {
+            Connect-OnlineServices -AdminUPN $AdminUPN -Services $ServicesToConnect -ExchangeHostname $ExchangeHostname
+        }
     }
     elseif ( $Source.IsPresent )
     {
         
         $ServicesToConnect = Assert-ServiceConnection -Services ExchangeLocal
         # Connect to services if ServicesToConnect is not empty
-        if ( $ServicesToConnect.Count ) { Connect-OnlineServices -AdminUPN $AdminUPN -Services $ServicesToConnect }
-    
+        if ( $ServicesToConnect.Count )
+        {
+            Connect-OnlineServices -AdminUPN $AdminUPN -Services $ServicesToConnect
+        }
     }
-    
+
+    # view entire forest and set the preferred DC. If no preferred
+    # DC was set, use the same that dclocator is already connected
+    if ( $PreferredDC )
+    {
+        try
+        {
+            Set-AdServerSettings -ViewEntireForest $true -PreferredServer $PreferredDC -ErrorAction Stop
+        }
+        catch
+        {
+            # if no valid DC is used break and clean up sessions
+            Write-PSFMessage -Level Output -Message "Error: DC was not found. Please run the function again providing a valid Domain Controller FQDN. For example: 'DC01.contoso.com'"
+            if ( $Destination.IsPresent )
+            {
+                Disconnect-ExchangeOnline -Confirm:$false -ErrorAction SilentlyContinue
+            }
+            Get-PSSession | Remove-PSSession
+            Remove-Variable * -ErrorAction SilentlyContinue
+            Break
+        }
+    }
+    else
+    {
+        $PreferredDC = $env:LogOnServer.Replace("\\","")
+    }
 
     # region target function
     if ( $Destination.IsPresent ) { Update-Target }
 
     # region source function
     if ( $Source.IsPresent ) { Update-Source }
-
 
 }

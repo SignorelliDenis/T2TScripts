@@ -36,10 +36,13 @@ The function is divided in two patameter sets: *Destination* or *Source*. You ca
 | UserListToImport             | Destination | Custom path to import the UserListToImport.csv. If no value is defined the function will try to get it from the Desktop. | Optional |
 | MigratedUsersOutputPath      | Destination | Custom output path to export the MigratedUsers.csv. If no value is defined the function will export in the Desktop. | Optional |
 | Source                       | Source      | Switch to update the objects in the source environment. | Required |
-| MigratedUsers                | Source      | Custom path to import the MigratedUsers.csv. If no value is defined the function will try to get it from the Desktop. | Required |
+| SnapshotToXML                | Source      | Switch to dump RemoteMailbox attributes and export to an XML file before the conversion from RemoteMailbox to MailUser. | Optional |
+| SnapshotPath                 | Source      | Set the snapshot folder path. E.g.: C:\Temp\Export. If this param is not defined and -SnapshotToXML is used, the XML files will be saved on desktop. | Required |
 | UsePrimarySMTPAsTargetAddress| Source      | Switch to indicate that targetAddress (ExternalEmailAddress) will be the PrimarySMTPAddress. If not used, the default value is the MOERA domain | Optional |
+| MigratedUsers                | Source      | Custom path to import the MigratedUsers.csv. If no value is defined the function will try to get it from the Desktop. | Required |
 | LocalMachineIsNotExchange    | Both        | Switch to be used when the function is executed from a non-Exchange Server machine. | Optional |
 | ExchangeHostname             | Both        | Exchange server hostname that the function will connect to. | Optional |
+| PreferredDC                  | Both        | Domain Controller FQDN. Use this parameter to avoid replication issues in environments with too many DCs or to avoid multiple domains issues. | Optional |
 |||||
 
 

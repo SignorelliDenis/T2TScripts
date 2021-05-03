@@ -35,6 +35,7 @@ The **Import-T2TAttributes** is the second function that should be used in the c
 | ContactListToImport                     | Custom output path to import the ContactListToImport.csv. if no value is defined the function will try to get it from the Desktop. | Optional |
 | LocalMachineIsNotExchange               | Switch to be used when the function is executed from a non-Exchange Server machine. | Optional |
 | ExchangeHostname                        | Exchange server hostname that the function will connect to. | Required¹ |
+| PreferredDC                             | Domain Controller FQDN. Use this parameter to avoid replication issues in environments with too many DCs or to avoid multiple domains issues. | Optional |
 ||||
 
 ¹ *Required only if `-LocalMachineIsNotExchange` is used.*

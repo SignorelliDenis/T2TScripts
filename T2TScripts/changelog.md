@@ -1,9 +1,14 @@
 ﻿# Changelog
 
+## 2.0.2 (2021-05-03)
+- New: [[Update-Source] Save a "snapshot" of RemoteMailbox properties before convert to MEU](https://github.com/SignorelliDenis/T2TScripts/issues/46)
+- Fix: [[Update-Source] ExchangeGuid and ArchiveGuid is not being re-added](https://github.com/SignorelliDenis/T2TScripts/issues/45)
+- Fix: [Change not propagated across domain controller](https://github.com/SignorelliDenis/T2TScripts/issues/44)
+- Fix: [User not found in multiple domains scenario](https://github.com/SignorelliDenis/T2TScripts/issues/43)
+
 ## 2.0.1 (2021-04-25)
 - Fix: [[Update-Target] Cannot convert the "" value of type "System.String" to type "System.Collections.ArrayList"](https://github.com/SignorelliDenis/T2TScripts/issues/41)
 - Update: [Update-T2TPostMigration] Documentation Improvement
-
 
 ## 2.0.0 (2021-04-20)
 - New: [Function to handle the post-migration called Update-T2TPostMigration](/T2TScripts/functions/Update-T2TPostMigration.md)

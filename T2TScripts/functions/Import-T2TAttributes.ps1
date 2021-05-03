@@ -43,6 +43,10 @@
         Mandatory parameter if the switch -LocalMachineIsNotExchange was used.
         Used to inform the Exchange Server FQDN that the script will connect.
 
+    .PARAMETER PreferredDC
+        Preferred domain controller to connect with. Consider using this parameter
+        to avoid replication issues in environments with too many domain controllers.
+
     .EXAMPLE
         PS C:\> Import-T2TAttributes -UPNSuffix "fabrikam.com" -ResetPassword -FilePath "C:\temp\UserListToImport.csv"
         The function will import all users from the file "C:\temp\UserListToImport.csv", create the new MailUsers
@@ -56,7 +60,7 @@
 
     .NOTES
         Title: Import-T2TAttributes.ps1
-        Version: 2.0.1
+        Version: 2.0.2
         Date: 2021.01.03
         Author: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
         Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
@@ -113,13 +117,17 @@
         [string]$ContactListToImport,
 
         [Parameter(ParameterSetName="RemoteExchange",Mandatory=$false,
-        HelpMessage=" SwitchParameter to indicate that the
+        HelpMessage="SwitchParameter to indicate that the
         machine running the function is not an Exchange Server")]
         [switch]$LocalMachineIsNotExchange,
         
         [Parameter(ParameterSetName="RemoteExchange",Mandatory=$true,
         HelpMessage="Enter the remote exchange hostname")]
-        [string]$ExchangeHostname
+        [string]$ExchangeHostname,
+
+        [Parameter(Mandatory=$false,
+        HelpMessage="Enter the preferred domain controller FQDN to connect with")]
+        [string]$PreferredDC
     )
 
     Set-PSFConfig -FullName PSFramework.Logging.FileSystem.ModernLog -Value $True
@@ -128,7 +136,6 @@
     # region local variables
     if ( $Password ) { $pwstr = $Password }
     else { $pwstr = "?r4mdon-_p@ss0rd!" }
-
     if ( $ResetPassword.IsPresent ) { [bool]$resetpwrd = $True }
     else { [bool]$resetpwrd = $False }
 
@@ -166,6 +173,27 @@
         if ( $ServicesToConnect.Count ) { Connect-OnlineServices -Services $ServicesToConnect }
     }
 
+    # view entire forest and set the preferred DC. If no preferred
+    # DC was set, use the same that dclocator is already connected
+    if ( $PreferredDC )
+    {
+        try
+        {
+            Set-AdServerSettings -ViewEntireForest $true -PreferredServer $PreferredDC -ErrorAction Stop
+        }
+        catch
+        {
+            # if no valid DC is used break and clean up sessions
+            Write-PSFMessage -Level Output -Message "Error: DC was not found. Please run the function again providing a valid Domain Controller FQDN. For example: 'DC01.contoso.com'"
+            Get-PSSession | Remove-PSSession
+            Remove-Variable * -ErrorAction SilentlyContinue
+            Break
+        }
+    }
+    else
+    {
+        $PreferredDC = $env:LogOnServer.Replace("\\","")
+    }
 
     for ( $i=0; $i -lt $pwstr.Length; $i++ )  { $pw.AppendChar($pwstr[$i]) }
 
@@ -214,11 +242,11 @@
         if ( $LocalMachineIsNotExchange.IsPresent -and $null -eq $LocalAD )
         {
             
-            Set-RemoteADUser -Identity $user.SamAccountName -Replace @{ msExchELCMailboxFlags = $user.ELCValue }
+            Set-RemoteADUser -Identity $user.SamAccountName -Server $PreferredDC -Replace @{ msExchELCMailboxFlags = $user.ELCValue }
                 
         } else {
 
-            Set-ADUser -Identity $user.SamAccountName -Replace @{ msExchELCMailboxFlags=$user.ELCValue }
+            Set-ADUser -Identity $user.SamAccountName -Server $PreferredDC -Replace @{ msExchELCMailboxFlags = $user.ELCValue }
 
         }
 
@@ -248,11 +276,11 @@
                 if ( $LocalMachineIsNotExchange.IsPresent -and $null -eq $LocalAD )
                 {
                     
-                    Set-RemoteADUser -Identity $user.SamAccountName -Replace @{ msExchSafeSendersHash = $BytelistSafeSenderArray }
+                    Set-RemoteADUser -Identity $user.SamAccountName -Server $PreferredDC -Replace @{ msExchSafeSendersHash = $BytelistSafeSenderArray }
 
                 } else {
 
-                    Set-ADUser -Identity $user.SamAccountName -Replace @{ msExchSafeSendersHash = $BytelistSafeSenderArray }
+                    Set-ADUser -Identity $user.SamAccountName -Server $PreferredDC -Replace @{ msExchSafeSendersHash = $BytelistSafeSenderArray }
 
                 }
             
@@ -274,11 +302,11 @@
                 if ( $LocalMachineIsNotExchange.IsPresent -and $null -eq $LocalAD )
                 {
                     
-                    Set-RemoteADUser -Identity $user.SamAccountName -Replace @{ msExchSafeRecipientsHash = $BytelistSafeRecipientArray }
+                    Set-RemoteADUser -Identity $user.SamAccountName -Server $PreferredDC -Replace @{ msExchSafeRecipientsHash = $BytelistSafeRecipientArray }
 
                 } else {
 
-                    Set-ADUser -Identity $user.SamAccountName -Replace @{ msExchSafeRecipientsHash = $BytelistSafeRecipientArray }
+                    Set-ADUser -Identity $user.SamAccountName -Server $PreferredDC -Replace @{ msExchSafeRecipientsHash = $BytelistSafeRecipientArray }
 
                 }
         
@@ -300,11 +328,11 @@
                 if ( $LocalMachineIsNotExchange.IsPresent -and $null -eq $LocalAD )
                 {
                     
-                    Set-RemoteADUser -Identity $user.SamAccountName -Replace @{ msExchBlockedSendersHash = $BytelistBlockedSenderArray }
+                    Set-RemoteADUser -Identity $user.SamAccountName -Server $PreferredDC -Replace @{ msExchBlockedSendersHash = $BytelistBlockedSenderArray }
 
                 } else {
 
-                    Set-ADUser -Identity $user.SamAccountName -Replace @{ msExchBlockedSendersHash = $BytelistBlockedSenderArray }
+                    Set-ADUser -Identity $user.SamAccountName -Server $PreferredDC -Replace @{ msExchBlockedSendersHash = $BytelistBlockedSenderArray }
 
                 }
             }
@@ -321,6 +349,8 @@
 
     Write-PSFMessage -Level Output -Message "The import is completed. Please confirm that all users are correctly created before enable the Azure AD Sync Cycle."
     Write-PSFMessage -Level Output -Message "You can re-enable Azure AD Connect using the following cmdlet: 'Set-ADSyncScheduler -SyncCycleEnabled 1'"
+    
+    # region clean up variables and sessions
     Get-PSSession | Remove-PSSession
     Remove-Variable * -ErrorAction SilentlyContinue
 

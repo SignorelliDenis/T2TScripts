@@ -28,10 +28,6 @@
         level, if yes each mailbox will be check if there is an Auto-Expanding archive mailbox
         This check might increase the script duration. You can opt-out using this switch
 
-    .PARAMETER FolderPath
-        Optional parameter used to inform which path will be used to save the
-        CSV. If no path is chosen, the script will save on the Desktop path.
-
     .PARAMETER LocalMachineIsNotExchange
         Optional parameter used to inform that you are running the script from a
         non-Exchange Server machine. This parameter will require the -ExchangeHostname.
@@ -52,6 +48,14 @@
         Switch to get values from Manager attribute. Be sure to
         scope users and managers if this switch will be used.
 
+    .PARAMETER PreferredDC
+        Preferred domain controller to connect with. Consider using this parameter
+        to avoid replication issues in environments with too many domain controllers.
+
+    .PARAMETER FolderPath
+        Optional parameter used to inform which path will be used to save the
+        CSV. If no path is chosen, the script will save on the Desktop path.
+
     .EXAMPLE
         PS C:\> Export-T2TAttributes -CustomAttributeNumber 10 -CustomAttributeValue "T2T" -DomainMappingCSV sourcetargetmap.csv -FolderPath C:\LoggingPath
         The function will export all users matching the value "T2T" on the CustomAttribute 10, and based on all the users found, we will
@@ -65,7 +69,7 @@
 
     .NOTES
         Title: Export-T2TAttributes.ps1
-        Version: 2.0.1
+        Version: 2.0.2
         Date: 2021.02.04
         Authors: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
         Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
@@ -133,6 +137,10 @@
         [string]$ExchangeHostname,
 
         [Parameter(Mandatory=$false,
+        HelpMessage="Enter the preferred domain controller FQDN to connect with")]
+        [string]$PreferredDC,
+
+        [Parameter(Mandatory=$false,
         HelpMessage="Enter the file path used to save the
         function output. Default value is the Desktop path")]
         [string]$FolderPath
@@ -179,6 +187,29 @@
         # Connect to services if ServicesToConnect is not empty
         if ( $ServicesToConnect.Count ) { Connect-OnlineServices -AdminUPN $AdminUPN -Services $ServicesToConnect }
     
+    }
+
+    # view entire forest and set the preferred DC. If no preferred
+    # DC was set, use the same that dclocator is already connected
+    if ( $PreferredDC )
+    {
+        try
+        {
+            Set-AdServerSettings -ViewEntireForest $true -PreferredServer $PreferredDC -ErrorAction Stop
+        }
+        catch
+        {
+            # if no valid DC is used break and clean up sessions
+            Write-PSFMessage -Level Output -Message "Error: DC was not found. Please run the function again providing a valid Domain Controller FQDN. For example: 'DC01.contoso.com'"
+            Disconnect-ExchangeOnline -Confirm:$false -ErrorAction SilentlyContinue
+            Get-PSSession | Remove-PSSession
+            Remove-Variable * -ErrorAction SilentlyContinue
+            Break
+        }
+    }
+    else
+    {
+        $PreferredDC = $env:LogOnServer.Replace("\\","")
     }
     
     # Dump contacts. TO DO: Run this function in parallel. Job is
@@ -272,7 +303,7 @@
         if ( $BypassAutoExpandingArchiveCheck.IsPresent ) {
         
             # Save necessary properties from EXO object to variable avoiding AUX check
-            Write-PSFMessage -Level Output -Message "Bypassing MailboxLocation check for Auto-Expanding archive"
+            Write-PSFMessage -Level Output -Message "Bypassing $($i.Alias) MailboxLocation check for Auto-Expanding archive"
 
         } else {
 
@@ -388,11 +419,11 @@
         if ( $LocalMachineIsNotExchange.IsPresent -and $LocalAD -eq '' )
         {
 
-            $Junk = Get-RemoteADUser -Identity $i.SamAccountName -Properties *
+            $Junk = Get-RemoteADUser -Identity $i.SamAccountName -Server $PreferredDC -Properties *
 
         } else {
 
-            $Junk = Get-ADUser -Identity $i.SamAccountName -Properties *
+            $Junk = Get-ADUser -Identity $i.SamAccountName -Server $PreferredDC -Properties *
 
         }
 
@@ -453,7 +484,7 @@
 
     }
 
-    # region clean up variables and sessions
+    # region export CSV, clean up variables and sessions
     $outArray | Export-CSV $outfile -notypeinformation
     Disconnect-ExchangeOnline -Confirm:$false -InformationAction Ignore -ErrorAction SilentlyContinue
     Get-PSSession | Remove-PSSession
