@@ -26,7 +26,7 @@
 	# Modules that must be imported into the global environment prior to importing
 	# this module
 	RequiredModules = @(
-		@{ ModuleName='PSFramework'; ModuleVersion='1.6.201' }
+		@{ ModuleName='PSFramework'; ModuleVersion='1.5.172' }
 		@{ ModuleName='ExchangeOnlineManagement'; ModuleVersion='2.0.4' }
 	)
 	
