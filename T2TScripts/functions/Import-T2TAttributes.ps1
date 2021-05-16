@@ -22,7 +22,7 @@
         name, Canonical name, Distinguished name (DN) or GUID. If not defined, the user object will
         be created on Users container.
 
-    .PARAMETER OUContact
+    .PARAMETER OUContacts
         Optional parameter if you want to create Mail Contacts objects in a specific OU. Valid values
         are name, Canonical name, Distinguished name (DN) or GUID. If not defined, the user object will
         be created on Users container.
@@ -104,7 +104,7 @@
         [Parameter(Mandatory=$false,
         HelpMessage="Enter the organization unit that mail objects will be created.
         The input is accepted as Name, Canonical name, Distinguished name (DN) or GUID")]
-        [string]$OUContact,
+        [string]$OUContacts,
         
         [Parameter(Mandatory=$false,
         HelpMessage="Enter a custom import path for the csv. if no value is defined

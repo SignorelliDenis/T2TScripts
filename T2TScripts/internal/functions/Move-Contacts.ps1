@@ -17,7 +17,7 @@
     PS C:\> Move-Contacts -Sync Export
     The cmdlet above perform an export of mail contacts filtered by the custom attribute chosen.
     #>
-
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "")]
     [CmdletBinding()]
     param (
         [ValidateSet('Export','Import')]
@@ -131,11 +131,11 @@
 
                 # If OU was passed through param, honor it.
                 # Otherwise create the MEU without OU specification
-                if ( $OUContact )
+                if ( $OUContacts )
                 {
                     $tmpContact = New-MailContact -ExternalEmailAddress $i.ExternalEmailAddress -PrimarySmtpAddress `
                     $i.PrimarySMTPAddress -FirstName $i.FirstName -LastName $i.LastName -Alias $i.alias -Name `
-                    $i.Name -DisplayName $i.DisplayName -OrganizationalUnit $OUContact
+                    $i.Name -DisplayName $i.DisplayName -OrganizationalUnit $OUContacts
 
                 } else {
 

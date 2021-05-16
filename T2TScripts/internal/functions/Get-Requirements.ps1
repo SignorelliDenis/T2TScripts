@@ -13,7 +13,7 @@
     PS C:\> Get-Requirements -Requirements PSFramework, EXO
     Checks if PSFramework and EXO v2 modure is installed. If not, we install it.
     #>
-
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "")]
     [CmdletBinding()]
     param (
         [ValidateSet('AADConnect')]
