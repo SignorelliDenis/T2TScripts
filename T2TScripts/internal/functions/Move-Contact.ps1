@@ -18,6 +18,7 @@
     The cmdlet above perform an export of mail contacts filtered by the custom attribute chosen.
     #>
 
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
     [CmdletBinding()]
     param (
         [ValidateSet('Export','Import')]
