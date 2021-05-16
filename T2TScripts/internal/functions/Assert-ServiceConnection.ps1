@@ -13,6 +13,7 @@
     PS C:\> Assert-ServiceConnection -Services ExchangeLocal, AD
     Checks current connection status for Exchange Onprem in local machine and Active Directory.
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidGlobalVars", "")]
     [CmdletBinding()]
     param (
         [ValidateSet('EXO', 'SCC', 'MicrosoftTeams', 'MSOnline', 'AzureAD', 'AzureADPreview', 'Azure', 'ExchangeLocal', 'ExchangeRemote', 'AD')]

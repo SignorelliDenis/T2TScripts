@@ -76,7 +76,7 @@
                     Import-PSSession $exOnPremSession -AllowClobber -DisableNameChecking | Out-Null
                     Write-PSFMessage -Level Output -Message "Connected to Exchange Onprem remotely."
                  }
-                catch {}
+                catch { Write-PSFMessage -Level Output -Message "Error: The function could not connect on remote Exchange" }
             } -EnableException $true -PSCmdlet $PSCmdlet
         }
 

@@ -98,6 +98,7 @@
     # not supported under any Microsoft standard support program or service #
     #########################################################################
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidGlobalVars", "")]
     [CmdletBinding(SupportsShouldProcess = $True, ConfirmImpact = 'Low')]
     [CmdletBinding(DefaultParameterSetName="Default")]
     Param(

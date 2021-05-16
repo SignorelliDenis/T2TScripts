@@ -89,6 +89,7 @@
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "")]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidGlobalVars", "")]
     [CmdletBinding(DefaultParameterSetName="Default")]
     Param(
         [Parameter(Mandatory=$False,
