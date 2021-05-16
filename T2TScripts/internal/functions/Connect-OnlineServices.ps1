@@ -64,7 +64,7 @@
                     Add-PSSnapin Microsoft.Exchange.Management.PowerShell.SnapIn
                     Write-PSFMessage -Level Output -Message "Connected to Exchange Onprem locally."
                 }
-                catch {}
+                catch { Write-PSFMessage -Level Output -Message "Error: The function could not connect on local Exchange" }
             } -EnableException $true -PSCmdlet $PSCmdlet
         }
 

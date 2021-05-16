@@ -80,7 +80,7 @@
     #########################################################################
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "")]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingPlaintextForPassword", "")]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingUsernameAndPasswordParams", "")]
     [CmdletBinding(DefaultParameterSetName="Default")]
     Param(
         [Parameter(Mandatory=$true,

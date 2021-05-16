@@ -265,13 +265,13 @@
         $object | Add-Member -type NoteProperty -name CustomAttributeValue -value $CustomAttributeValue
         
         # We must resolve the manager's CN to alias
-        if ( $IncludeManager.IsPresent -and $user.Manager -ne $Null ) {
+        if ( $Null -ne $user.Manager -and $IncludeManager.IsPresent ) {
 
             $Manager = ( Get-Recipient $user.Manager ).Alias
             $object | Add-Member -type NoteProperty -name Manager -value $Manager
 
         }
-        if ( $IncludeManager.IsPresent -and $user.Manager -eq $Null ) {
+        if ( $Null -eq $user.Manager -and $IncludeManager.IsPresent ) {
 
             $object | Add-Member -type NoteProperty -name Manager -value $Null
 

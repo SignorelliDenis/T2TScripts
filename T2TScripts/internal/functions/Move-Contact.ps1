@@ -14,7 +14,7 @@
     user must pass through param the CSV to import the mail contacts.
 
     .EXAMPLE
-    PS C:\> Move-Contact -Sync Export
+    PS C:\> Move-Contacts -Sync Export
     The cmdlet above perform an export of mail contacts filtered by the custom attribute chosen.
     #>
 
@@ -66,13 +66,14 @@
                 $object | Add-Member -type NoteProperty -name ExternalEmailAddress -value $j
 
                 # Get manager property and resolve CN to alias
-                if ( $IncludeManager.IsPresent -and $user.Manager -ne $Null ) {
+                if ( $Null -ne $user.Manager -and $IncludeManager.IsPresent )
+                {
 
                     $Manager = ( Get-Recipient $user.Manager ).Alias
                     $object | Add-Member -type NoteProperty -name Manager -value $Manager
 
                 }
-                if ( $IncludeManager.IsPresent -and $user.Manager -eq $Null ) {
+                if ( $Null -eq $user.Manager -and $IncludeManager.IsPresent ) {
 
                     $object | Add-Member -type NoteProperty -name Manager -value $Null
 

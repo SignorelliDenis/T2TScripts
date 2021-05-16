@@ -29,7 +29,7 @@
     
     # Loop until all move requests from the MigratedUsers.csv
     # are Completed, CompletedWithWarning or Failed
-    while ( $BreakLoop -ne $Null ) {
+    while ( $Null -ne $BreakLoop ) {
 
         foreach ( $i in $MEU ) {
 
