@@ -48,12 +48,12 @@
         to avoid replication issues in environments with too many domain controllers.
 
     .EXAMPLE
-        PS C:\> Import-T2TAttributes -UPNSuffix "fabrikam.com" -ResetPassword -FilePath "C:\temp\UserListToImport.csv"
+        PS C:\> Import-T2TAttributes -UPNSuffix "fabrikam.com" -ResetPassword
         The function will import all users from the file "C:\temp\UserListToImport.csv", create the new MailUsers
         with the new UPNSuffix of "fabrikam.com", and enable the check mark to "Reset the password on next logon".
 
     .EXAMPLE
-        PS C:\> Import-T2TAttributes -UPNSuffix "fabrikam.com" -ResetPassword -FilePath "C:\temp\UserListToImport.csv" -LocalMachineIsNotExchange -ExchangeHostname "ExServer2"
+        PS C:\> Import-T2TAttributes -UPNSuffix "fabrikam.com" -LocalMachineIsNotExchange -ExchangeHostname "ExServer2"
         The function will connect to the onprem Exchange Server "ExServer2" and import all users
         from the file "C:\temp\UserListToImport.csv", create the new MailUsers with the new UPNSuffix
         of "fabrikam.com", and enable the check mark to "Reset the password on next logon".
@@ -346,7 +346,7 @@
     if ( $ContactListToImportCheck -eq 1 ) { Move-Contact -Sync Import }
 
     # Import Manager value if the CSV contains the manager header
-    $IncludeManager = $ImportUserList[0].psobject.Properties | Where { $_.Name -eq "Manager" }
+    $IncludeManager = $ImportUserList[0].psobject.Properties | Where-Object { $_.Name -eq "Manager" }
     if ( $IncludeManager ) { Import-Manager -ObjType MEU }
 
     Write-PSFMessage -Level Output -Message "The import is completed. Please confirm that all users are correctly created before enable the Azure AD Sync Cycle."

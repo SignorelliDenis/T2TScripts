@@ -63,18 +63,26 @@
         Preferred domain controller to connect with. Consider using this parameter
         to avoid replication issues in environments with too many domain controllers.
 
+    .PARAMETER Confirm
+        If this switch is enabled, you will be prompted for confirmation
+        before executing any operations that change state.
+
+    .PARAMETER WhatIf
+        If this switch is enabled, no actions are performed but informational messages
+        will be displayed that explain what would happen if the command were to run.
+
     .EXAMPLE
         PS C:\> Update-T2TPostMigration -Destination -EXOAdmin admin@contoso.com
         Running from an Exchange Server in the destionaron environment.
 
     .EXAMPLE
-        PS C:\> Update-T2TPostMigration -Source -EXOAdmin admin@contoso.com -SnapshotToXML -SnapshotPath "C:\Snapshot\" -LocalMachineIsNotExchange -ExchangeHostname "Exchange02" -PreferredDC "DC02"
+        PS C:\> Update-T2TPostMigration -Source -AdminUPN admin@contoso.com -SnapshotToXML -SnapshotPath "C:\Snapshot\" -LocalMachineIsNotExchange -ExchangeHostname "Exchange02" -PreferredDC "DC02"
         The function will connect to the onprem Exchange Server "ExchangeServer02" and the Domain Controller "DC02". Then every remote
         mailboxes present in MigratedUsers.csv with "Completed" value as MoveRequestStatus will be converted to MEU with the new destination
         ExternalEmailAddress. Besides, for each converted MEU, an XML will be created including all attributes values before the convertion.
 
     .EXAMPLE
-        PS C:\> Update-T2TPostMigration -Source -EXOAdmin admin@contoso.com -KeepOldPrimarySMTPAddress
+        PS C:\> Update-T2TPostMigration -Source -AdminUPN admin@contoso.com -KeepOldPrimarySMTPAddress
         The function will connect to the locally Exchange Server. Then every remote mailboxes present in MigratedUsers.csv
         with "Completed" value as MoveRequestStatus will be converted to MEU with the new destination ExternalEmailAddress.
         Besides, the old primary SMTP address will be kept and the MEU will not be updated by the EmailAddressPolicy.

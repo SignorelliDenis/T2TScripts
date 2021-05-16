@@ -162,7 +162,7 @@
             }
 
             # Import Manager value if the CSV contains the manager header
-            $IncludeManager = $ImportContactList[0].psobject.Properties | Where { $_.Name -eq "Manager" }
+            $IncludeManager = $ImportContactList[0].psobject.Properties | Where-Object { $_.Name -eq "Manager" }
             if ( $IncludeManager ) { Import-Manager -ObjType Contact }
 
         }

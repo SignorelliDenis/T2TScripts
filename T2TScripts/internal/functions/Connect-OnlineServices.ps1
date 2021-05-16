@@ -22,7 +22,7 @@
     If this switch is enabled, no actions are performed but informational messages will be displayed that explain what would happen if the command were to run.
    
     .EXAMPLE
-    PS C:\> Connect-OnlineServices -EXO
+    PS C:\> Connect-OnlineServices -Services EXO
     Connects to Exchange Online.
     
     #>
