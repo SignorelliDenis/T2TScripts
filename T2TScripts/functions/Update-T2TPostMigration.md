@@ -79,21 +79,21 @@ PS C:\> Update-T2TPostMigration -Destination -EXOAdmin admin@contoso.com -LocalM
 
 ## -Source
 
-- When the function is called using the '-Source' parameter, it will search by the MigratedUsers.csv on the desktop or you can manually indicate the CSV path.
+- When the function is called using the `-Source` parameter, it will search by the MigratedUsers.csv on the desktop or you can manually indicate the CSV path.
 
-- The function relies on MigratedUsers.csv to get all users where the MoveRequestStatus is Completed. That's exactly the reason why the MigratedUsers.csv must be imported, because the '-Source' can only convert the RemoteMailbox to MEU and change the ExternalEmailAddress if the move request was successfully concluded and the target objects are addressed by the '-Destination' param.
+- The function relies on MigratedUsers.csv to get all users where the MoveRequestStatus is Completed. That's exactly the reason why the MigratedUsers.csv must be imported, because the `-Source` can only convert the RemoteMailbox to MEU and change the ExternalEmailAddress if the move request was successfully concluded and the target objects are addressed by the `-Destination` param.
 
-- To clarify the use of '-UseMOERATargetAddress' and '-KeepOldPrimarySMTPAddress', consider the following examples:
+- To clarify the use of `-UseMOERATargetAddress` and `-KeepOldPrimarySMTPAddress`, consider the following examples:
 
-	- Using both '-UseMOERATargetAddress' and '-KeepOldPrimarySMTPAddress' object should be like this:
+	- Using both `-UseMOERATargetAddress` and `-KeepOldPrimarySMTPAddress` object should be like this:
 		- PrimarySMTPAddress: bill@source.com
 		- ExternalEmailAddress: bill@destination.mail.onmicrosoft.com
 
-	- Using '-UseMOERATargetAddress' object should be like this:
+	- Using `-UseMOERATargetAddress` object should be like this:
 		- PrimarySMTPAddress: bill@destination.mail.onmicrosoft.com
 		- ExternalEmailAddress: bill@destination.mail.onmicrosoft.com
 
-	- Using '-KeepOldPrimarySMTPAddress' object should be like this:
+	- Using `-KeepOldPrimarySMTPAddress` object should be like this:
 		- PrimarySMTPAddress: bill@source.com
         - ExternalEmailAddress: bill@destination.com
 
