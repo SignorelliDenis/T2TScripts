@@ -131,11 +131,11 @@
 
                 # If OU was passed through param, honor it.
                 # Otherwise create the MEU without OU specification
-                if ( $OUContacts )
+                if ( $OUContact )
                 {
                     $tmpContact = New-MailContact -ExternalEmailAddress $i.ExternalEmailAddress -PrimarySmtpAddress `
                     $i.PrimarySMTPAddress -FirstName $i.FirstName -LastName $i.LastName -Alias $i.alias -Name `
-                    $i.Name -DisplayName $i.DisplayName -OrganizationalUnit $OUContacts
+                    $i.Name -DisplayName $i.DisplayName -OrganizationalUnit $OUContact
 
                 } else {
 

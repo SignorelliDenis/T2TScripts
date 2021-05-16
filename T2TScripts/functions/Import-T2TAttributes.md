@@ -30,7 +30,7 @@ The **Import-T2TAttributes** is the second function that should be used in the c
 | Password                                | Choose a password for all new MEU objects. If no password is chosen, the function will define '?r4mdon-_p@ss0rd!' as password. | Optional |
 | ResetPassword                           | Switch to require password change on next logon. | Optional |
 | OU                                      | Create MEU objects in a specific Organization Unit. Valid values are name, CN, DN or GUID. If not defined, the MEU object will be created on Users container. | Optional |
-| OUContacts                              | Create Mail Contact objects in a specific Organization Unit. Valid values are name, CN, DN or GUID. If not defined, the contacts will be created on Users container. | Optional |
+| OUContact                               | Create Mail Contact objects in a specific Organization Unit. Valid values are name, CN, DN or GUID. If not defined, the contacts will be created on Users container. | Optional |
 | UserListToImport                        | Custom output path to import the UserListToImport.csv. if no value is defined the function will try to get it from the Desktop. | Optional |
 | ContactListToImport                     | Custom output path to import the ContactListToImport.csv. if no value is defined the function will try to get it from the Desktop. | Optional |
 | LocalMachineIsNotExchange               | Switch to be used when the function is executed from a non-Exchange Server machine. | Optional |
