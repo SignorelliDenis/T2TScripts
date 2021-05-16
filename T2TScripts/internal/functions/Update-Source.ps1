@@ -15,7 +15,8 @@
         PS C:\> Update-Source
         The following example run this function.
     #>
-
+    [CmdletBinding(SupportsShouldProcess = $True, ConfirmImpact = 'Low')]
+    
     # region local variables
     $MigratedUsersImportCheck = Get-CSVStatus -UsersMigrated
     if ( $MigratedUsersImportCheck -eq 0 ) { Break }

@@ -1,4 +1,4 @@
-﻿Function Move-Contacts {
+﻿Function Move-Contact {
     <#
     .SYNOPSIS
     Function to handle export and import of mail enable contacts
@@ -14,10 +14,10 @@
     user must pass through param the CSV to import the mail contacts.
 
     .EXAMPLE
-    PS C:\> Move-Contacts -Sync Export
+    PS C:\> Move-Contact -Sync Export
     The cmdlet above perform an export of mail contacts filtered by the custom attribute chosen.
     #>
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "")]
+
     [CmdletBinding()]
     param (
         [ValidateSet('Export','Import')]

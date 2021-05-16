@@ -214,7 +214,7 @@
     
     # Dump contacts. TO DO: Run this function in parallel. Job is
     # not an option as this function relies on global variables
-    if ( $IncludeContacts.IsPresent ) { Move-Contacts -Sync Export }
+    if ( $IncludeContacts.IsPresent ) { Move-Contact -Sync Export }
 
     # Save all properties from MEU object to variable
     $RemoteMailboxes = Get-RemoteMailbox -resultsize unlimited | Where-Object {$_.$CustomAttribute -like $CustomAttributeValue}

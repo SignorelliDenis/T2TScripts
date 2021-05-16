@@ -155,7 +155,7 @@
     
     $ContactListToImportCheck = Get-CSVStatus -Contact
     
-    $AADCStopped = Get-Requirements -Requirements AADConnect
+    $AADCStopped = Get-Requirement -Requirements AADConnect
     if ( $AADCStopped -eq 0 ) { Break }
 
     #Region connections
@@ -341,7 +341,7 @@
     }
 
     # Import Mail Contacts
-    if ( $ContactListToImportCheck -eq 1 ) { Move-Contacts -Sync Import }
+    if ( $ContactListToImportCheck -eq 1 ) { Move-Contact -Sync Import }
 
     # Import Manager value if the CSV contains the manager header
     $IncludeManager = $ImportUserList[0].psobject.Properties | Where { $_.Name -eq "Manager" }
