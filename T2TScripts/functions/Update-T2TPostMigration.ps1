@@ -173,7 +173,7 @@
 
     # region global variables
     if ( $MigratedUsers ) { $Global:MigratedUsers | Out-Null }
-    if ( $MigratedUsersOutputPath ) { $Global:FolderPath | Out-Null}
+    if ( $MigratedUsersOutputPath ) { $Global:FolderPath | Out-Null }
     if ( $SnapshotToXML ) { $Global:SnapshotToXML | Out-Null }
     if ( $SnapshotPath ) { $Global:SnapshotPath | Out-Null }
     if ( $UseMOERATargetAddress ) { $Global:UseMOERATargetAddress | Out-Null }
