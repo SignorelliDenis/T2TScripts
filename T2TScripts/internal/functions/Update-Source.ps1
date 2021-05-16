@@ -15,7 +15,7 @@
         PS C:\> Update-Source
         The following example run this function.
     #>
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "", Scope="Function")]
     
     # region local variables
     $MigratedUsersImportCheck = Get-CSVStatus -UsersMigrated
