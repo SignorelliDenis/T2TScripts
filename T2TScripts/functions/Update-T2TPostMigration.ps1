@@ -1,7 +1,7 @@
 ﻿Function Update-T2TPostMigration {
     <#
     .SYNOPSIS
-        Function developed to update objects once post-moverequest.
+        Function developed to update objects post-moverequest.
 
     .DESCRIPTION
         The Update-T2TPostMigration function is intended to update all necessary attributes
@@ -24,6 +24,16 @@
 
     .PARAMETER Source
         Required switch parameter to update the objects in the source environment.
+
+    .PARAMETER UseMOERATargetAddress
+        Switch param to indicate that ExternalEmailAddress will be the
+        destination MOERA (destination.mail.onmicrosoft.com) address.
+        If not used, the default value is the target PrimarySMTPAddress
+
+    .PARAMETER KeepOldPrimarySMTPAddress
+        Switch to indicate that PrimarySMTPAddress will be kept as the
+        source domain value. If not used, the primary address will be the
+        same as the ExternalEmailAddress value pointing to destination.
 
     .PARAMETER SnapshotToXML
         Switch to dump RemoteMailbox attributes and export to an XML
@@ -55,18 +65,23 @@
 
     .EXAMPLE
         PS C:\> Update-T2TPostMigration -Destination -EXOAdmin admin@contoso.com
-        The function will export all users matching the value "T2T" on the CustomAttribute 10, and based on all the users found, we will
-        mapping source and target domains according to the CSV provided. All changes and CSV files will be generated in "C:\LoggingPath" folder.
+        Running from an Exchange Server in the destionaron environment.
 
     .EXAMPLE
-        PS C:\> Update-T2TPostMigration -Source -EXOAdmin admin@contoso.com -UsePrimarySMTPAsTargetAddress
-        The function will connect to the onprem Exchange Server "ExServer1" and export all users matching the value
-        "T2T" on the CustomAttribute 10, and based on all the users found, we will mapping source and target domains
-        according to the CSV provided. All changes and CSV files will be generated in "C:\LoggingPath" folder.
+        PS C:\> Update-T2TPostMigration -Source -EXOAdmin admin@contoso.com -SnapshotToXML -SnapshotPath "C:\Snapshot\" -LocalMachineIsNotExchange -ExchangeHostname "Exchange02" -PreferredDC "DC02"
+        The function will connect to the onprem Exchange Server "ExchangeServer02" and the Domain Controller "DC02". Then every remote
+        mailboxes present in MigratedUsers.csv with "Completed" value as MoveRequestStatus will be converted to MEU with the new destination
+        ExternalEmailAddress. Besides, for each converted MEU, an XML will be created including all attributes values before the convertion.
+
+    .EXAMPLE
+        PS C:\> Update-T2TPostMigration -Source -EXOAdmin admin@contoso.com -KeepOldPrimarySMTPAddress
+        The function will connect to the locally Exchange Server. Then every remote mailboxes present in MigratedUsers.csv
+        with "Completed" value as MoveRequestStatus will be converted to MEU with the new destination ExternalEmailAddress.
+        Besides, the old primary SMTP address will be kept and the MEU will not be updated by the EmailAddressPolicy.
 
     .NOTES
         Title: Update-T2TPostMigration.ps1
-        Version: 2.0.2
+        Version: 2.0.3
         Date: 2021.04.21
         Author: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
 
@@ -91,6 +106,11 @@
         HelpMessage="Switch Parameter to indicate the destination tenant to connect")]
         [switch]$Destination,
 
+        [Parameter(ParameterSetName="Source",Mandatory=$true,
+        HelpMessage="SwitchParameter to indicate that the
+        machine running the function is not an Exchange Server")]
+        [switch]$Source,
+
         [Parameter(ParameterSetName="Destination",Mandatory=$true,
         HelpMessage="Enter the user admin to connect to Exchange Online")]
         [string]$AdminUPN,
@@ -105,15 +125,17 @@
         If no value is defined, default value will be the Desktop path")]
         [string]$MigratedUsersOutputPath,
 
-        [Parameter(ParameterSetName="Source",Mandatory=$true,
-        HelpMessage="SwitchParameter to indicate that the
-        machine running the function is not an Exchange Server")]
-        [switch]$Source,
+        [Parameter(ParameterSetName="Source",Mandatory=$false,
+        HelpMessage="Switch to indicate that ExternalEmailAddress will be
+        the destination MOERA (destination.mail.onmicrosoft.com) address.
+        If not used, the default value is the target PrimarySMTPAddress")]
+        [switch]$UseMOERATargetAddress,
 
         [Parameter(ParameterSetName="Source",Mandatory=$false,
-        HelpMessage="Switch to indicate if the targetAddress (ExternalEmailAddress) will
-        be the PrimarySMTPAddress. If not used, the default value is the MOERA domain")]
-        [switch]$UsePrimarySMTPAsTargetAddress,
+        HelpMessage="Switch to indicate that PrimarySMTPAddress will be kept
+        as the source domain value. If not used, the primary address will be
+        the same as the ExternalEmailAddress value pointing to destination")]
+        [switch]$KeepOldPrimarySMTPAddress,
 
         [Parameter(ParameterSetName="Source",Mandatory=$false,
         HelpMessage="Switch to Dump RemoteMailbox attributes and export to an XML file")]
@@ -154,7 +176,8 @@
     if ( $MigratedUsersOutputPath ) { $Global:FolderPath | Out-Null}
     if ( $SnapshotToXML ) { $Global:SnapshotToXML | Out-Null }
     if ( $SnapshotPath ) { $Global:SnapshotPath | Out-Null }
-    if ( $UsePrimarySMTPAsTargetAddress ) { $Global:UsePrimarySMTPAsTargetAddress | Out-Null }
+    if ( $UseMOERATargetAddress ) { $Global:UseMOERATargetAddress | Out-Null }
+    if ( $KeepOldPrimarySMTPAddress ) { $Global:KeepOldPrimarySMTPAddress | Out-Null }
     if ( $LocalMachineIsNotExchange ) { $Global:LocalMachineIsNotExchange | Out-Null }
     if ( $PreferredDC ) { $Global:PreferredDC | Out-Null }
 
@@ -209,7 +232,8 @@
         }
         catch
         {
-            # if no valid DC is used break and clean up sessions
+            # if no valid DC is used, break and clean up sessions. This will
+            # avoid EXO throttling limit with appended sessions down the road
             Write-PSFMessage -Level Output -Message "Error: DC was not found. Please run the function again providing a valid Domain Controller FQDN. For example: 'DC01.contoso.com'"
             if ( $Destination.IsPresent )
             {
@@ -225,10 +249,10 @@
         $PreferredDC = $env:LogOnServer.Replace("\\","")
     }
 
-    # region target function
+    # region call target internal function
     if ( $Destination.IsPresent ) { Update-Target }
 
-    # region source function
+    # region call source internal function
     if ( $Source.IsPresent ) { Update-Source }
 
 }

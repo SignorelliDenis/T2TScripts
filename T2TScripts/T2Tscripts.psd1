@@ -3,7 +3,7 @@
 	RootModule = 'T2Tscripts.psm1'
 	
 	# Version number of this module.
-	ModuleVersion = '2.0.2'
+	ModuleVersion = '2.0.3'
 	
 	# ID used to uniquely identify this module
 	GUID = '2725e92d-30e7-475f-b4d7-edd47e81f9b3'
@@ -26,8 +26,8 @@
 	# Modules that must be imported into the global environment prior to importing
 	# this module
 	RequiredModules = @(
-		@{ ModuleName='PSFramework'; ModuleVersion='1.5.172' }
-		@{ ModuleName='ExchangeOnlineManagement'; ModuleVersion='2.0.4' }
+		@{ ModuleName='PSFramework'; ModuleVersion='1.6.201' }
+		@{ ModuleName='ExchangeOnlineManagement'; ModuleVersion='2.0.5' }
 	)
 	
 	# Assemblies that must be loaded prior to importing this module

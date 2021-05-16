@@ -56,7 +56,7 @@
                 
                     # We must resolve the Alias because ExternalEmailAddress isn't a valid
                     # identity. We also need resolve the PrimarySMTPAddress cause it might
-                    # be used in Update-Source if UsePrimarySMTPAsTargetAddress is present.
+                    # be used in Update-Source if "-UseMOERATargetAddress" is not present.
                     try
                     {
                         $user = Get-MailUser -identity $i -ErrorAction Stop

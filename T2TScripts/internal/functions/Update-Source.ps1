@@ -90,15 +90,33 @@
                 {
                     Write-PSFMessage  -Level Output -Message "RemoteMailbox $($i.PrimarySMTPAddress) successfully converted to MailUser."
 
-                    # if -UsePrimarySMTPAsTargetAddress is preset,
-                    # honor it, otherwise set MOERA as targetAddress
-                    if ( $UsePrimarySMTPAsTargetAddress.IsPresent )
+                    # if both -UseMOERATargetAddress and -KeepOldPrimarySMTPAddress are present, object should be like this:
+                    # PrimarySMTPAddress: bill@source.com
+                    # ExternalEmailAddress: bill@destination.mail.onmicrosoft.com
+                    if ( $UseMOERATargetAddress.IsPresent -and $KeepOldPrimarySMTPAddress.IsPresent )
                     {
-                        Enable-MailUser -Identity $i.Alias -ExternalEmailAddress $i.PrimarySMTPAddress | Out-Null
+                        Enable-MailUser -Identity $i.Alias -ExternalEmailAddress $i.ExternalEmailAddress -PrimarySMTPAddress $user.PrimarySmtpAddress | Out-Null
                     }
-                    else
+                    # if -UseMOERATargetAddress is preset, object should be like this:
+                    # PrimarySMTPAddress: bill@destination.mail.onmicrosoft.com
+                    # ExternalEmailAddress: bill@destination.mail.onmicrosoft.com
+                    elseif ( $UseMOERATargetAddress.IsPresent )
                     {
                         Enable-MailUser -Identity $i.Alias -ExternalEmailAddress $i.ExternalEmailAddress | Out-Null
+                    }
+                    # if -KeepOldPrimarySMTPAddress is preset, object should be like this:
+                    # PrimarySMTPAddress: bill@source.com
+                    # ExternalEmailAddress: bill@destination.com
+                    elseif ( $KeepOldPrimarySMTPAddress.IsPresent )
+                    {
+                        Enable-MailUser -Identity $i.Alias -ExternalEmailAddress $i.PrimarySMTPAddress -PrimarySMTPAddress $user.PrimarySmtpAddress | Out-Null
+                    }
+                    # everything else should be like this:
+                    # PrimarySMTPAddress: bill@destination.com
+                    # ExternalEmailAddress: bill@destination.com
+                    else
+                    {
+                        Enable-MailUser -Identity $i.Alias -ExternalEmailAddress $i.PrimarySMTPAddress | Out-Null
                     }
 
                     # convert legacyDN to X500 and set proxyAddresses
@@ -118,8 +136,15 @@
                             $Replace.Add( $element, $aduser.$element )
                         }
                     }
-
-                    if ( $Replace ) { Set-ADUser -Identity $i.Alias -Replace $Replace }
+                    # replace only if there is a Custom Attribute being used
+                    if ( $Replace.Count -gt 0 -and $LocalMachineIsNotExchange.IsPresent -and $LocalAD -eq '' )
+                    {
+                        Set-RemoteADUser -Identity $i.Alias -Server $PreferredDC -Replace $Replace
+                    }
+                    elseif ( $Replace.Count -gt 0 )
+                    {
+                        Set-ADUser -Identity $i.Alias -Server $PreferredDC -Replace $Replace
+                    }
                 }
             }
         }

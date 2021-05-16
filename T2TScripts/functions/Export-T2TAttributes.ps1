@@ -69,7 +69,7 @@
 
     .NOTES
         Title: Export-T2TAttributes.ps1
-        Version: 2.0.2
+        Version: 2.0.3
         Date: 2021.02.04
         Authors: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
         Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
