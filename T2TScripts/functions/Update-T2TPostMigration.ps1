@@ -259,9 +259,9 @@
     }
 
     # region call target internal function
-    if ( $Destination.IsPresent ) { Update-Target }
+    if ( $Destination.IsPresent ) { Convert-Target }
 
     # region call source internal function
-    if ( $Source.IsPresent ) { Update-Source }
+    if ( $Source.IsPresent ) { Convert-Source }
 
 }

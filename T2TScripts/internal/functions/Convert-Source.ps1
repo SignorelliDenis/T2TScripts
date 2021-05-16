@@ -1,4 +1,4 @@
-﻿Function Update-Source {
+﻿Function Convert-Source {
     <#
     .SYNOPSIS
         Function to convert RemoteMailbox to MailUser
@@ -12,10 +12,9 @@
         Exchange attributes will be deleted so the function needs to re-assign.
 
     .EXAMPLE
-        PS C:\> Update-Source
+        PS C:\> Convert-Source
         The following example run this function.
     #>
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "", Scope="Function")]
     
     # region local variables
     $MigratedUsersImportCheck = Get-CSVStatus -UsersMigrated
