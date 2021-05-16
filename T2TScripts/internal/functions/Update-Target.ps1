@@ -12,7 +12,7 @@
         PS C:\> Update-Target
         The following example run this function.
     #>
-    [CmdletBinding(SupportsShouldProcess = $True, ConfirmImpact = 'Low')]
+    [CmdletBinding(SupportsShouldProcess = $true)]
 
     # region import CSV
     $UserListToImportCheck = Get-CSVStatus -User

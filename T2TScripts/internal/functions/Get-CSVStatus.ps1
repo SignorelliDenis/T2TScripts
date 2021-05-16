@@ -24,6 +24,7 @@
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidGlobalVars", "")]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseOutputTypeCorrectly", "")]
     [CmdletBinding()]
     param (
         [Parameter(Mandatory=$false)]
