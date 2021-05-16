@@ -12,7 +12,7 @@
         PS C:\> Update-Target
         The following example run this function.
     #>
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
 
     # region import CSV
     $UserListToImportCheck = Get-CSVStatus -User
