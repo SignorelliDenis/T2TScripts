@@ -27,7 +27,7 @@
 	# this module
 	RequiredModules = @(
 		@{ ModuleName='PSFramework'; ModuleVersion='1.6.201' }
-		@{ ModuleName='ExchangeOnlineManagement'; ModuleVersion='2.0.5' }
+		@{ ModuleName='ExchangeOnlineManagement'; ModuleVersion='2.0.4' }
 	)
 	
 	# Assemblies that must be loaded prior to importing this module
