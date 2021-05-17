@@ -1,7 +1,7 @@
-﻿Function Update-Target {
+﻿Function Convert-Target {
     <#
     .SYNOPSIS
-        Function to update the targetAddress and
+        Function to convert the targetAddress and
         object type from MailUser to RemoteMailbox
 
     .DESCRIPTION
@@ -9,7 +9,7 @@
         function through the parameter -Destination
 
     .EXAMPLE
-        PS C:\> Update-Target
+        PS C:\> Convert-Target
         The following example run this function.
     #>
 
@@ -28,7 +28,7 @@
     
     # Loop until all move requests from the MigratedUsers.csv
     # are Completed, CompletedWithWarning or Failed
-    while ( $BreakLoop -ne $Null ) {
+    while ( $BreakLoop.Count -gt 0 ) {
 
         foreach ( $i in $MEU ) {
 
@@ -56,7 +56,7 @@
                 
                     # We must resolve the Alias because ExternalEmailAddress isn't a valid
                     # identity. We also need resolve the PrimarySMTPAddress cause it might
-                    # be used in Update-Source if UsePrimarySMTPAsTargetAddress is present.
+                    # be used in Convert-Source if "-UseMOERATargetAddress" is not present.
                     try
                     {
                         $user = Get-MailUser -identity $i -ErrorAction Stop

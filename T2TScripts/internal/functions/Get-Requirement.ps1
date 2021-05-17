@@ -1,4 +1,4 @@
-﻿Function Get-Requirements {
+﻿Function Get-Requirement {
     <#
     .SYNOPSIS
     Checks requirements
@@ -10,7 +10,7 @@
     Lists the available Services requirements to be checked. Currently Available is 'AADConnect'.
     
     .EXAMPLE
-    PS C:\> Get-Requirements -Requirements PSFramework, EXO
+    PS C:\> Get-Requirement -Requirements PSFramework, EXO
     Checks if PSFramework and EXO v2 modure is installed. If not, we install it.
     #>
 

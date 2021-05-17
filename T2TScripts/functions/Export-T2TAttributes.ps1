@@ -69,7 +69,7 @@
 
     .NOTES
         Title: Export-T2TAttributes.ps1
-        Version: 2.0.2
+        Version: 2.0.3
         Date: 2021.02.04
         Authors: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
         Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
@@ -89,6 +89,7 @@
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "")]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidGlobalVars", "")]
     [CmdletBinding(DefaultParameterSetName="Default")]
     Param(
         [Parameter(Mandatory=$False,
@@ -214,7 +215,7 @@
     
     # Dump contacts. TO DO: Run this function in parallel. Job is
     # not an option as this function relies on global variables
-    if ( $IncludeContacts.IsPresent ) { Move-Contacts -Sync Export }
+    if ( $IncludeContacts.IsPresent ) { Move-Contact -Sync Export }
 
     # Save all properties from MEU object to variable
     $RemoteMailboxes = Get-RemoteMailbox -resultsize unlimited | Where-Object {$_.$CustomAttribute -like $CustomAttributeValue}
@@ -265,13 +266,13 @@
         $object | Add-Member -type NoteProperty -name CustomAttributeValue -value $CustomAttributeValue
         
         # We must resolve the manager's CN to alias
-        if ( $IncludeManager.IsPresent -and $user.Manager -ne $Null ) {
+        if ( $Null -ne $user.Manager -and $IncludeManager.IsPresent ) {
 
             $Manager = ( Get-Recipient $user.Manager ).Alias
             $object | Add-Member -type NoteProperty -name Manager -value $Manager
 
         }
-        if ( $IncludeManager.IsPresent -and $user.Manager -eq $Null ) {
+        if ( $Null -eq $user.Manager -and $IncludeManager.IsPresent ) {
 
             $object | Add-Member -type NoteProperty -name Manager -value $Null
 

@@ -1,4 +1,4 @@
-﻿Function Move-Contacts {
+﻿Function Move-Contact {
     <#
     .SYNOPSIS
     Function to handle export and import of mail enable contacts
@@ -18,6 +18,7 @@
     The cmdlet above perform an export of mail contacts filtered by the custom attribute chosen.
     #>
 
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
     [CmdletBinding()]
     param (
         [ValidateSet('Export','Import')]
@@ -66,13 +67,14 @@
                 $object | Add-Member -type NoteProperty -name ExternalEmailAddress -value $j
 
                 # Get manager property and resolve CN to alias
-                if ( $IncludeManager.IsPresent -and $user.Manager -ne $Null ) {
+                if ( $Null -ne $user.Manager -and $IncludeManager.IsPresent )
+                {
 
                     $Manager = ( Get-Recipient $user.Manager ).Alias
                     $object | Add-Member -type NoteProperty -name Manager -value $Manager
 
                 }
-                if ( $IncludeManager.IsPresent -and $user.Manager -eq $Null ) {
+                if ( $Null -eq $user.Manager -and $IncludeManager.IsPresent ) {
 
                     $object | Add-Member -type NoteProperty -name Manager -value $Null
 
@@ -161,7 +163,7 @@
             }
 
             # Import Manager value if the CSV contains the manager header
-            $IncludeManager = $ImportContactList[0].psobject.Properties | Where { $_.Name -eq "Manager" }
+            $IncludeManager = $ImportContactList[0].psobject.Properties | Where-Object { $_.Name -eq "Manager" }
             if ( $IncludeManager ) { Import-Manager -ObjType Contact }
 
         }

@@ -22,10 +22,11 @@
     If this switch is enabled, no actions are performed but informational messages will be displayed that explain what would happen if the command were to run.
    
     .EXAMPLE
-    PS C:\> Connect-OnlineServices -EXO
+    PS C:\> Connect-OnlineServices -Services EXO
     Connects to Exchange Online.
     
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "")]
     [CmdletBinding(SupportsShouldProcess = $True, ConfirmImpact = 'Low')]
     param(
@@ -64,7 +65,7 @@
                     Add-PSSnapin Microsoft.Exchange.Management.PowerShell.SnapIn
                     Write-PSFMessage -Level Output -Message "Connected to Exchange Onprem locally."
                 }
-                catch {}
+                catch { Write-PSFMessage -Level Output -Message "Error: The function could not connect on local Exchange" }
             } -EnableException $true -PSCmdlet $PSCmdlet
         }
 
@@ -76,7 +77,7 @@
                     Import-PSSession $exOnPremSession -AllowClobber -DisableNameChecking | Out-Null
                     Write-PSFMessage -Level Output -Message "Connected to Exchange Onprem remotely."
                  }
-                catch {}
+                catch { Write-PSFMessage -Level Output -Message "Error: The function could not connect on remote Exchange" }
             } -EnableException $true -PSCmdlet $PSCmdlet
         }
 

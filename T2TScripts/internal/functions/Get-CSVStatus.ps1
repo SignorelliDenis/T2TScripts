@@ -23,6 +23,9 @@
         Import the CSV mapping file and provide a return to the main function if the file was successfully imported.
     #>
 
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidGlobalVars", "")]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseOutputTypeCorrectly", "")]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
     [CmdletBinding()]
     param (
         [Parameter(Mandatory=$false)]

@@ -1,5 +1,11 @@
 ﻿# Changelog
 
+## 2.0.3 (2021-05-16)
+- New: [[Update-T2TPostMigration] Add a new param called -KeepPrimarySMTPAddress](https://github.com/SignorelliDenis/T2TScripts/issues/49)
+- New: [[Update-T2TPostMigration] Add a new param called -UseMOERATargetAddress](https://github.com/SignorelliDenis/T2TScripts/issues/51)
+- Fix: [[Update-Source] Missing $PreferredDC on Set-ADUser cmdlet](https://github.com/SignorelliDenis/T2TScripts/issues/48)
+- Fix: [[Update-Source] Set-ADUser : Cannot validate argument on parameter 'Replace'. The argument is null, empty, or an element of the argument collection contains a null value](https://github.com/SignorelliDenis/T2TScripts/issues/50)
+
 ## 2.0.2 (2021-05-03)
 - New: [[Update-Source] Save a "snapshot" of RemoteMailbox properties before convert to MEU](https://github.com/SignorelliDenis/T2TScripts/issues/46)
 - Fix: [[Update-Source] ExchangeGuid and ArchiveGuid is not being re-added](https://github.com/SignorelliDenis/T2TScripts/issues/45)
