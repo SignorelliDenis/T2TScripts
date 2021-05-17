@@ -27,7 +27,7 @@ Basically we have four issues in the post-migration: wrong ExternalEmailAddress 
 
 ## Parameters
 
-The function is divided in two patameter sets: *Destination* or *Source*. You cannot mix Destination and Source parameters. Refer to the following table to parameter description:
+The function is divided in two patameter sets: **Destination** or **Source**. You cannot mix Destination and Source parameters. Refer to the following table to parameter description:
 
 | Parameter | Use with source or destination | Description | Required or Optional
 |----------------------------- |-------------|-------------------------|---------------|
@@ -49,7 +49,7 @@ The function is divided in two patameter sets: *Destination* or *Source*. You ca
 
 ## -Destination
 
-- When the function is called using the -Destination parameter, you must provide the UserListToImport.csv in the desktop path or manually indicate the CSV path.
+- When the function is called using the -Destination parameter, you must provide the *UserListToImport.csv* in the desktop path or manually indicate the CSV path.
 
 - The function relies on the CSV to get the move request status of each user. Thus, doesn't matter if you have old migration baches, the function will filter to get the status only from the UserListToImport.csv users. Besides, the function will not delete the migration batch once it's finished.
 
@@ -61,6 +61,7 @@ The function is divided in two patameter sets: *Destination* or *Source*. You ca
 	- IsAlreadyRemoteMailbox: The user is already a RemoveMailbox, thus probably it has been already migrated.
 
 **Flowchart**
+
 The following flowchart describes how the function acts when using `-Destination`:
 
 ![Update-T2TPostMigration-Destination](https://user-images.githubusercontent.com/43185536/115460309-67468b00-a228-11eb-84c5-f5e7fab63eb6.png)
@@ -109,6 +110,7 @@ PS C:\> Update-T2TPostMigration -Destination -EXOAdmin admin@contoso.com -LocalM
 
 
 **Flowchart**
+
 The following flowchart describes how the function acts when using `-Source`:
 
 ![Update-T2TPostMigration-Source](https://user-images.githubusercontent.com/43185536/115555908-593c4d00-a2b0-11eb-9189-faa8a6619610.png)

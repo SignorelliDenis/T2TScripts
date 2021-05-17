@@ -28,7 +28,7 @@
     
     # Loop until all move requests from the MigratedUsers.csv
     # are Completed, CompletedWithWarning or Failed
-    while ( $Null -ne $BreakLoop ) {
+    while ( $BreakLoop.Count -gt 0 ) {
 
         foreach ( $i in $MEU ) {
 
