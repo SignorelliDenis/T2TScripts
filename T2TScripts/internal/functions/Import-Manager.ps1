@@ -1,4 +1,4 @@
-Function Import-Manager {
+﻿Function Import-Manager {
     <#
     .SYNOPSIS
         Import Manager Attribute

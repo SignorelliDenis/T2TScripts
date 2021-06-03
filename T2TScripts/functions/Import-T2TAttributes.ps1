@@ -19,12 +19,12 @@
 
     .PARAMETER OU
         Optional parameter if you want to create MEU objects in a specific OU. Valid values are
-        name, Canonical name, Distinguished name (DN) or GUID. If not defined, the user object 
+        name, Canonical name, Distinguished name (DN) or GUID. If not defined, the user object
         will be created on Users container.
 
     .PARAMETER OUContacts
         Optional parameter if you want to create Mail Contacts objects in a specific OU.
-        Valid values are name, Canonical name, Distinguished name (DN) or GUID. If not 
+        Valid values are name, Canonical name, Distinguished name (DN) or GUID. If not
         defined, the user object will be created on Users container.
 
     .PARAMETER UserListToImport
@@ -81,7 +81,6 @@
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "")]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidGlobalVars", "")]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingPlainTextForPassword", "")]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingUsernameAndPasswordParams", "")]
     [CmdletBinding(DefaultParameterSetName="Default")]

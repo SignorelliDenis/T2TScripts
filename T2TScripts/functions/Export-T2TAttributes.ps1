@@ -50,7 +50,7 @@
         Home, Pager, Mobile, Fax, IP Phone and Notes.
 
     .PARAMETER IncludeOrganization
-        Switch which indicates that the function must export 
+        Switch which indicates that the function must export
         the Job Title, Department and Company attributes.
 
     .PARAMETER BypassAutoExpandingArchiveCheck

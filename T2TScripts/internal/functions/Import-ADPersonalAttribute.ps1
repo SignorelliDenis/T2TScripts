@@ -1,4 +1,4 @@
-Function Import-ADPersonalAttribute {
+﻿Function Import-ADPersonalAttribute {
     <#
     .SYNOPSIS
     Function to handle the import of many AD attribute

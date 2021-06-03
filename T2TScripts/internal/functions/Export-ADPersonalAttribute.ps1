@@ -1,4 +1,4 @@
-Function Export-ADPersonalAttribute {
+﻿Function Export-ADPersonalAttribute {
     <#
     .SYNOPSIS
     Function to handle the export of a set AD attributes
