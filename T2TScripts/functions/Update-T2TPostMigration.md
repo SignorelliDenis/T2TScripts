@@ -40,7 +40,7 @@ The function is divided in two patameter sets: **Destination** or **Source**. Yo
 | SnapshotPath                 | Source      | Set the snapshot folder path. E.g.: C:\Temp\Export. If this param is not defined and -SnapshotToXML is used, the XML files will be saved on desktop. | Required |
 | UseMOERATargetAddress        | Source      | Switch to indicate that ExternalEmailAddress will be the destination MOERA (destination.mail.onmicrosoft.com) address. If not used, the default value is the target PrimarySMTPAddress. | Optional |
 | KeepOldPrimarySMTPAddress    | Source      | Switch to indicate that PrimarySMTPAddress will be kept as the source domain value. If not used, the primary address will be the same as the ExternalEmailAddress value pointing to destination. | Optional |
-| MigratedUsers                | Source      | Custom path to import the MigratedUsers.csv. If no value is defined the function will try to get it from the Desktop. | Required |
+| MigratedUsers                | Source      | Custom path to import the MigratedUsers.csv. If no value is defined the function will try to get it from the Desktop. | Optional |
 | LocalMachineIsNotExchange    | Both        | Switch to be used when the function is executed from a non-Exchange Server machine. | Optional |
 | ExchangeHostname             | Both        | Exchange server hostname that the function will connect to. | Optional |
 | PreferredDC                  | Both        | Domain Controller FQDN. Use this parameter to avoid replication issues in environments with too many DCs or to avoid multiple domains issues. | Optional |
@@ -70,12 +70,12 @@ The following flowchart describes how the function acts when using `-Destination
 
 Example: Running from an Exchange Server:
 ```Powershell
-PS C:\> Update-T2TPostMigration -Destination -EXOAdmin admin@contoso.com
+PS C:\> Update-T2TPostMigration -Destination -AdminUPN admin@contoso.com
 ```
 
 Example: Running from a non-Exchange Server specifying a domain controller:
 ```Powershell
-PS C:\> Update-T2TPostMigration -Destination -EXOAdmin admin@contoso.com -LocalMachineIsNotExchange -ExchangeHostname "Exch02" -PreferredDC "DC02"
+PS C:\> Update-T2TPostMigration -Destination -AdminUPN admin@contoso.com -LocalMachineIsNotExchange -ExchangeHostname "Exch02" -PreferredDC "DC02.contoso.com"
 ```
 
 ## -Source
@@ -119,10 +119,10 @@ The following flowchart describes how the function acts when using `-Source`:
 
 Example: Running from a non-Exchange Server specifying a domain controller and the folder to save the snapshot files:
 ```Powershell
-PS C:\> Update-T2TPostMigration -Source -EXOAdmin admin@contoso.com -SnapshotToXML -SnapshotPath "C:\Snapshot\" -LocalMachineIsNotExchange -ExchangeHostname "Exchange02" -PreferredDC "DC02"
+PS C:\> Update-T2TPostMigration -Source -SnapshotToXML -SnapshotPath "C:\Snapshot\" -LocalMachineIsNotExchange -ExchangeHostname "Exchange02" -PreferredDC "DC02.contoso.com"
 ```
 
 Example: Running from an Exchange Server and keeping the old primary SMTP address, MEU in this case will not be updated by the EmailAddressPolicy.
 ```Powershell
-PS C:\> Update-T2TPostMigration -Source -EXOAdmin admin@contoso.com -KeepOldPrimarySMTPAddress
+PS C:\> Update-T2TPostMigration -Source -KeepOldPrimarySMTPAddress
 ```
