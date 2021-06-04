@@ -89,7 +89,7 @@
 
     .NOTES
         Title: Update-T2TPostMigration.ps1
-        Version: 2.0.3
+        Version: 2.1.4
         Date: 2021.04.21
         Author: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
 
@@ -182,7 +182,7 @@
 
     # region global variables
     if ( $MigratedUsers ) { $Global:MigratedUsers | Out-Null }
-    if ( $MigratedUsersOutputPath ) { $Global:FolderPath | Out-Null }
+    if ( $MigratedUsersOutputPath ) { $Global:MigratedUsersOutputPath  | Out-Null }
     if ( $SnapshotToXML ) { $Global:SnapshotToXML | Out-Null }
     if ( $SnapshotPath ) { $Global:SnapshotPath | Out-Null }
     if ( $UseMOERATargetAddress ) { $Global:UseMOERATargetAddress | Out-Null }
@@ -202,7 +202,6 @@
     }
     elseif ( $Destination.IsPresent )
     {
-        
         $ServicesToConnect = Assert-ServiceConnection -Services EXO, ExchangeLocal
         # Connect to services if ServicesToConnect is not empty
         if ( $ServicesToConnect.Count )
@@ -212,7 +211,6 @@
     }
     elseif ( $LocalMachineIsNotExchange.IsPresent -and $Source.IsPresent )
     {
-        
         $ServicesToConnect = Assert-ServiceConnection -Services ExchangeRemote, AD
         # Connect to services if ServicesToConnect is not empty
         if ( $ServicesToConnect.Count )
@@ -222,7 +220,6 @@
     }
     elseif ( $Source.IsPresent )
     {
-        
         $ServicesToConnect = Assert-ServiceConnection -Services ExchangeLocal
         # Connect to services if ServicesToConnect is not empty
         if ( $ServicesToConnect.Count )

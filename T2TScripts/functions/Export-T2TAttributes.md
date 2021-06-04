@@ -18,7 +18,7 @@ This is the first function that should be used in the cross-tenant migration pro
     ```
     Note: Any domain which is not included in the CSV domain mapping file will not be converted. Thus, be sure that you are covering all yours accepted domains.
 
-- The function will connect to the Exchange Online using v2 module. If you don't have it installed, this module will install it for you as long as the PC may reach the PowerShell gallery.  
+- The function will connect to the Exchange Online using v2 module. If you don't have it installed, this module will install it for you as long as the PC may reach the PowerShell gallery.
 
 - Depending on the current powershell execution policy state, it could require to be set as Unrestricted.
 
@@ -41,6 +41,10 @@ This is the first function that should be used in the cross-tenant migration pro
 | DomainMappingCSV                        | Enter the CSV path which you mapped the source and target domains. | Required |
 | IncludeContacts                         | Switch to get mail contacts. Mail contact dump also relies on the Custom Attibute filter. | Optional |
 | IncludeSIP                              | Switch to get SIP values from proxyAddresses. If not used the function returns only SMTP and X500. | Optional |
+| IncludeGeneral                          | Switch to dump the following values: description, physicalDeliveryOfficeName, wWWHomePage and url. | Optional |
+| IncludeAddress                          | Switch to get values from Address AD tab. The list of attributes is avaiable in the [Common RemoteMailbox and Contact attributes](https://github.com/SignorelliDenis/T2TScripts/blob/main/T2TScripts/functions/Export-T2TAttributes.md#common-remotemailbox-and-contact-attributes) | Optional |
+| IncludePhones                           | Switch to get all AD phone attributes. The list of attributes is avaiable in the [Common RemoteMailbox and Contact attributes](https://github.com/SignorelliDenis/T2TScripts/blob/main/T2TScripts/functions/Export-T2TAttributes.md#common-remotemailbox-and-contact-attributes) | Optional |
+| IncludeOrganization                     | Switch to get values from the AD Organization tab. The list of attributes is avaiable in the [RemoteMailbox Attributes](https://github.com/SignorelliDenis/T2TScripts/blob/main/T2TScripts/functions/Export-T2TAttributes.md#common-remotemailbox-and-contact-attributes) | Optional |
 | IncludeManager                          | Switch to get values from Manager attribute. Be sure to scope users and managers if this switch will be used. | Optional |
 | BypassAutoExpandingArchiveCheck         | Switch to bypass the check if there are Auto-Expanding¹ archive mailboxes. If not used the function will perform the check and this can increase the duration time. | Optional |
 | LocalMachineIsNotExchange               | Switch to be used when the function is executed from a non-Exchange Server machine. | Optional |
@@ -67,7 +71,7 @@ PS C:\> Export-T2TAttributes -AdminUPN admin@contoso.com -CustomAttributeNumber 
 ```
 
 
-## RemoteMailbox Attributes
+## RemoteMailbox attributes
 
 The **Export-T2TAttributes** will dump to a CSV the following RemoteMailbox attributes:
 
@@ -84,7 +88,6 @@ The **Export-T2TAttributes** will dump to a CSV the following RemoteMailbox attr
 - legacyExchangeDN
 - LitigationHoldEnabled ³
 - MailboxLocations ⁴
-- Manager
 - msExchBlockedSendersHash
 - msExchSafeRecipientsHash
 - msExchSafeSendersHash
@@ -92,7 +95,6 @@ The **Export-T2TAttributes** will dump to a CSV the following RemoteMailbox attr
 - PrimarySMTPAddress
 - SamAccountName
 - SingleItemRecoveryEnabled ³
-
 
 ¹ *The custom attributes number and value that will be dumped is chosen according to the user’s input before running the function*
 
@@ -103,9 +105,9 @@ The **Export-T2TAttributes** will dump to a CSV the following RemoteMailbox attr
 ⁴ *The function does not really dump the MailboxLocations attribute to the CSV but it dumps the Alias from any users that might have an Auto-Expanding archive mailbox to a TXT called AUXUser. Then you can use the AUXUser.txt to start the export PST using Content Search or eDiscovery and manually import these PST in the target tenant.*
 
 
-## Contact Attributes
+## Contact attributes
 
-If IncludeContacts is used The **Export-T2TAttributes** will dump to a CSV the following Contacts attributes:
+If `-IncludeContacts` is used, **Export-T2TAttributes** will dump to a CSV the following contact attributes:
 
 - Alias
 - CustomAttribute ¹
@@ -116,10 +118,60 @@ If IncludeContacts is used The **Export-T2TAttributes** will dump to a CSV the f
 - FirstName
 - LastName
 - legacyExchangeDN
-- Manager
 - Name
 - PrimarySMTPAddress
 
 ¹ *The custom attributes number and value that will be dumped is chosen according to the user’s input before running the function*
 
 ² *The ExternalEmailAddress is defined by the **mail.onmicrosoft.com** [(MOERA)](https://docs.microsoft.com/en-us/troubleshoot/azure/active-directory/proxyaddresses-attribute-populate#terminology) SMTP address found on the source user object proxyAddresses property. The function will convert the MOERA address according to the domain mapping CSV but only to the proxyAddresses property. The ExternalEmailAddress value remains the same.*
+
+
+## Common RemoteMailbox and Contact attributes
+
+The following properties will be dumped for RemoteMailbox and either Contact if `-IncludeContacts` is used:
+
+**Properties dumped using `-IncludeGeneral` parameter:**
+- physicalDeliveryOfficeName
+- wWWHomePage
+- url
+- description
+
+**Properties dumped using `-IncludeAddress` parameter:**
+- streetAddress
+- postOfficeBox
+- l
+- postalCode
+- c
+- co
+- countryCode
+- st
+
+**Properties dumped using `-IncludePhones` parameter:**
+- telephoneNumber
+- otherTelephone
+- homePhone
+- otherHomePhone
+- pager
+- otherPager
+- mobile
+- otherMobile
+- facsimileTelephoneNumber
+- otherFacsimileTelephoneNumber
+- ipPhone
+- otherIpPhone
+- info
+
+**Properties dumped using `-IncludeOrganization` parameter:**
+- title
+- department
+- company
+
+**Properties dumped using `-IncludeManager` parameter:**
+- Manager
+
+
+## Tips
+
+- Once the function is finished, have a look at *UserListToImport.csv* file to be sure that the function exported all necessary attributes.
+
+- AD Property values which contain comma "," will be converted to a sequence of dashes "---" in the CSV. This happens to avoid issues with the CSV delimiter, but these values will be roll-backed to comma "," once they are imported.

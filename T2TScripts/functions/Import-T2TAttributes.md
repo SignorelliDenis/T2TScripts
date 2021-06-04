@@ -7,13 +7,9 @@ The **Import-T2TAttributes** is the second function that should be used in the c
 
 - The function will ask you to stop Azure AD Connect sync cycle before the execution. You can leave the function to stoping it for you as long as you provide the Azure AD Connect machine hostname, or you can stop yourself before the script execution.
 
-- Once the function finishes, you can validate that the MEU objects were successfully created and manually re-enable the Azure AD Connect sync sycle using the following cmdled: `Set-ADSyncScheduler -SyncCycleEnabled 1`
-
-- All MEU objects will be created using the UPN suffix that you passed through `-UPNSuffix` parameter. If you need to create MEUs with different UPN suffix, you should segment the MEU creation based on the UPN suffix, it means run the function for each UPN suffix.
-
 - Depending on the current powershell execution policy state, it could require to be set as Unrestricted.
 
-- You need Active Directory and Exchange Server On-Premises. In other words, the function was not developed to work in Azure AD cloud-only scenarios or with AD On-Premises in hybrid but with no Exchange On-Premises. 
+- You need Active Directory and Exchange Server On-Premises. In other words, the function was not developed to work in Azure AD cloud-only scenarios or with AD On-Premises in hybrid without Exchange On-Premises.
 
 - You can run the functions from an Exchange Server machine or from any other domain-joined machine as long as you set `-LocalMachineIsNotExchange` switch and the `-ExchangeHostname` parameter with Exchange Server hostname.
 
@@ -44,5 +40,18 @@ The **Import-T2TAttributes** is the second function that should be used in the c
 
 Example: Running from an Exchange Server
 ```Powershell
-PS C:\> Import-T2TAttributes -UPNSuffix fabrikam.com -Password "P@$$w04d_Fabr!karn" -ResetPassword -OU "Fabrikam-Users" -OUContacts "Fabrikam-Contacts"
+PS C:\> Import-T2TAttributes -UPNSuffix fabrikam.com -Password "P@$$w04d_Fabr!karn" -ResetPassword -OU "Fabrikam-Users" -OUContacts "Fabrikam-Contacts" -PreferredDC DC01.fabrikam.com
 ```
+
+Example: Running from a non-Exchange Server
+```Powershell
+PS C:\> Import-T2TAttributes -UPNSuffix contoso.com -LocalMachineIsNotExchange -ExchangeHostname Exch01
+```
+
+## Tips
+
+- Run the function from an Exchange Server to get a better performance. If you cannot run from an Exchange Server, run the function from a machine that contains RSAT installed. The funtion can reach around 30% of better performance.
+
+- Once the function is finished, always validate that the MEU objects were successfully created and manually re-enable the Azure AD Connect sync sycle using the following cmdled: `Set-ADSyncScheduler -SyncCycleEnabled 1`
+
+- All MEU objects will be created using the UPN suffix that you passed through `-UPNSuffix` parameter. If you need to create MEUs with different UPN suffix, you should segment the MEU creation based on the UPN suffix, it means that you must run the function for each UPN suffix that you need.

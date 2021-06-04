@@ -1,30 +1,29 @@
 ﻿function Connect-OnlineServices {
     <#
     .SYNOPSIS
-    Connect to Online Services.
+        Connect to Online Services.
 
     .DESCRIPTION
-    Use this function to connect to EXO, Exchange Onprem and Active Directory.
+        Use this function to connect to EXO, Exchange Onprem and Active Directory.
 
     .PARAMETER AdminUPN
-    Passes the administrator's UPN to be used in the authentication prompts.
+        Passes the administrator's UPN to be used in the authentication prompts.
 
     .PARAMETER Services
-    List of the desired services to connect to. Current available services: EXO, ExchangeLocal, ExchangeRemote, AD.
+        List of the desired services to connect to. Current available services: EXO, ExchangeLocal, ExchangeRemote, AD.
 
     .PARAMETER ExchangeHostname
-    Used to inform the Exchange Server FQDN that the script will connect.
+        Used to inform the Exchange Server FQDN that the script will connect.
 
     .PARAMETER Confirm
-    If this switch is enabled, you will be prompted for confirmation before executing any operations that change state.
+        If this switch is enabled, you will be prompted for confirmation before executing any operations that change state.
 
     .PARAMETER WhatIf
-    If this switch is enabled, no actions are performed but informational messages will be displayed that explain what would happen if the command were to run.
+        If this switch is enabled, no actions are performed but informational messages will be displayed that explain what would happen if the command were to run.
    
     .EXAMPLE
-    PS C:\> Connect-OnlineServices -Services EXO
-    Connects to Exchange Online.
-    
+        PS C:\> Connect-OnlineServices -Services EXO
+        Connects to Exchange Online.
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "")]
