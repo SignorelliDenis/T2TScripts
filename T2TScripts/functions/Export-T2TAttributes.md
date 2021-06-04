@@ -44,7 +44,7 @@ This is the first function that should be used in the cross-tenant migration pro
 | IncludeGeneral                          | Switch to dump the following values: description, physicalDeliveryOfficeName, wWWHomePage and url. | Optional |
 | IncludeAddress                          | Switch to get values from Address AD tab. The list of attributes is avaiable in the [Common RemoteMailbox and Contact attributes](https://github.com/SignorelliDenis/T2TScripts/blob/main/T2TScripts/functions/Export-T2TAttributes.md#common-remotemailbox-and-contact-attributes) | Optional |
 | IncludePhones                           | Switch to get all AD phone attributes. The list of attributes is avaiable in the [Common RemoteMailbox and Contact attributes](https://github.com/SignorelliDenis/T2TScripts/blob/main/T2TScripts/functions/Export-T2TAttributes.md#common-remotemailbox-and-contact-attributes) | Optional |
-| IncludeOrganization                     | Switch to get values from the AD Organization tab. The list of attributes is avaiable in the [RemoteMailbox Attributes](https://github.com/SignorelliDenis/T2TScripts/blob/main/T2TScripts/functions/Export-T2TAttributes.md#common-remotemailbox-and-contact-attributes) | Optional |
+| IncludeOrganization                     | Switch to get values from the AD Organization tab. The list of attributes is avaiable in the [Common RemoteMailbox and Contact attributes](https://github.com/SignorelliDenis/T2TScripts/blob/main/T2TScripts/functions/Export-T2TAttributes.md#common-remotemailbox-and-contact-attributes) | Optional |
 | IncludeManager                          | Switch to get values from Manager attribute. Be sure to scope users and managers if this switch will be used. | Optional |
 | BypassAutoExpandingArchiveCheck         | Switch to bypass the check if there are Auto-Expanding¹ archive mailboxes. If not used the function will perform the check and this can increase the duration time. | Optional |
 | LocalMachineIsNotExchange               | Switch to be used when the function is executed from a non-Exchange Server machine. | Optional |
@@ -73,7 +73,7 @@ PS C:\> Export-T2TAttributes -AdminUPN admin@contoso.com -CustomAttributeNumber 
 
 ## RemoteMailbox attributes
 
-The **Export-T2TAttributes** will dump to a CSV the following RemoteMailbox attributes:
+The **Export-T2TAttributes** will dump to a CSV the following RemoteMailbox properties:
 
 - Alias
 - ArchiveGuid
@@ -107,7 +107,7 @@ The **Export-T2TAttributes** will dump to a CSV the following RemoteMailbox attr
 
 ## Contact attributes
 
-If `-IncludeContacts` is used, **Export-T2TAttributes** will dump to a CSV the following contact attributes:
+If `-IncludeContacts` is used, **Export-T2TAttributes** will dump to a CSV the following contact AD properties:
 
 - Alias
 - CustomAttribute ¹
@@ -130,13 +130,13 @@ If `-IncludeContacts` is used, **Export-T2TAttributes** will dump to a CSV the f
 
 The following properties will be dumped for RemoteMailbox and either Contact if `-IncludeContacts` is used:
 
-**Properties dumped using `-IncludeGeneral` parameter:**
+**`-IncludeGeneral` parameter will dump the following AD properties:**
 - physicalDeliveryOfficeName
 - wWWHomePage
 - url
 - description
 
-**Properties dumped using `-IncludeAddress` parameter:**
+**`-IncludeAddress` parameter will dump the following AD properties:**
 - streetAddress
 - postOfficeBox
 - l
@@ -146,7 +146,7 @@ The following properties will be dumped for RemoteMailbox and either Contact if 
 - countryCode
 - st
 
-**Properties dumped using `-IncludePhones` parameter:**
+**`-IncludePhones` parameter will dump the following AD properties:**
 - telephoneNumber
 - otherTelephone
 - homePhone
@@ -161,12 +161,12 @@ The following properties will be dumped for RemoteMailbox and either Contact if 
 - otherIpPhone
 - info
 
-**Properties dumped using `-IncludeOrganization` parameter:**
+**`-IncludeOrganization` parameter will dump the following AD properties:**
 - title
 - department
 - company
 
-**Properties dumped using `-IncludeManager` parameter:**
+**`-IncludeManager` parameter will dump the following AD property:**
 - Manager
 
 

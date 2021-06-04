@@ -1,5 +1,13 @@
 ﻿# Changelog
 
+# 2.1.4 (2021-06-04)
+- New: Implementation of new parameters and properties option to dump
+- Fix: [[Export-T2TAttributes] UserListToImport.csv being exported even if no RemoteMailbox was found](https://github.com/SignorelliDenis/T2TScripts/issues/59)
+- Fix: [[Move-Contact] ContactListToImport.csv being saved even if no contact was found](https://github.com/SignorelliDenis/T2TScripts/issues/58)
+- Fix: [Functions performance improvement v2.1.4](https://github.com/SignorelliDenis/T2TScripts/issues/56)
+- Fix: [[Convert-Source] Exchange can't disable the mail user "contoso.local/Users/User1" because it is on litigation hold](https://github.com/SignorelliDenis/T2TScripts/issues/55)
+- Fix: [[Update-T2TPostMigration] Param -MigratedUsersOutputPath not being honored](https://github.com/SignorelliDenis/T2TScripts/issues/54)
+
 ## 2.0.3 (2021-05-16)
 - New: [[Update-T2TPostMigration] Add a new param called -KeepPrimarySMTPAddress](https://github.com/SignorelliDenis/T2TScripts/issues/49)
 - New: [[Update-T2TPostMigration] Add a new param called -UseMOERATargetAddress](https://github.com/SignorelliDenis/T2TScripts/issues/51)
