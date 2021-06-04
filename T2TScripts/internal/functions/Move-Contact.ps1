@@ -39,7 +39,7 @@
 
 
             # region get Contacts filtering by custom attribute
-            $Contacts = Get-MailContact -resultsize unlimited | Where-Object {$_.$ContactCustomAttribute -like $ContactCustomAttributeValue}
+            $Contacts = (Get-MailContact -ResultSize Unlimited).Where({$_.$CustomAttribute -like $CustomAttributeValue})
             Write-PSFMessage -Level Output -Message "$($Contacts.Count) Mail Contacts with $($ContactCustomAttribute) as $($ContactCustomAttributeValue) were returned"
             $ContactCount = ($Contacts | Measure-Object).count
 
@@ -116,8 +116,11 @@
                 [void]$outArray.Add($object)
             }
 
-            Write-PSFMessage -Level Output -Message "Saving CSV on $($outfile)"
-            $outArray | Export-CSV $outfile -notypeinformation
+            if ($outArray.Count -gt 0)
+            {
+                Write-PSFMessage -Level Output -Message "Saving CSV on $($outfile)"
+                $outArray | Export-CSV $outfile -notypeinformation
+            }
         }
 
         Import {

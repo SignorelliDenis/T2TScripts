@@ -172,6 +172,6 @@ The following properties will be dumped for RemoteMailbox and either Contact if 
 
 ## Tips
 
-- Once the function is finished, have a look at UserListToImport.csv file to be sure that the function exported all necessary attributes.
+- Once the function is finished, have a look at *UserListToImport.csv* file to be sure that the function exported all necessary attributes.
 
 - AD Property values which contain comma "," will be converted to a sequence of dashes "---" in the CSV. This happens to avoid issues with the CSV delimiter, but these values will be roll-backed to comma "," once they are imported.

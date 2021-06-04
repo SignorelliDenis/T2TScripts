@@ -531,19 +531,18 @@
 
     }
 
-    # region export the CSV
-    if ( $AuxMessage )
+    # region export CSV
+    if ($outArray.Count -gt 0)
     {
-        Write-PSFMessage -Level Output -Message "Saving CSV on $($outfile)"
+        Write-PSFMessage -Level Output -Message "Saving CSV on $($outFile)"
+        $outArray | Export-CSV $outFile -NoTypeInformation
+    }
+    if ($AuxMessage)
+    {
         Write-PSFMessage -Level Output -Message "Saving TXT on $($AUXFile)"
     }
-    else
-    {
-        Write-PSFMessage -Level Output -Message "Saving CSV on $($outfile)"
-    }
-
-    # region export CSV, clean up variables and sessions
-    $outArray | Export-CSV $outfile -notypeinformation
+    
+    # region clean up variables and sessions
     Disconnect-ExchangeOnline -Confirm:$false -InformationAction Ignore -ErrorAction SilentlyContinue
     Get-PSSession | Remove-PSSession
     Remove-Variable * -ErrorAction SilentlyContinue
