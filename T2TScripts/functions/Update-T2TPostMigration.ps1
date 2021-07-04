@@ -89,7 +89,7 @@
 
     .NOTES
         Title: Update-T2TPostMigration.ps1
-        Version: 2.1.4
+        Version: 2.1.5
         Date: 2021.04.21
         Author: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
 
@@ -181,48 +181,48 @@
     }
 
     # region global variables
-    if ( $MigratedUsers ) { $Global:MigratedUsers | Out-Null }
-    if ( $MigratedUsersOutputPath ) { $Global:MigratedUsersOutputPath  | Out-Null }
-    if ( $SnapshotToXML ) { $Global:SnapshotToXML | Out-Null }
-    if ( $SnapshotPath ) { $Global:SnapshotPath | Out-Null }
-    if ( $UseMOERATargetAddress ) { $Global:UseMOERATargetAddress | Out-Null }
-    if ( $KeepOldPrimarySMTPAddress ) { $Global:KeepOldPrimarySMTPAddress | Out-Null }
-    if ( $LocalMachineIsNotExchange ) { $Global:LocalMachineIsNotExchange | Out-Null }
-    if ( $PreferredDC ) { $Global:PreferredDC | Out-Null }
+    if ($MigratedUsers) { $Global:MigratedUsers | Out-Null }
+    if ($MigratedUsersOutputPath) { $Global:MigratedUsersOutputPath  | Out-Null }
+    if ($SnapshotToXML) { $Global:SnapshotToXML | Out-Null }
+    if ($SnapshotPath) { $Global:SnapshotPath | Out-Null }
+    if ($UseMOERATargetAddress) { $Global:UseMOERATargetAddress | Out-Null }
+    if ($KeepOldPrimarySMTPAddress) { $Global:KeepOldPrimarySMTPAddress | Out-Null }
+    if ($LocalMachineIsNotExchange) { $Global:LocalMachineIsNotExchange | Out-Null }
+    if ($PreferredDC) { $Global:PreferredDC | Out-Null }
 
     # region connections
-    if ( $LocalMachineIsNotExchange.IsPresent -and $Destination.IsPresent )
+    if ($LocalMachineIsNotExchange.IsPresent -and $Destination.IsPresent)
     {
         $ServicesToConnect = Assert-ServiceConnection -Services EXO, ExchangeRemote
         # Connect to services if ServicesToConnect is not empty
-        if ( $ServicesToConnect.Count )
+        if ($ServicesToConnect.Count)
         {
             Connect-OnlineServices -AdminUPN $AdminUPN -Services $ServicesToConnect -ExchangeHostname $ExchangeHostname
         }
     }
-    elseif ( $Destination.IsPresent )
+    elseif ($Destination.IsPresent)
     {
         $ServicesToConnect = Assert-ServiceConnection -Services EXO, ExchangeLocal
         # Connect to services if ServicesToConnect is not empty
-        if ( $ServicesToConnect.Count )
+        if ($ServicesToConnect.Count)
         {
             Connect-OnlineServices -AdminUPN $AdminUPN -Services $ServicesToConnect
         }
     }
-    elseif ( $LocalMachineIsNotExchange.IsPresent -and $Source.IsPresent )
+    elseif ($LocalMachineIsNotExchange.IsPresent -and $Source.IsPresent)
     {
         $ServicesToConnect = Assert-ServiceConnection -Services ExchangeRemote, AD
         # Connect to services if ServicesToConnect is not empty
-        if ( $ServicesToConnect.Count )
+        if ($ServicesToConnect.Count)
         {
             Connect-OnlineServices -AdminUPN $AdminUPN -Services $ServicesToConnect -ExchangeHostname $ExchangeHostname
         }
     }
-    elseif ( $Source.IsPresent )
+    elseif ($Source.IsPresent)
     {
         $ServicesToConnect = Assert-ServiceConnection -Services ExchangeLocal
         # Connect to services if ServicesToConnect is not empty
-        if ( $ServicesToConnect.Count )
+        if ($ServicesToConnect.Count)
         {
             Connect-OnlineServices -AdminUPN $AdminUPN -Services $ServicesToConnect
         }
@@ -230,7 +230,7 @@
 
     # view entire forest and set the preferred DC. If no preferred
     # DC was set, use the same that dclocator is already connected
-    if ( $PreferredDC )
+    if ($PreferredDC)
     {
         try
         {
@@ -241,7 +241,7 @@
             # if no valid DC is used, break and clean up sessions. This will
             # avoid EXO throttling limit with appended sessions down the road
             Write-PSFMessage -Level Output -Message "Error: DC was not found. Please run the function again providing a valid Domain Controller FQDN. For example: 'DC01.contoso.com'"
-            if ( $Destination.IsPresent )
+            if ($Destination.IsPresent)
             {
                 Disconnect-ExchangeOnline -Confirm:$false -ErrorAction SilentlyContinue
             }
@@ -256,9 +256,15 @@
     }
 
     # region call target internal function
-    if ( $Destination.IsPresent ) { Convert-Target }
+    if ($Destination.IsPresent)
+    {
+        Convert-Target
+    }
 
     # region call source internal function
-    if ( $Source.IsPresent ) { Convert-Source }
+    if ($Source.IsPresent)
+    {
+        Convert-Source
+    }
 
 }

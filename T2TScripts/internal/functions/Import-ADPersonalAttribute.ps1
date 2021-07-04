@@ -40,17 +40,17 @@
         elseif ($user.description)
         {
             $descriptionArr = $user.description.Split(";")
-            [void]$Replace.Add("description", $descriptionArr.Replace("---",","))
+            [void]$Replace.Add("description",$descriptionArr.Replace("---",","))
         }
 
         if ($user.physicalDeliveryOfficeName)
         {
-            [void]$Replace.Add("physicalDeliveryOfficeName", $user.physicalDeliveryOfficeName.Replace("---",","))
+            [void]$Replace.Add("physicalDeliveryOfficeName",$user.physicalDeliveryOfficeName.Replace("---",","))
         }
 
         if ($user.wWWHomePage)
         {
-            [void]$Replace.Add("wWWHomePage", $user.wWWHomePage.Replace("---",","))
+            [void]$Replace.Add("wWWHomePage",$user.wWWHomePage.Replace("---",","))
         }
 
         if ($user.url -and $LocalMachineIsNotExchange.IsPresent -and $Null -eq $LocalAD)
@@ -71,7 +71,7 @@
         elseif ($user.url)
         {
             $urlArr = $user.url.Split(";")
-            [void]$Replace.Add("url", $urlArr.Replace("---",","))
+            [void]$Replace.Add("url",$urlArr.Replace("---",","))
         }
     }
 
@@ -80,37 +80,37 @@
     {
         if ($user.streetAddress)
         {
-            [void]$Replace.Add("streetAddress", $user.streetAddress.Replace("---",","))
+            [void]$Replace.Add("streetAddress",$user.streetAddress.Replace("---",","))
         }
 
         if ($user.l)
         {
-            [void]$Replace.Add("l", $user.l.Replace("---",","))
+            [void]$Replace.Add("l",$user.l.Replace("---",","))
         }
 
         if ($user.st)
         {
-            [void]$Replace.Add("st", $user.st.Replace("---",","))
+            [void]$Replace.Add("st",$user.st.Replace("---",","))
         }
 
         if ($user.postalCode)
         {
-            [void]$Replace.Add("postalCode", $user.postalCode.Replace("---",","))
+            [void]$Replace.Add("postalCode",$user.postalCode.Replace("---",","))
         }
 
         if($user.c)
         {
-            [void]$Replace.Add("c", $user.c)
+            [void]$Replace.Add("c",$user.c)
         }
 
         if ($user.co)
         {
-            [void]$Replace.Add("co", $user.co)
+            [void]$Replace.Add("co",$user.co)
         }
 
         if ($user.countryCode)
         {
-            [void]$Replace.Add("countryCode", $user.countryCode)
+            [void]$Replace.Add("countryCode",$user.countryCode)
         }
 
         if ($user.postOfficeBox -and $LocalMachineIsNotExchange.IsPresent -and $Null -eq $LocalAD)
@@ -131,7 +131,7 @@
         elseif ($user.postOfficeBox)
         {
             $postOfficeBoxArr = $user.postOfficeBox.Split(";")
-            [void]$Replace.Add("postOfficeBox" , $postOfficeBoxArr.Replace("---",","))
+            [void]$Replace.Add("postOfficeBox",$postOfficeBoxArr.Replace("---",","))
         }
     }
 
@@ -140,7 +140,7 @@
     {
         if ($user.telephoneNumber)
         {
-            [void]$Replace.Add("telephoneNumber", $user.telephoneNumber.Replace("---",","))
+            [void]$Replace.Add("telephoneNumber",$user.telephoneNumber.Replace("---",","))
         }
 
         if ($user.otherTelephone -and $LocalMachineIsNotExchange.IsPresent -and $Null -eq $LocalAD)
@@ -161,12 +161,12 @@
         elseif ($user.otherTelephone)
         {
             $otherTelephoneArr = $user.otherTelephone.Split(";")
-            [void]$Replace.Add("otherTelephone", $otherTelephoneArr.Replace("---",","))
+            [void]$Replace.Add("otherTelephone",$otherTelephoneArr.Replace("---",","))
         }
 
         if ($user.homePhone)
         {
-            [void]$Replace.Add("homePhone", $user.homePhone.Replace("---",","))
+            [void]$Replace.Add("homePhone",$user.homePhone.Replace("---",","))
         }
 
         if ($user.otherHomePhone -and $LocalMachineIsNotExchange.IsPresent -and $Null -eq $LocalAD)
@@ -187,12 +187,12 @@
         elseif ($user.otherHomePhone)
         {
             $otherHomePhoneArr = $user.otherHomePhone.Split(";")
-            [void]$Replace.Add("otherHomePhone", $otherHomePhoneArr.Replace("---",","))
+            [void]$Replace.Add("otherHomePhone",$otherHomePhoneArr.Replace("---",","))
         }
 
         if ($user.pager)
         {
-            [void]$Replace.Add("pager", $user.pager.Replace("---",","))
+            [void]$Replace.Add("pager",$user.pager.Replace("---",","))
         }
         
         if ($user.otherPager -and $LocalMachineIsNotExchange.IsPresent -and $Null -eq $LocalAD)
@@ -213,12 +213,12 @@
         elseif ($user.otherPager)
         {
             $otherPagerArr = $user.otherPager.Split(";")
-            [void]$Replace.Add("otherPager", $otherPagerArr.Replace("---",","))
+            [void]$Replace.Add("otherPager",$otherPagerArr.Replace("---",","))
         }
 
         if ($user.mobile)
         {
-            [void]$Replace.Add("mobile", $user.mobile.Replace("---",","))
+            [void]$Replace.Add("mobile",$user.mobile.Replace("---",","))
         }
 
         if ($user.otherMobile -and $LocalMachineIsNotExchange.IsPresent -and $Null -eq $LocalAD)
@@ -239,12 +239,12 @@
         elseif ($user.otherMobile)
         {
             $otherMobileArr = $user.otherMobile.Split(";")
-            [void]$Replace.Add("otherMobile", $otherMobileArr.Replace("---",","))
+            [void]$Replace.Add("otherMobile",$otherMobileArr.Replace("---",","))
         }
 
         if ($user.facsimileTelephoneNumber)
         {
-            [void]$Replace.Add("facsimileTelephoneNumber", $user.facsimileTelephoneNumber.Replace("---",","))
+            [void]$Replace.Add("facsimileTelephoneNumber",$user.facsimileTelephoneNumber.Replace("---",","))
         }
 
         if ($user.otherFacsimileTelephoneNumber -and $LocalMachineIsNotExchange.IsPresent -and $Null -eq $LocalAD)
@@ -265,12 +265,12 @@
         elseif ($user.otherFacsimileTelephoneNumber)
         {
             $otherFacsimileTelephoneNumberArr = $user.otherFacsimileTelephoneNumber.Split(";")
-            [void]$Replace.Add("otherFacsimileTelephoneNumber", $otherFacsimileTelephoneNumberArr.Replace("---",","))
+            [void]$Replace.Add("otherFacsimileTelephoneNumber",$otherFacsimileTelephoneNumberArr.Replace("---",","))
         }
 
         if ($user.ipPhone)
         {
-            [void]$Replace.Add("ipPhone", $user.ipPhone.Replace("---",","))
+            [void]$Replace.Add("ipPhone",$user.ipPhone.Replace("---",","))
         }
 
         if ($user.otherIpPhone -and $LocalMachineIsNotExchange.IsPresent -and $Null -eq $LocalAD)
@@ -291,12 +291,12 @@
         elseif ($user.otherIpPhone)
         {
             $otherIpPhoneArr = $user.otherIpPhone.Split(";")
-            [void]$Replace.Add("otherIpPhone", $otherIpPhoneArr.Replace("---",","))
+            [void]$Replace.Add("otherIpPhone",$otherIpPhoneArr.Replace("---",","))
         }
 
         if ($user.info)
         {
-            [void]$Replace.Add("info", $user.info.Replace("---",","))
+            [void]$Replace.Add("info",$user.info.Replace("---",","))
         }
     }
 
@@ -305,17 +305,96 @@
     {
         if ($user.title)
         {
-            [void]$Replace.Add("title", $user.title.Replace("---",","))
+            [void]$Replace.Add("title",$user.title.Replace("---",","))
         }
 
         if ($user.department)
         {
-            [void]$Replace.Add("department", $user.department.Replace("---",","))
+            [void]$Replace.Add("department",$user.department.Replace("---",","))
         }
 
         if ($user.company)
         {
-            [void]$Replace.Add("company", $user.company.Replace("---",","))
+            [void]$Replace.Add("company",$user.company.Replace("---",","))
+        }
+    }
+
+    # region -IncludeCustomAttributes
+    if ($CheckCustomAttributes)
+    {
+        if ($user.extensionAttribute1)
+        {
+            [void]$Replace.Add("extensionAttribute1",$user.extensionAttribute1.Replace("---",","))
+        }
+
+        if ($user.extensionAttribute2)
+        {
+            [void]$Replace.Add("extensionAttribute2",$user.extensionAttribute2.Replace("---",","))
+        }
+
+        if ($user.extensionAttribute3)
+        {
+            [void]$Replace.Add("extensionAttribute3",$user.extensionAttribute3.Replace("---",","))
+        }
+
+        if ($user.extensionAttribute4)
+        {
+            [void]$Replace.Add("extensionAttribute4",$user.extensionAttribute4.Replace("---",","))
+        }
+
+        if ($user.extensionAttribute5)
+        {
+            [void]$Replace.Add("extensionAttribute5",$user.extensionAttribute5.Replace("---",","))
+        }
+
+        if ($user.extensionAttribute6)
+        {
+            [void]$Replace.Add("extensionAttribute6",$user.extensionAttribute6.Replace("---",","))
+        }
+
+        if ($user.extensionAttribute7)
+        {
+            [void]$Replace.Add("extensionAttribute7",$user.extensionAttribute7.Replace("---",","))
+        }
+
+        if ($user.extensionAttribute8)
+        {
+            [void]$Replace.Add("extensionAttribute8",$user.extensionAttribute8.Replace("---",","))
+        }
+
+        if ($user.extensionAttribute9)
+        {
+            [void]$Replace.Add("extensionAttribute9",$user.extensionAttribute9.Replace("---",","))
+        }
+
+        if ($user.extensionAttribute10)
+        {
+            [void]$Replace.Add("extensionAttribute10",$user.extensionAttribute10.Replace("---",","))
+        }
+
+        if ($user.extensionAttribute11)
+        {
+            [void]$Replace.Add("extensionAttribute11",$user.extensionAttribute11.Replace("---",","))
+        }
+
+        if ($user.extensionAttribute12)
+        {
+            [void]$Replace.Add("extensionAttribute12",$user.extensionAttribute12.Replace("---",","))
+        }
+
+        if ($user.extensionAttribute13)
+        {
+            [void]$Replace.Add("extensionAttribute13",$user.extensionAttribute13.Replace("---",","))
+        }
+
+        if ($user.extensionAttribute14)
+        {
+            [void]$Replace.Add("extensionAttribute14",$user.extensionAttribute14.Replace("---",","))
+        }
+
+        if ($user.extensionAttribute15)
+        {
+            [void]$Replace.Add("extensionAttribute15",$user.extensionAttribute15.Replace("---",","))
         }
     }
 
@@ -330,7 +409,7 @@
             $ManagerResolved = Get-ADUser -Identity $user.Manager -Properties distinguishedName -ErrorAction Stop
             if ($?)
             {
-                [void]$Replace.Add("manager", $ManagerResolved.DistinguishedName)
+                [void]$Replace.Add("manager",$ManagerResolved.DistinguishedName)
             }
         }
         catch

@@ -37,34 +37,32 @@
             $ContactCustomAttribute = $CustomAttribute
             $ContactCustomAttributeValue = $CustomAttributeValue
 
-
             # region get Contacts filtering by custom attribute
             $Contacts = (Get-MailContact -ResultSize Unlimited).Where({$_.$CustomAttribute -like $CustomAttributeValue})
             Write-PSFMessage -Level Output -Message "$($Contacts.Count) Mail Contacts with $($ContactCustomAttribute) as $($ContactCustomAttributeValue) were returned"
             $ContactCount = ($Contacts | Measure-Object).count
 
             # region iterate objects
-            ForEach ( $i in $Contacts )
+            ForEach ($i in $Contacts)
             {
                 $counter++
                 Write-Progress -Activity "Exporting Mail Contacts to CSV" -Status "Working on $($i.DisplayName)" -PercentComplete ($counter * 100 / $ContactCount)
         
                 $user = get-Recipient $i.alias
-                $object = New-Object System.Object
-                $object | Add-Member -type NoteProperty -name PrimarySMTPAddress -value $i.PrimarySMTPAddress
-                $object | Add-Member -type NoteProperty -name alias -value $i.alias
-                $object | Add-Member -type NoteProperty -name FirstName -value $User.FirstName
-                $object | Add-Member -type NoteProperty -name LastName -value $User.LastName
-                $object | Add-Member -type NoteProperty -name DisplayName -value $User.DisplayName
-                $object | Add-Member -type NoteProperty -name Name -value $i.Name
-                $object | Add-Member -type NoteProperty -name legacyExchangeDN -value $i.legacyExchangeDN
-                $object | Add-Member -type NoteProperty -name CustomAttribute -value $ContactCustomAttribute
-                $object | Add-Member -type NoteProperty -name CustomAttributeValue -value $ContactCustomAttributeValue
+                $object = [ordered]@{
+                    PrimarySMTPAddress=$i.PrimarySMTPAddress
+                    alias=$i.alias
+                    FirstName=$User.FirstName
+                    LastName=$User.LastName
+                    DisplayName=$User.DisplayName
+                    Name=$i.Name
+                    legacyExchangeDN=$i.legacyExchangeDN
+                }
 
                 # ExternalEmailAddress should contains "SMTP:" depending on the
                 # deserialization, we just try a replace to avoid that scenario
                 [string]$j = $i.ExternalEmailAddress
-                $object | Add-Member -type NoteProperty -name ExternalEmailAddress -value $j.Replace("SMTP:","")
+                [void]$object.Add("ExternalEmailAddress",$j.Replace("SMTP:",""))
 
                 # Get only non-primary smtp and X500 from proxyAddresses. If we get the primary
                 # the CSV mapping domain logic will break as SMTP should be external for contacts
@@ -94,26 +92,35 @@
                     }
                 }
 
-                $object | Add-Member -type NoteProperty -name EmailAddresses -value $ProxyToString
+                [void]$object.Add("EmailAddresses",$ProxyToString)
 
                 # Connect to AD exported module only if this machine has not AD Module installed and
                 # filtering based on what "Include" was passed to avoid dump too many unnecessary stuff
-                if (($IncludeManager.IsPresent -or $IncludeOrganization.IsPresent -or $IncludeGeneral.IsPresent -or $IncludePhones.IsPresent -or $IncludeAddress.IsPresent) -and $LocalMachineIsNotExchange.IsPresent -and $LocalAD -eq '')
+                if ($LocalMachineIsNotExchange.IsPresent -and $LocalAD -eq '')
                 {
-                    $ADUser = Get-ADObject -Identity $i.DistinguishedName -Server $PreferredDC -Properties physicalDeliveryOfficeName,wWWHomePage,url,Description,streetAddress,postOfficeBox,l,postalCode,c,co,countryCode,st,telephoneNumber,otherTelephone,homePhone,otherHomePhone,pager,otherPager,mobile,otherMobile,facsimileTelephoneNumber,otherFacsimileTelephoneNumber,ipPhone,otherIpPhone,info,title,department,company
-                    #Call function to dump those "-Include"
-                    [void](Export-ADPersonalAttribute)
+                    $ADUser = Get-RemoteADObject -Identity $i.DistinguishedName -Server $PreferredDC -Properties $ADProperties
+                    # dump those "-Include" attributes only if we
+                    # found more stuff than those junk properties
+                    if ($ADProperties.Count -gt 3)
+                    {
+                        [void](Export-ADPersonalAttribute)
+                    }
                 }
-                elseif ($IncludeManager.IsPresent -or $IncludeOrganization.IsPresent -or $IncludeGeneral.IsPresent -or $IncludePhones.IsPresent -or $IncludeAddress.IsPresent)
+                else
                 {
-                    $ADUser = Get-ADObject -Identity $i.DistinguishedName -Server $PreferredDC -Properties physicalDeliveryOfficeName,wWWHomePage,url,Description,streetAddress,postOfficeBox,l,postalCode,c,co,countryCode,st,telephoneNumber,otherTelephone,homePhone,otherHomePhone,pager,otherPager,mobile,otherMobile,facsimileTelephoneNumber,otherFacsimileTelephoneNumber,ipPhone,otherIpPhone,info,title,department,company
-                    #Call function to dump those "-Include"
-                    [void](Export-ADPersonalAttribute)
+                    $ADUser = Get-ADObject -Identity $i.DistinguishedName -Server $PreferredDC -Properties $ADProperties
+                    # dump those "-Include" attributes only if we
+                    # found more stuff than those junk properties
+                    if ($ADProperties.Count -gt 3)
+                    {
+                        [void](Export-ADPersonalAttribute)
+                    }
                 }
                 
-                # Add dumped values to ArrayList
-                # 'til the iterator is finished.
-                [void]$outArray.Add($object)
+                # Create PSObject from hashtable
+                # and add PSObject to ArrayList
+                $outPSObject = New-Object -TypeName PSObject -Property $object
+                [void]$outArray.Add($outPSObject)
             }
 
             if ($outArray.Count -gt 0)
@@ -127,7 +134,7 @@
             # region local variables
             [int]$counter = 0
             $ContactsCount = ($ImportContactList | Measure-Object).count
-            $CheckContactManager = $ImportContactList[0].psobject.Properties | Where-Object { $_.Name -eq "Manager"}
+            $CheckContactManager = ($ImportContactList[0].psobject.Properties).Where({$_.Name -eq "Manager"})
 
             # region iterate contacts. Variable kept as $user cause
             # the Import-ADPersonalAttribute relies on that value
@@ -163,14 +170,11 @@
                 $ProxyArray = @()
                 $ProxyArray = $proxy.Split(",") + $x500
 
-                # Matching the variable's name to the parameter's name
-                $CustomAttributeParam = @{$user.CustomAttribute=$user.CustomAttributeValue}
-
                 # region import old LegacyDN as X500 and CustomAttribute
-                Set-MailContact -Identity $user.Alias -EmailAddresses @{Add=$ProxyArray} @CustomAttributeParam
+                Set-MailContact -Identity $user.Alias -EmailAddresses @{Add=$ProxyArray}
 
                 # region import "-Include" values
-                if ($CheckContactManager -or $CheckGeneral -or $CheckAddress -or $CheckPhones -or $CheckOrganization)
+                if ($CheckContactManager -or $CheckGeneral -or $CheckAddress -or $CheckPhones -or $CheckOrganization -or $CheckCustomAttributes)
                 {
                     [void](Import-ADPersonalAttribute)
                 }

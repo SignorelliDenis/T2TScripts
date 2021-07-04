@@ -33,22 +33,11 @@
                 $counter++
                 Write-Progress -Activity "Importing Manager Attribute" -Status "Working on $($i.DisplayName)" -PercentComplete ($counter * 100 / $ManagerCount)
 
-                if ($i.Manager -and $LocalMachineIsNotExchange.IsPresent -and $LocalAD -eq '')
+                if ($i.Manager)
                 {
                     Try
                     {
-                        Set-RemoteADUser -Identity $i.SamAccountName -Manager $i.Manager -ErrorAction Stop
-                    }
-                    catch
-                    {
-                        Write-PSFMessage -Level Output -Message "Failed to add the user's $($i.DisplayName) manager attribute"
-                    }
-                }
-                elseif ($i.Manager)
-                {
-                    Try
-                    {
-                        Set-ADUser -Identity $i.SamAccountName -Manager $i.Manager -ErrorAction Stop
+                        Set-User -Identity $i.SamAccountName -Manager $i.Manager -ErrorAction Stop
                     }
                     catch
                     {
@@ -58,6 +47,8 @@
             }
         }
 
+        # Contacts case is used only by Import-ToCloud because
+        # Import-ToOnPrem relies on Import-ADPersonalAttribute
         Contact
         {
             Write-PSFMessage -Level Output -Message  "MailContacts - Starting manager attribute import"

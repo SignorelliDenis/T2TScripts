@@ -53,6 +53,10 @@
         Switch which indicates that the function must export
         the Job Title, Department and Company attributes.
 
+    .PARAMETER IncludeCustomAttributes
+        Switch which indicates that the function
+        must export the all custom attributes.
+
     .PARAMETER BypassAutoExpandingArchiveCheck
         The script will check if you have Auto-Expanding archive enable on organization
         level, if yes each mailbox will be check if there is an Auto-Expanding archive mailbox
@@ -87,7 +91,7 @@
 
     .NOTES
         Title: Export-T2TAttributes.ps1
-        Version: 2.1.4
+        Version: 2.1.5
         Date: 2021.02.04
         Authors: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
         Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
@@ -106,8 +110,12 @@
     #########################################################################
     #>
 
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "")]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidGlobalVars", "")]
+    # Bypass PSReviewUnusedParameter as $IncludeManager is reconized as unused
+    # actually it's used but in the Export-ADPersonalAttribute. TODO: Fix this
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter','')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseOutputTypeCorrectly','')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns','')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars','')]
     [CmdletBinding(DefaultParameterSetName="Default")]
     Param(
         [Parameter(Mandatory=$False,
@@ -149,7 +157,8 @@
         [Parameter(Mandatory=$false,
         HelpMessage="SwitchParameter which indicates that the function
         must export all attributes in the Address tab such as: street,
-        P.O. Box, City, State/Province, ZIP Code and Country")]
+        P.O. Box, City, State/Province, ZIP Code and Country
+            ")]
         [switch]$IncludeAddress,
 
         [Parameter(Mandatory=$false,
@@ -162,7 +171,11 @@
         HelpMessage="SwitchParameter which indicates that the function
         must export the Job Title, Department and Company attributes")]
         [switch]$IncludeOrganization,
-        
+
+        [Parameter(Mandatory=$false,
+        HelpMessage="SwitchParameter which indicates that the function
+        must export the Custom Attributes 1-15 that contain any value")]
+        [switch]$IncludeCustomAttributes,
 
         [Parameter(Mandatory=$false,
         HelpMessage="SwitchParameter used to bypass the Auto-Expanding
@@ -192,9 +205,44 @@
     Write-PSFMessage  -Level Output -Message "Starting export script. All logs are being saved in: $((Get-PSFConfig PSFramework.Logging.FileSystem.LogPath).Value)"
 
     # region local variables
-    $outArray = [System.Collections.ArrayList]::new()
     [int]$counter = 0
-    if ( $FolderPath )
+    $outArray = [System.Collections.ArrayList]::new()
+    # we always get these 3 junk properties. The others depends on which include has been passed
+    $ADProperties = [System.Collections.Generic.List[string]]@('msExchSafeSendersHash','msExchSafeRecipientsHash','msExchBlockedSendersHash')
+    if ($IncludeAddress.IsPresent)
+    {
+        $IncludeAddressArr = [System.Collections.Generic.List[string]]@('streetAddress','postOfficeBox','l','postalCode','c','co','countryCode','st')
+        $ADProperties.AddRange($IncludeAddressArr)
+    }
+
+    if ($IncludePhones.IsPresent)
+    {
+        $IncludePhonesArr = [System.Collections.Generic.List[string]]@('telephoneNumber','otherTelephone','homePhone','otherHomePhone','pager',
+            'otherPager','mobile','otherMobile','facsimileTelephoneNumber','otherFacsimileTelephoneNumber','ipPhone','otherIpPhone','info')
+        $ADProperties.AddRange($IncludePhonesArr)
+    }
+
+    if ($IncludeGeneral.IsPresent)
+    {
+        $IncludeGeneralArr = [System.Collections.Generic.List[string]]@('physicalDeliveryOfficeName','wWWHomePage','url','Description')
+        $ADProperties.AddRange($IncludeGeneralArr)
+    }
+
+    if ($IncludeOrganization.IsPresent)
+    {
+        $IncludeOrganizationArr = [System.Collections.Generic.List[string]]@('title','department','company')
+        $ADProperties.AddRange($IncludeOrganizationArr)
+    }
+
+    if ($IncludeCustomAttributes.IsPresent)
+    {
+        $IncludeCustomAttributesArr = [System.Collections.Generic.List[string]]@('extensionAttribute1','extensionAttribute2','extensionAttribute3',
+            'extensionAttribute4','extensionAttribute5','extensionAttribute6','extensionAttribute7','extensionAttribute8','extensionAttribute9',
+            'extensionAttribute10','extensionAttribute11','extensionAttribute12','extensionAttribute13','extensionAttribute14','extensionAttribute15')
+        $ADProperties.AddRange($IncludeCustomAttributesArr)
+    }
+
+    if ($FolderPath)
     {
         $outFile = "$FolderPath\UserListToImport.csv"
         $AUXFile = "$FolderPath\AUXUsers.txt"
@@ -242,6 +290,7 @@
     if ( $PreferredDC )
     {
         try
+
         {
             Set-AdServerSettings -ViewEntireForest $true -PreferredServer $PreferredDC -ErrorAction Stop
         }
@@ -272,7 +321,7 @@
     Write-PSFMessage -Level Output -Message "$($UsersCount) mailboxes with $($CustomAttribute) as $($CustomAttributeValue) were returned"
 
     # dump AUX org status if bypass switch is not present
-    if ( $BypassAutoExpandingArchiveCheck.IsPresent )
+    if ($BypassAutoExpandingArchiveCheck.IsPresent)
     {
         Write-PSFMessage -Level Output -Message "Bypassing Auto-Expand archive check"
     }
@@ -280,7 +329,7 @@
     {
         $OrgAUXStatus = Get-EXOrganizationConfig | Select-Object AutoExpandingArchiveEnabled
 
-        if ( $OrgAUXStatus.AutoExpandingArchiveEnabled -eq '$True' )
+        if ($OrgAUXStatus.AutoExpandingArchiveEnabled -eq '$True')
         {
             Write-PSFMessage -Level Output -Message "Auto-Expand archive is enabled at organization level"
         }
@@ -296,23 +345,23 @@
     ForEach ($i in $RemoteMailboxes)
     {
         $counter++
-        Write-Progress -Activity "Exporting mailbox attributes to CSV" -Status "Working on $($i.DisplayName)" -PercentComplete ( $counter * 100 / $UsersCount )
+        Write-Progress -Activity "Exporting mailbox attributes to CSV" -Status "Working on $($i.DisplayName)" -PercentComplete ($counter * 100 / $UsersCount)
         
-        $user = get-Recipient $i.alias
-        $object = New-Object System.Object
-        $object | Add-Member -type NoteProperty -name alias -value $i.alias
-        $object | Add-Member -type NoteProperty -name FirstName -value $User.FirstName
-        $object | Add-Member -type NoteProperty -name LastName -value $User.LastName
-        $object | Add-Member -type NoteProperty -name DisplayName -value $User.DisplayName
-        $object | Add-Member -type NoteProperty -name Name -value $i.Name
-        $object | Add-Member -type NoteProperty -name SamAccountName -value $i.SamAccountName
-        $object | Add-Member -type NoteProperty -name legacyExchangeDN -value $i.legacyExchangeDN
-        $object | Add-Member -type NoteProperty -name CustomAttribute -value $CustomAttribute
-        $object | Add-Member -type NoteProperty -name CustomAttributeValue -value $CustomAttributeValue
+        $user = Get-Recipient $i.alias
+        $object = [ordered]@{
+            alias=$i.alias
+            FirstName=$User.FirstName
+            LastName=$User.LastName
+            DisplayName=$User.DisplayName
+            Name=$i.Name
+            SamAccountName=$i.SamAccountName
+            legacyExchangeDN=$i.legacyExchangeDN
+        }
 
-        if ( $BypassAutoExpandingArchiveCheck.IsPresent )
+        if ($BypassAutoExpandingArchiveCheck.IsPresent)
         {
             try
+
             {
                 # Save necessary properties from EXO object to variable avoiding AUX check
                 $EXOMailbox = Get-EXOMailbox -Identity $i.Alias -PropertySets Retention,Hold,Archive,StatisticsSeed -ErrorAction Stop
@@ -329,6 +378,7 @@
             if ($OrgAUXStatus.AutoExpandingArchiveEnabled -eq '$True')
             {
                 try
+
                 {
                     # If AUX is enable at org side, doesn't metter if the mailbox has it explicitly enabled
                     $EXOMailbox = Get-EXOMailbox -Identity $i.Alias -Properties ExchangeGuid,MailboxLocations,LitigationHoldEnabled,SingleItemRecoveryEnabled,ArchiveDatabase,ArchiveGuid -ErrorAction Stop
@@ -343,6 +393,7 @@
             else
             {
                 try
+
                 {
                     # If AUX isn't enable at org side, we check if the mailbox has it explicitly enabled
                     $EXOMailbox = Get-EXOMailbox -Identity $i.Alias -Properties ExchangeGuid,MailboxLocations,LitigationHoldEnabled,SingleItemRecoveryEnabled,ArchiveDatabase,ArchiveGuid,AutoExpandingArchiveEnabled -ErrorAction Stop
@@ -356,7 +407,7 @@
             }
         }
 
-        if ( $BypassAutoExpandingArchiveCheck.IsPresent )
+        if ($BypassAutoExpandingArchiveCheck.IsPresent)
         {
             # Save necessary properties from EXO object to variable avoiding AUX check
             Write-PSFMessage -Level Output -Message "Bypassing $($i.Alias) MailboxLocation check for Auto-Expanding archive"
@@ -377,7 +428,7 @@
 
         # Get mailbox guid from EXO because if the mailbox was created from scratch
         # on EXO the ExchangeGuid would not be write-backed to On-Premises
-        $object | Add-Member -type NoteProperty -name ExchangeGuid -value $EXOMailbox.ExchangeGuid
+        [void]$object.Add("ExchangeGuid",$EXOMailbox.ExchangeGuid)
 
         # Get mailbox ELC value
         $ELCValue = 0
@@ -391,20 +442,20 @@
         }
         if ($ELCValue -ge 0)
         {
-            $object | Add-Member -type NoteProperty -name ELCValue -value $ELCValue
+            [void]$object.Add("ELCValue",$ELCValue)
         }
         
         # Get the ArchiveGuid from EXO if it exist. The reason that we don't rely on
         # "-ArchiveStatus" parameter is that may not be trustable in certain scenarios
         # https://docs.microsoft.com/en-us/office365/troubleshoot/archive-mailboxes/archivestatus-set-none
-        if ( $EXOMailbox.ArchiveDatabase -ne '' -and
-             $EXOMailbox.ArchiveGuid -ne "00000000-0000-0000-0000-000000000000" )
+        if ($EXOMailbox.ArchiveDatabase -ne '' -and
+            $EXOMailbox.ArchiveGuid -ne "00000000-0000-0000-0000-000000000000")
         {
-            $object | Add-Member -type NoteProperty -name ArchiveGuid -value $EXOMailbox.ArchiveGuid
+            [void]$object.Add("ArchiveGuid",$EXOMailbox.ArchiveGuid)
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name ArchiveGuid -value $Null
+            [void]$object.Add("ArchiveGuid",$Null)
         }
 
         # Get only SMTP, X500 and SIP if the switch is present
@@ -456,38 +507,38 @@
             }
         }
 
-        $object | Add-Member -type NoteProperty -name EmailAddresses -value $ProxyToString
-        $object | Add-Member -type NoteProperty -name PrimarySMTPAddress -value $PrimarySMTP
+        [void]$object.Add("EmailAddresses",$ProxyToString)
+        [void]$object.Add("PrimarySMTPAddress",$PrimarySMTP)
 
         # Get ProxyAddress only for *.mail.onmicrosoft to define in the target AD the
         # targetAddress value. This value should not be converted through the domain mapping CSV.
-        $object | Add-Member -type NoteProperty -name ExternalEmailAddress -value $TargetString
+        [void]$object.Add("ExternalEmailAddress",$TargetString)
 
         # Get only the proxyAddress which matches *.mail.onmicrosoft.com to define in the target AD the
         # targetAddress value post-migration. This value should be converted through the domain mapping CSV.
-        $object | Add-Member -type NoteProperty -name ExternalEmailAddressPostMove -value $TargetPostMigration
+        [void]$object.Add("ExternalEmailAddressPostMove",$TargetPostMigration)
 
         # Connect to AD exported module only if this machine has not AD Module installed and
         # filtering based on what "Include" was passed to avoid dump too many unnecessary stuff
-        if (($IncludeManager.IsPresent -or $IncludeOrganization.IsPresent -or $IncludeGeneral.IsPresent -or $IncludePhones.IsPresent -or $IncludeAddress.IsPresent) -and $LocalMachineIsNotExchange.IsPresent -and $LocalAD -eq '')
+        if ($LocalMachineIsNotExchange.IsPresent -and $LocalAD -eq '')
         {
-            $ADUser = Get-RemoteADUser -Identity $i.SamAccountName -Server $PreferredDC -Properties msExchSafeSendersHash,msExchSafeRecipientsHash,msExchBlockedSendersHash,physicalDeliveryOfficeName,wWWHomePage,url,Description,streetAddress,postOfficeBox,l,postalCode,c,co,countryCode,st,telephoneNumber,otherTelephone,homePhone,otherHomePhone,pager,otherPager,mobile,otherMobile,facsimileTelephoneNumber,otherFacsimileTelephoneNumber,ipPhone,otherIpPhone,info,title,department,company
-            #Call function to dump those "-Include"
-            [void](Export-ADPersonalAttribute)
-        }
-        elseif ($IncludeManager.IsPresent -or $IncludeOrganization.IsPresent -or $IncludeGeneral.IsPresent -or $IncludePhones.IsPresent -or $IncludeAddress.IsPresent)
-        {
-            $ADUser = Get-ADUser -Identity $i.SamAccountName -Server $PreferredDC -Properties msExchSafeSendersHash,msExchSafeRecipientsHash,msExchBlockedSendersHash,physicalDeliveryOfficeName,wWWHomePage,url,Description,streetAddress,postOfficeBox,l,postalCode,c,co,countryCode,st,telephoneNumber,otherTelephone,homePhone,otherHomePhone,pager,otherPager,mobile,otherMobile,facsimileTelephoneNumber,otherFacsimileTelephoneNumber,ipPhone,otherIpPhone,info,title,department,company
-            #Call function to dump those "-Include"
-            [void](Export-ADPersonalAttribute)
-        }
-        elseif ($LocalMachineIsNotExchange.IsPresent -and $LocalAD -eq '')
-        {
-            $ADUser = Get-RemoteADUser -Identity $i.SamAccountName -Server $PreferredDC -Properties msExchSafeSendersHash,msExchSafeRecipientsHash,msExchBlockedSendersHash
+            $ADUser = Get-RemoteADUser -Identity $i.SamAccountName -Server $PreferredDC -Properties $ADProperties
+            # dump those "-Include" attributes only if we
+            # found more stuff than those junk properties
+            if ($ADProperties.Count -gt 3)
+            {
+                [void](Export-ADPersonalAttribute)
+            }
         }
         else
         {
-            $ADUser = Get-ADUser -Identity $i.SamAccountName -Server $PreferredDC -Properties msExchSafeSendersHash,msExchSafeRecipientsHash,msExchBlockedSendersHash
+            $ADUser = Get-ADUser -Identity $i.SamAccountName -Server $PreferredDC -Properties $ADProperties
+            # dump those "-Include" attributes only if we
+            # found more stuff than those junk properties
+            if ($ADProperties.Count -gt 3)
+            {
+                [void](Export-ADPersonalAttribute)
+            }
         }
 
         # Get Junk hashes, these are SHA-265 write-backed from EXO. Check if the user
@@ -495,47 +546,59 @@
         if ($ADUser.msExchSafeSendersHash.Length -gt 0)
         {
             $SafeSender = [System.BitConverter]::ToString($ADUser.msExchSafeSendersHash)
-            $Safesender = $SafeSender.Replace("-","")
-            $object | Add-Member -type NoteProperty -name SafeSender -value $SafeSender
+            #$Safesender = $SafeSender.Replace("-","")
+            [void]$object.Add("SafeSender",$SafeSender.Replace("-",""))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name SafeSender -value $Null
+            [void]$object.Add("SafeSender",$Null)
         }
 
         if ($ADUser.msExchSafeRecipientsHash.Length -gt 0)
         {
             $SafeRecipient = [System.BitConverter]::ToString($ADUser.msExchSafeRecipientsHash)
-            $SafeRecipient = $SafeRecipient.Replace("-","")
-            $object | Add-Member -type NoteProperty -name SafeRecipient -value $SafeRecipient
+            #$SafeRecipient = $SafeRecipient.Replace("-","")
+            [void]$object.Add("SafeRecipient",$SafeRecipient.Replace("-",""))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name SafeRecipient -value $Null
+            [void]$object.Add("SafeRecipient",$Null)
         }
 
         if ($ADUser.msExchBlockedSendersHash.Length -gt 0)
         {
             $BlockedSender = [System.BitConverter]::ToString($ADUser.msExchBlockedSendersHash)
-            $BlockedSender = $BlockedSender.Replace("-","")
-            $object | Add-Member -type NoteProperty -name BlockedSender -value $BlockedSender
+            #$BlockedSender = $BlockedSender.Replace("-","")
+            [void]$object.Add("BlockedSender",$BlockedSender.Replace("-",""))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name BlockedSender -value $Null
+            [void]$object.Add("BlockedSender",$Null)
         }
 
-        # Add dumped values to ArrayList
-        # 'til the iterator is finished.
-        [void]$outArray.Add($object)
+        # Create PSObject from hashtable
+        # and add PSObject to ArrayList
+        $outPSObject = New-Object -TypeName PSObject -Property $object
+        [void]$outArray.Add($outPSObject)
 
     }
 
     # region export CSV
     if ($outArray.Count -gt 0)
     {
-        Write-PSFMessage -Level Output -Message "Saving CSV on $($outFile)"
-        $outArray | Export-CSV $outFile -NoTypeInformation
+        try
+        {
+            $outArray | Export-CSV $outFile -NoTypeInformation -ErrorAction Stop
+            if ($?)
+            {
+                Write-PSFMessage -Level Output -Message "Saving CSV on $($outFile)"
+            }
+        }
+        catch
+        {
+            Write-PSFMessage -Level Output -Message "The path $($outfile) could not be found. The file will be saved on $($home)\desktop\UserListToImport.csv"
+            $outArray | Export-CSV "$home\desktop\UserListToImport.csv" -NoTypeInformation -ErrorAction Stop
+        }
     }
     if ($AuxMessage)
     {

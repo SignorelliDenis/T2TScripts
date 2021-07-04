@@ -60,7 +60,7 @@
 
     .NOTES
         Title: Import-T2TAttributes.ps1
-        Version: 2.1.4
+        Version: 2.1.5
         Date: 2021.01.03
         Author: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
         Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
@@ -157,56 +157,13 @@
     [int]$counter = 0
     [string]$UPNSuffix = "@$UPNSuffix"
     $pw = New-Object "System.Security.SecureString";
-    # check headers to decide if we need to import -IncludeGeneral properties
-    $CheckGeneral = $ImportUserList[0].psobject.Properties | Where-Object {$_.Name -eq "description"}
-    <#if ($CheckGeneral)
-    {
-        [bool]$IncludeGeneral = $True
-    }
-    else
-    {
-        [bool]$IncludeGeneral = $False
-    }#>
-    # check headers to decide if we need to import -IncludeAddress properties
-    $CheckAddress = $ImportUserList[0].psobject.Properties | Where-Object {$_.Name -eq "streetAddress"}
-    <#if ($CheckAddress)
-    {
-        [bool]$IncludeAddress = $True
-    }
-    else
-    {
-        [bool]$IncludeAddress = $False
-    }#>
-    # check headers to decide if we need to import -IncludePhones properties
-    $CheckPhones = $ImportUserList[0].psobject.Properties | Where-Object {$_.Name -eq "telephoneNumber"}
-    <#if ($CheckPhones)
-    {
-        [bool]$IncludePhones = $True
-    }
-    else
-    {
-        [bool]$IncludePhones = $False
-    }#>
-    # check header to decide if we need to import -IncludeAddress properties
-    $CheckOrganization = $ImportUserList[0].psobject.Properties | Where-Object {$_.Name -eq "title"}
-    <#if ($CheckOrganization)
-    {
-        [bool]$IncludeOrganization = $True
-    }
-    else
-    {
-        [bool]$IncludeOrganization = $False
-    }#>
-    # check header to decide if we need to import -IncludeManager properties
-    $IncludeManager = $ImportUserList[0].psobject.Properties | Where-Object {$_.Name -eq "Manager"}
-    <#if ($CheckOrganization)
-    {
-        [bool]$IncludeManager = $True
-    }
-    else
-    {
-        [bool]$IncludeManager = $False
-    }#>
+    # check headers to decide if we need to import those "-Include" properties
+    $CheckGeneral = ($ImportUserList[0].psobject.Properties).Where({$_.Name -eq "description"})
+    $CheckAddress = ($ImportUserList[0].psobject.Properties).Where({$_.Name -eq "streetAddress"})
+    $CheckPhones = ($ImportUserList[0].psobject.Properties).Where({$_.Name -eq "telephoneNumber"})
+    $CheckOrganization = ($ImportUserList[0].psobject.Properties).Where({$_.Name -eq "title"})
+    $CheckManager = ($ImportUserList[0].psobject.Properties).Where({$_.Name -eq "Manager"})
+    $CheckCustomAttributes = ($ImportUserList[0].psobject.Properties).Where({$_.Name -eq "extensionAttribute1"})
 
     if ($Password)
     {
@@ -308,21 +265,19 @@
         $ProxyArray = @()
         $ProxyArray = $proxy.Split(",") + $x500
 
-        # Matching the variable's name to the parameter's name
-        $CustomAttributeParam = @{$user.CustomAttribute = $user.CustomAttributeValue}
-        
-        # Set ExchangeGuid, old LegacyDN as X500 and CustomAttribute
-        $tmpUser | Set-MailUser -ExchangeGuid $user.ExchangeGuid @CustomAttributeParam -EmailAddresses @{Add=$ProxyArray}
-
-        # Add ELC value to hashtable
-        [void]$Replace.Add("msExchELCMailboxFlags", $user.ELCValue)
-
-        # Set ArchiveGuid if user has source cloud archive. We don't really care if the
-        # archive will be moved, it's up to the batch to decide, we just import the attribute
+        # Set ArchiveGuid if user has source cloud archive. If not
+        # proceed with ExchangeGuid and all proxyAddresses values
         if ($null -ne $user.ArchiveGuid -and $user.ArchiveGuid -ne '')
         {
-            $tmpUser | Set-MailUser -ArchiveGuid $user.ArchiveGuid
+            $tmpUser | Set-MailUser -ExchangeGuid $user.ExchangeGuid -EmailAddresses @{Add=$ProxyArray} -ArchiveGuid $user.ArchiveGuid
         }
+        else
+        {
+            $tmpUser | Set-MailUser -ExchangeGuid $user.ExchangeGuid -EmailAddresses @{Add=$ProxyArray}
+        }
+
+        # Add ELC value to hashtable
+        [void]$Replace.Add("msExchELCMailboxFlags",$user.ELCValue)
 
         # region junk hashes. If the user has Junk hash, convert the
         # HEX string to byte array and add to the $replace hashtable
@@ -336,7 +291,7 @@
                 $BytelistSafeSender.Add($HexByteSafeSender)
             }
 
-            [void]$Replace.Add("msExchSafeSendersHash", $BytelistSafeSender.ToArray())
+            [void]$Replace.Add("msExchSafeSendersHash",$BytelistSafeSender.ToArray())
         }
 
         if ($user.SafeRecipient)
@@ -349,7 +304,7 @@
                 $BytelistSafeRecipient.Add($HexByteSafeRecipient)
             }
 
-            [void]$Replace.Add("msExchSafeRecipientsHash", $BytelistSafeRecipient.ToArray())
+            [void]$Replace.Add("msExchSafeRecipientsHash",$BytelistSafeRecipient.ToArray())
         }
 
         if ($user.BlockedSender)
@@ -362,11 +317,12 @@
                 $BytelistBlockedSender.Add($HexByteBlockedSender)
             }
 
-            [void]$Replace.Add("msExchBlockedSendersHash", $BytelistBlockedSender.ToArray())
+            [void]$Replace.Add("msExchBlockedSendersHash",$BytelistBlockedSender.ToArray())
         }
 
-        # region import "-Include" values
-        if ($CheckGeneral -or $CheckAddress -or $CheckPhones -or $CheckOrganization)
+        # region set "-Include" values calling
+        # Import-ADPersonalAttribute function.
+        if ($CheckGeneral -or $CheckAddress -or $CheckPhones -or $CheckOrganization -or $CheckCustomAttributes)
         {
             [void](Import-ADPersonalAttribute)
         }
@@ -385,7 +341,7 @@
     }
 
     # region import Manager value if the CSV contains the manager header
-    if ($IncludeManager)
+    if ($CheckManager)
     {
         Import-Manager -ObjType MEU
     }
