@@ -130,6 +130,9 @@ If `-IncludeContacts` is used, **Export-T2TAttributes** will dump to a CSV the f
 
 The following properties will be dumped for RemoteMailbox and either Contact if `-IncludeContacts` is used:
 
+**`-IncludeManager` parameter will dump the following AD property:**
+- Manager
+
 **`-IncludeGeneral` parameter will dump the following AD properties:**
 - physicalDeliveryOfficeName
 - wWWHomePage
@@ -166,8 +169,22 @@ The following properties will be dumped for RemoteMailbox and either Contact if 
 - department
 - company
 
-**`-IncludeManager` parameter will dump the following AD property:**
-- Manager
+**`-IncludeCustomAttributes` parameter will dump the following AD property:**
+- extensionAttribute1
+- extensionAttribute2
+- extensionAttribute3
+- extensionAttribute4
+- extensionAttribute5
+- extensionAttribute6
+- extensionAttribute7
+- extensionAttribute8
+- extensionAttribute9
+- extensionAttribute10
+- extensionAttribute11
+- extensionAttribute12
+- extensionAttribute13
+- extensionAttribute14
+- extensionAttribute15
 
 
 ## Tips

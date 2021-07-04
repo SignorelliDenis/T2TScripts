@@ -44,7 +44,6 @@
         all attributes in the "Address" tab such as: street,
         P.O. Box, City, State/Province, ZIP Code and Country
 
-
     .PARAMETER IncludePhones
         Switch which indicates that the function must
         export all attributes in the phone tab such as
@@ -53,6 +52,10 @@
     .PARAMETER IncludeOrganization
         Switch which indicates that the function must export
         the Job Title, Department and Company attributes.
+
+    .PARAMETER IncludeCustomAttributes
+        Switch which indicates that the function
+        must export the all custom attributes.
 
     .PARAMETER BypassAutoExpandingArchiveCheck
         The script will check if you have Auto-Expanding archive enable on organization
@@ -107,8 +110,12 @@
     #########################################################################
     #>
 
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "")]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidGlobalVars", "")]
+    # Bypass PSReviewUnusedParameter as $IncludeManager is reconized as unused
+    # actually it's used but in the Export-ADPersonalAttribute. TODO: Fix this
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter','')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseOutputTypeCorrectly','')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns','')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars','')]
     [CmdletBinding(DefaultParameterSetName="Default")]
     Param(
         [Parameter(Mandatory=$False,
@@ -221,7 +228,7 @@
         $ADProperties.AddRange($IncludeGeneralArr)
     }
 
-    if ($IncludeGeneral.IsPresent)
+    if ($IncludeOrganization.IsPresent)
     {
         $IncludeOrganizationArr = [System.Collections.Generic.List[string]]@('title','department','company')
         $ADProperties.AddRange($IncludeOrganizationArr)
