@@ -1,6 +1,6 @@
 ﻿# Changelog
 
-# 2.1.4 (2021-06-04)
+## 2.1.4 (2021-06-04)
 - New: Implementation of new parameters and properties option to dump
 - Fix: [[Export-T2TAttributes] UserListToImport.csv being exported even if no RemoteMailbox was found](https://github.com/SignorelliDenis/T2TScripts/issues/59)
 - Fix: [[Move-Contact] ContactListToImport.csv being saved even if no contact was found](https://github.com/SignorelliDenis/T2TScripts/issues/58)

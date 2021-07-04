@@ -17,276 +17,276 @@
     # region -IncludeGeneral
     if ($IncludeGeneral.IsPresent)
     {
-        if ( $ADUser.physicalDeliveryOfficeName.Length -gt 0 )
+        if ($ADUser.physicalDeliveryOfficeName.Length -gt 0)
         {
-            $object | Add-Member -type NoteProperty -name physicalDeliveryOfficeName -value $ADUser.physicalDeliveryOfficeName.Replace(",","---")
+            [void]$object.Add("physicalDeliveryOfficeName",$ADUser.physicalDeliveryOfficeName.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name physicalDeliveryOfficeName -value $Null
+            [void]$object.Add("physicalDeliveryOfficeName",$Null)
         }
 
-        if ( $ADUser.wWWHomePage.Length -gt 0 )
+        if ($ADUser.wWWHomePage.Length -gt 0)
         {
-            $object | Add-Member -type NoteProperty -name wWWHomePage -value $ADUser.wWWHomePage.Replace(",","---")
+            [void]$object.Add("wWWHomePage",$ADUser.wWWHomePage.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name wWWHomePage -value $Null
+            [void]$object.Add("wWWHomePage",$Null)
         }
 
-        if ( $ADUser.url.Length -gt 0 )
+        if ($ADUser.url.Length -gt 0)
         {
             $url = $ADUser.url -Join ";"
-            $object | Add-Member -type NoteProperty -name url -value $url.Replace(",","---")
+            [void]$object.Add("url",$url.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name url -value $Null
+            [void]$object.Add("url",$Null)
         }
 
-        if ( $ADUser.description.Length -gt 0 )
+        if ($ADUser.description.Length -gt 0)
         {
-            $object | Add-Member -type NoteProperty -name description -value $ADUser.Description.Replace(",","---")
+            [void]$object.Add("description",$ADUser.Description.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name description -value $Null
+            [void]$object.Add("description",$Null)
         }
     }
 
     # region -IncludeAddress
     if ($IncludeAddress.IsPresent)
     {
-        if ( $ADUser.streetAddress.Length -gt 0 )
+        if ($ADUser.streetAddress.Length -gt 0)
         {
-            $object | Add-Member -type NoteProperty -name streetAddress -value $ADUser.streetAddress.Replace(",","---")
+            [void]$object.Add("streetAddress",$ADUser.streetAddress.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name streetAddress -value $Null
-        }
-            
-        if ( $ADUser.postOfficeBox.Length -gt 0 )
-        {
-            $postOfficeBox = $ADUser.postOfficeBox -Join ";"
-            $object | Add-Member -type NoteProperty -name postOfficeBox -value $postOfficeBox.Replace(",","---")
-        }
-        else
-        {
-            $object | Add-Member -type NoteProperty -name postOfficeBox -value $Null
-        }
-            
-        if ( $ADUser.l.Length -gt 0 )
-        {
-            $object | Add-Member -type NoteProperty -name l -value $ADUser.l.Replace(",","---")
-        }
-        else
-        {
-            $object | Add-Member -type NoteProperty -name l -value $Null
-        }
-            
-        if ( $ADUser.postalCode.Length -gt 0 )
-        {
-            $object | Add-Member -type NoteProperty -name postalCode -value $ADUser.postalCode.Replace(",","---")
-        }
-        else
-        {
-            $object | Add-Member -type NoteProperty -name postalCode -value $Null
-        }
-            
-        if ( $ADUser.c.Length -gt 0 )
-        {
-            $object | Add-Member -type NoteProperty -name c -value $ADUser.c
-        }
-        else
-        {
-            $object | Add-Member -type NoteProperty -name c -value $Null
-        }
-            
-        if ( $ADUser.co.Length -gt 0 )
-        {
-            $object | Add-Member -type NoteProperty -name co -value $ADUser.co
-        }
-        else
-        {
-            $object | Add-Member -type NoteProperty -name co -value $Null
-        }
-            
-        if ( $ADUser.countryCode -gt 0 )
-        {
-            $object | Add-Member -type NoteProperty -name countryCode -value $ADUser.countryCode.ToString()
-        }
-        else
-        {
-            $object | Add-Member -type NoteProperty -name countryCode -value $Null
+            [void]$object.Add("streetAddress",$Null)
         }
 
-        if ( $ADUser.st.Length -gt 0 )
+        if ($ADUser.postOfficeBox.Length -gt 0)
         {
-            $object | Add-Member -type NoteProperty -name st -value $ADUser.st.Replace(",","---")
+            $postOfficeBox = $ADUser.postOfficeBox -Join ";"
+            [void]$object.Add("postOfficeBox",$postOfficeBox.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name st -value $Null
+            [void]$object.Add("postOfficeBox",$Null)
+        }
+            
+        if ($ADUser.l.Length -gt 0)
+        {
+            [void]$object.Add("l",$ADUser.l.Replace(",","---"))
+        }
+        else
+        {
+            [void]$object.Add("l",$Null)
+        }
+            
+        if ($ADUser.postalCode.Length -gt 0)
+        {
+            [void]$object.Add("postalCode",$ADUser.postalCode.Replace(",","---"))
+        }
+        else
+        {
+            [void]$object.Add("postalCode",$Null)
+        }
+            
+        if ($ADUser.c.Length -gt 0)
+        {
+            [void]$object.Add("c",$ADUser.c)
+        }
+        else
+        {
+            [void]$object.Add("c",$Null)
+        }
+            
+        if ($ADUser.co.Length -gt 0)
+        {
+            [void]$object.Add("co",$ADUser.co)
+        }
+        else
+        {
+            [void]$object.Add("co",$Null)
+        }
+            
+        if ($ADUser.countryCode -gt 0)
+        {
+            [void]$object.Add("countryCode",$ADUser.countryCode.ToString())
+        }
+        else
+        {
+            [void]$object.Add("countryCode",$Null)
+        }
+
+        if ($ADUser.st.Length -gt 0)
+        {
+            [void]$object.Add("st",$ADUser.st.Replace(",","---"))
+        }
+        else
+        {
+            [void]$object.Add("st",$Null)
         }
     }
 
     # region -IncludePhones
     if ($IncludePhones.IsPresent)
     {
-        if ( $ADUser.telephoneNumber.Length -gt 0 )
+        if ($ADUser.telephoneNumber.Length -gt 0)
         {
-            $object | Add-Member -type NoteProperty -name telephoneNumber -value $ADUser.telephoneNumber.Replace(",","---")
+            [void]$object.Add("telephoneNumber",$ADUser.telephoneNumber.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name telephoneNumber -value $Null
+            [void]$object.Add("telephoneNumber",$Null)
         }
 
-        if ( $ADUser.otherTelephone.Length -gt 0 )
+        if ($ADUser.otherTelephone.Length -gt 0)
         {
             $otherTelephone = $ADUser.otherTelephone -Join ";"
-            $object | Add-Member -type NoteProperty -name otherTelephone -value $otherTelephone.Replace(",","---")
+            [void]$object.Add("otherTelephone",$otherTelephone.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name otherTelephone -value $Null
+            [void]$object.Add("otherTelephone",$Null)
         }
 
-        if ( $ADUser.homePhone.Length -gt 0 )
+        if ($ADUser.homePhone.Length -gt 0)
         {
-            $object | Add-Member -type NoteProperty -name homePhone -value $ADUser.homePhone.Replace(",","---")
+            [void]$object.Add("homePhone",$ADUser.homePhone.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name homePhone -value $Null
+            [void]$object.Add("homePhone",$Null)
         }
             
-        if ( $ADUser.otherHomePhone.Length -gt 0 )
+        if ($ADUser.otherHomePhone.Length -gt 0)
         {
             $otherHomePhone = $ADUser.otherHomePhone -Join ";"
-            $object | Add-Member -type NoteProperty -name otherHomePhone -value $otherHomePhone.Replace(",","---")
+            [void]$object.Add("otherHomePhone",$otherHomePhone.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name otherHomePhone -value $Null
+            [void]$object.Add("otherHomePhone",$Null)
         }
             
-        if ( $ADUser.pager.Length -gt 0 )
+        if ($ADUser.pager.Length -gt 0)
         {
-            $object | Add-Member -type NoteProperty -name pager -value $ADUser.pager.Replace(",","---")
+            [void]$object.Add("pager",$ADUser.pager.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name pager -value $Null
+            [void]$object.Add("pager",$Null)
         }
-            
-        if ( $ADUser.otherPager.Length -gt 0 )
+
+        if ($ADUser.otherPager.Length -gt 0)
         {
             $otherPager = $ADUser.otherPager -Join ";"
-            $object | Add-Member -type NoteProperty -name otherPager -value $otherPager.Replace(",","---")
+            [void]$object.Add("otherPager",$otherPager.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name otherPager -value $Null
+            [void]$object.Add("otherPager",$Null)
         }
-            
-        if ( $ADUser.mobile.Length -gt 0 )
+
+        if ($ADUser.mobile.Length -gt 0)
         {
-            $object | Add-Member -type NoteProperty -name mobile -value $ADUser.mobile.Replace(",","---")
+            [void]$object.Add("mobile",$ADUser.mobile.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name mobile -value $Null
+            [void]$object.Add("mobile",$Null)
         }
             
-        if ( $ADUser.otherMobile.Length -gt 0 )
+        if ($ADUser.otherMobile.Length -gt 0)
         {
             $otherMobile = $ADUser.otherMobile -Join ";"
-            $object | Add-Member -type NoteProperty -name otherMobile -value $otherMobile.Replace(",","---")
+            [void]$object.Add("otherMobile",$otherMobile.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name otherMobile -value $Null
+            [void]$object.Add("otherMobile",$Null)
         }
-            
-        if ( $ADUser.facsimileTelephoneNumber.Length -gt 0 )
+
+        if ($ADUser.facsimileTelephoneNumber.Length -gt 0)
         {
-            $object | Add-Member -type NoteProperty -name facsimileTelephoneNumber -value $ADUser.facsimileTelephoneNumber.Replace(",","---")
+            [void]$object.Add("facsimileTelephoneNumber",$ADUser.facsimileTelephoneNumber.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name facsimileTelephoneNumber -value $Null
+            [void]$object.Add("facsimileTelephoneNumber",$Null)
         }
-            
-        if ( $ADUser.otherFacsimileTelephoneNumber.Length -gt 0 )
+
+        if ($ADUser.otherFacsimileTelephoneNumber.Length -gt 0)
         {
             $otherFacsimileTelephoneNumber = $ADUser.otherFacsimileTelephoneNumber -Join ";"
-            $object | Add-Member -type NoteProperty -name otherFacsimileTelephoneNumber -value $otherFacsimileTelephoneNumber.Replace(",","---")
+            [void]$object.Add("otherFacsimileTelephoneNumber",$otherFacsimileTelephoneNumber.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name otherFacsimileTelephoneNumber -value $Null
+            [void]$object.Add("otherFacsimileTelephoneNumber",$Null)
         }
             
-        if ( $ADUser.ipPhone.Length -gt 0 )
+        if ($ADUser.ipPhone.Length -gt 0)
         {
-            $object | Add-Member -type NoteProperty -name ipPhone -value $ADUser.ipPhone.Replace(",","---")
+            [void]$object.Add("ipPhone",$ADUser.ipPhone.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name ipPhone -value $Null
+            [void]$object.Add("ipPhone",$Null)
         }
-            
-        if ( $ADUser.otherIpPhone.Length -gt 0 )
+
+        if ($ADUser.otherIpPhone.Length -gt 0)
         {
             $otherIpPhone = $ADUser.otherIpPhone -Join ";"
-            $object | Add-Member -type NoteProperty -name otherIpPhone -value $otherIpPhone.Replace(",","---")
+            [void]$object.Add("otherIpPhone",$otherIpPhone.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name otherIpPhone -value $Null
+            [void]$object.Add("otherIpPhone",$Null)
         }
             
-        if ( $ADUser.info.Length -gt 0 )
+        if ($ADUser.info.Length -gt 0)
         {
-            $object | Add-Member -type NoteProperty -name info -value $ADUser.info.Replace(",","---")
+            [void]$object.Add("info",$ADUser.info.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name info -value $Null
+            [void]$object.Add("info",$Null)
         }
     }
 
     # region -IncludeOrganization
     if ($IncludeOrganization.IsPresent)
     {
-        if ( $ADUser.title.Length -gt 0 )
+        if ($ADUser.title.Length -gt 0)
         {
-            $object | Add-Member -type NoteProperty -name title -value $ADUser.title.Replace(",","---")
+            [void]$object.Add("title",$ADUser.title.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name title -value $Null
+            [void]$object.Add("title",$Null)
         }
 
-        if ( $ADUser.department.Length -gt 0 )
+        if ($ADUser.department.Length -gt 0)
         {
-            $object | Add-Member -type NoteProperty -name department -value $ADUser.department.Replace(",","---")
+            [void]$object.Add("department",$ADUser.department.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name department -value $Null
+            [void]$object.Add("department",$Null)
         }
 
-        if ( $ADUser.company.Length -gt 0 )
+        if ($ADUser.company.Length -gt 0)
         {
-            $object | Add-Member -type NoteProperty -name company -value $ADUser.company.Replace(",","---")
+            [void]$object.Add("company",$ADUser.company.Replace(",","---"))
         }
         else
         {
-            $object | Add-Member -type NoteProperty -name company -value $Null
+            [void]$object.Add("company",$Null)
         }
     }
 
@@ -295,11 +295,150 @@
     if ($Null -ne $user.Manager -and $IncludeManager.IsPresent)
     {
         $Manager = (Get-Recipient $user.Manager).Alias
-        $object | Add-Member -type NoteProperty -name Manager -value $Manager
+        [void]$object.Add("Manager",$Manager)
     }
     elseif ($Null -eq $user.Manager -and $IncludeManager.IsPresent)
     {
-        $object | Add-Member -type NoteProperty -name Manager -value $Null
+        [void]$object.Add("Manager",$Null)
+    }
+
+    # region -IncludeCustomAttributes
+    if ($IncludeCustomAttributes.IsPresent)
+    {
+        if ($ADUser.extensionAttribute1.Length -gt 0)
+        {
+            [void]$object.Add("extensionAttribute1",$ADUser.extensionAttribute1.Replace(",","---"))
+        }
+        else
+        {
+            [void]$object.Add("extensionAttribute1",$Null)
+        }
+
+        if ($ADUser.extensionAttribute2.Length -gt 0)
+        {
+            [void]$object.Add("extensionAttribute2",$ADUser.extensionAttribute2.Replace(",","---"))
+        }
+        else
+        {
+            [void]$object.Add("extensionAttribute2",$Null)
+        }
+
+        if ($ADUser.extensionAttribute3.Length -gt 0)
+        {
+            [void]$object.Add("extensionAttribute3",$ADUser.extensionAttribute3.Replace(",","---"))
+        }
+        else
+        {
+            [void]$object.Add("extensionAttribute3",$Null)
+        }
+
+        if ($ADUser.extensionAttribute4.Length -gt 0)
+        {
+            [void]$object.Add("extensionAttribute4",$ADUser.extensionAttribute4.Replace(",","---"))
+        }
+        else
+        {
+            [void]$object.Add("extensionAttribute4",$Null)
+        }
+
+        if ($ADUser.extensionAttribute5.Length -gt 0)
+        {
+            [void]$object.Add("extensionAttribute5",$ADUser.extensionAttribute5.Replace(",","---"))
+        }
+        else
+        {
+            [void]$object.Add("extensionAttribute5",$Null)
+        }
+
+        if ($ADUser.extensionAttribute6.Length -gt 0)
+        {
+            [void]$object.Add("extensionAttribute6",$ADUser.extensionAttribute6.Replace(",","---"))
+        }
+        else
+        {
+            [void]$object.Add("extensionAttribute6",$Null)
+        }
+
+        if ($ADUser.extensionAttribute7.Length -gt 0)
+        {
+            [void]$object.Add("extensionAttribute7",$ADUser.extensionAttribute7.Replace(",","---"))
+        }
+        else
+        {
+            [void]$object.Add("extensionAttribute7",$Null)
+        }
+
+        if ($ADUser.extensionAttribute8.Length -gt 0)
+        {
+            [void]$object.Add("extensionAttribute8",$ADUser.extensionAttribute8.Replace(",","---"))
+        }
+        else
+        {
+            [void]$object.Add("extensionAttribute8",$Null)
+        }
+
+        if ($ADUser.extensionAttribute9.Length -gt 0)
+        {
+            [void]$object.Add("extensionAttribute9",$ADUser.extensionAttribute9.Replace(",","---"))
+        }
+        else
+        {
+            [void]$object.Add("extensionAttribute9",$Null)
+        }
+
+        if ($ADUser.extensionAttribute10.Length -gt 0)
+        {
+            [void]$object.Add("extensionAttribute10",$ADUser.extensionAttribute10.Replace(",","---"))
+        }
+        else
+        {
+            [void]$object.Add("extensionAttribute10",$Null)
+        }
+
+        if ($ADUser.extensionAttribute11.Length -gt 0)
+        {
+            [void]$object.Add("extensionAttribute11",$ADUser.extensionAttribute11.Replace(",","---"))
+        }
+        else
+        {
+            [void]$object.Add("extensionAttribute11",$Null)
+        }
+
+        if ($ADUser.extensionAttribute12.Length -gt 0)
+        {
+            [void]$object.Add("extensionAttribute12",$ADUser.extensionAttribute12.Replace(",","---"))
+        }
+        else
+        {
+            [void]$object.Add("extensionAttribute12",$Null)
+        }
+
+        if ($ADUser.extensionAttribute13.Length -gt 0)
+        {
+            [void]$object.Add("extensionAttribute13",$ADUser.extensionAttribute13.Replace(",","---"))
+        }
+        else
+        {
+            [void]$object.Add("extensionAttribute13",$Null)
+        }
+
+        if ($ADUser.extensionAttribute14.Length -gt 0)
+        {
+            [void]$object.Add("extensionAttribute14",$ADUser.extensionAttribute14.Replace(",","---"))
+        }
+        else
+        {
+            [void]$object.Add("extensionAttribute14",$Null)
+        }
+
+        if ($ADUser.extensionAttribute15.Length -gt 0)
+        {
+            [void]$object.Add("extensionAttribute15",$ADUser.extensionAttribute15.Replace(",","---"))
+        }
+        else
+        {
+            [void]$object.Add("extensionAttribute15",$Null)
+        }
     }
 
     return $object

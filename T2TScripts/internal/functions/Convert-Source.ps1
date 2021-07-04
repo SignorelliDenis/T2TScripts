@@ -51,7 +51,7 @@
         if ($i.MoveRequestStatus -eq 'Completed')
         {
 
-            # save user properties to variable before disable remote mailbox
+            # save user properties to $user variable before disable remote mailbox
             try
             {
                 if ($SnapshotToXML.IsPresent)
@@ -67,7 +67,7 @@
                     $user = Get-RemoteMailbox -Identity $i.Alias -ErrorAction Stop
                 }
 
-                # save properties to variable but what we care about is custom attributes
+                # save custom attributes to $aduser variable
                 if ($LocalMachineIsNotExchange.IsPresent -and $Null -eq $LocalAD)
                 {
                     $aduser = Get-RemoteADUser $i.Alias -Server $PreferredDC -Properties $Properties -ErrorAction Stop
@@ -125,7 +125,7 @@
                     $ProxyArray = @()
                     $ProxyArray = $Proxy -split "," -replace "SMTP:","smtp:"
                     $ProxyArray = $ProxyArray + $x500
-                    Set-MailUser -Identity $i.Alias -EmailAddresses @{Add = $ProxyArray} -HiddenFromAddressListsEnabled $user.HiddenFromAddressListsEnabled
+                    Set-MailUser -Identity $i.Alias -EmailAddresses @{Add=$ProxyArray} -HiddenFromAddressListsEnabled $user.HiddenFromAddressListsEnabled
 
                     # if there were custom attribues before, readd 'em all
                     $Replace = @{}
@@ -133,7 +133,7 @@
                     {
                         if ($aduser.$element)
                         {
-                            $Replace.Add($element, $aduser.$element)
+                            $Replace.Add($element,$aduser.$element)
                         }
                     }
                     # replace only if there is a Custom Attribute being used

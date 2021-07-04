@@ -30,13 +30,13 @@
     # are Completed, CompletedWithWarning or Failed
     while ($BreakLoop.Count -gt 0)
     {
-        ForEach ( $i in $MEU )
+        ForEach ($i in $MEU)
         {
             Write-Progress -Activity "Verifying move request status" -Status "Verifying user $($i)"
 
-            # Reset variables
+            # define variables
             $MoveRequest = $Null
-            $object = New-Object System.Object
+            $object = [ordered]@{}
 
             # Get the move request. If it doesn't exist, set MoveRequestStatus as NotFound
             try
@@ -46,10 +46,10 @@
             catch
             {
                 Write-PSFMessage  -Level Output -Message "MoveRequestNotExist: No move request for the user $($i) was found."
-                $object | Add-Member -type NoteProperty -name ExternalEmailAddress -value $i
-                $object | Add-Member -type NoteProperty -name MoveRequestStatus -value MoveRequestNotExist
-                $object | Add-Member -type NoteProperty -name PrimarySMTPAddress -value $Null
-                $object | Add-Member -type NoteProperty -name Alias -value $Null
+                [void]$object.Add("ExternalEmailAddress",$i)
+                [void]$object.Add("PrimarySMTPAddress",$Null)
+                [void]$object.Add("Alias",$Null)
+                [void]$object.Add("MoveRequestStatus","MoveRequestNotExist")
                 $BreakLoop.Remove($i)
             }
             finally
@@ -58,20 +58,20 @@
                 {
                     # We must resolve the Alias because ExternalEmailAddress isn't a valid
                     # identity. We also need resolve the PrimarySMTPAddress cause it might
-                    # be used in Convert-Source if "-UseMOERATargetAddress" is not present.
+                    # be used in Convert-Source if "-UseMOERATargetAddress" is not present
                     try
                     {
                         $user = Get-MailUser -identity $i -ErrorAction Stop
                         if ($?)
                         {
-                            $object | Add-Member -type NoteProperty -name ExternalEmailAddress -value $i
-                            $object | Add-Member -type NoteProperty -name PrimarySMTPAddress -value $user.PrimarySMTPAddress
-                            $object | Add-Member -type NoteProperty -name Alias -value $user.Alias
-                            Enable-RemoteMailbox -identity $user.Alias -RemoteRoutingAddress $i -ErrorAction Stop | Out-Null
+                            [void]$object.Add("ExternalEmailAddress",$i)
+                            [void]$object.Add("PrimarySMTPAddress",$user.PrimarySMTPAddress)
+                            [void]$object.Add("Alias",$user.Alias)
+                            $Null = Enable-RemoteMailbox -identity $user.Alias -RemoteRoutingAddress $i -ErrorAction Stop
                             if ($?)
                             {
                                 Write-PSFMessage  -Level Output -Message "Converted MailUser $($i) to RemoteMailbox and changed ExternalEmailAddress successfully."
-                                $object | Add-Member -type NoteProperty -name MoveRequestStatus -value Completed
+                                [void]$object.Add("MoveRequestStatus","Completed")
                                 $BreakLoop.Remove($i)
                             }
                         }
@@ -80,20 +80,20 @@
                     {
                         if (Get-RemoteMailbox -Identity $user.Alias)
                         {
-                            Write-PSFMessage  -Level Output -Message "AlreadyRemoteMailbox: User $($i) was not converted to RemoteMailbox because the object type is already RemoteMailbox."
-                            $object | Add-Member -type NoteProperty -name ExternalEmailAddress -value $i
-                            $object | Add-Member -type NoteProperty -name MoveRequestStatus -value IsAlreadyRemoteMailbox
-                            $object | Add-Member -type NoteProperty -name PrimarySMTPAddress -value $Null
-                            $object | Add-Member -type NoteProperty -name Alias -value $Null
+                            Write-PSFMessage -Level Output -Message "AlreadyRemoteMailbox: User $($i) was not converted to RemoteMailbox because the object type is already RemoteMailbox."
+                            [void]$object.Add("ExternalEmailAddress",$i)
+                            [void]$object.Add("PrimarySMTPAddress",$Null)
+                            [void]$object.Add("Alias",$Null)
+                            [void]$object.Add("MoveRequestStatus","IsAlreadyRemoteMailbox")
                             $BreakLoop.Remove($i)
                         }
                         else
                         {
-                            Write-PSFMessage  -Level Output -Message "MEUNotFound: The MailUser $($i) was not found."
-                            $object | Add-Member -type NoteProperty -name ExternalEmailAddress -value $i
-                            $object | Add-Member -type NoteProperty -name MoveRequestStatus -value MEUNotFound
-                            $object | Add-Member -type NoteProperty -name PrimarySMTPAddress -value $Null
-                            $object | Add-Member -type NoteProperty -name Alias -value $Null
+                            Write-PSFMessage -Level Output -Message "MEUNotFound: The MailUser $($i) was not found."
+                            [void]$object.Add("ExternalEmailAddress",$i)
+                            [void]$object.Add("PrimarySMTPAddress",$Null)
+                            [void]$object.Add("Alias",$Null)
+                            [void]$object.Add("MoveRequestStatus","MEUNotFound")
                             $BreakLoop.Remove($i)
                         }
                     }
@@ -102,25 +102,26 @@
                 if ($MoveRequest -like "Failed")
                 {
                     Write-PSFMessage  -Level Output -Message "MoveRequestFailed: The $($i) move request was failed"
-                    $object | Add-Member -type NoteProperty -name ExternalEmailAddress -value $i
-                    $object | Add-Member -type NoteProperty -name MoveRequestStatus -value MoveRequestFailed
-                    $object | Add-Member -type NoteProperty -name PrimarySMTPAddress -value $Null
-                    $object | Add-Member -type NoteProperty -name Alias -value $Null
+                    [void]$object.Add("ExternalEmailAddress",$i)
+                    [void]$object.Add("PrimarySMTPAddress",$Null)
+                    [void]$object.Add("Alias",$Null)
+                    [void]$object.Add("MoveRequestStatus","MoveRequestFailed")
                     $BreakLoop.Remove($i)
                 }
             }
             
             # add object to array only if there is MoveRequestStatus
-            # to avoid empty lines while the move does not finish
+            # to avoid empty lines while the move does not finished.
             if ($object.MoveRequestStatus)
             {
-                [void]$outArray.Add($object)
+                $outPSObject = New-Object -TypeName PSObject -Property $object
+                [void]$outArray.Add($outPSObject)
             }
         }
 
-        # Remove from the $MEU array all objects that have MoveRequestStatus value
-        # it means that the object should not go through the foreach anymore.
-        foreach ($element in $outArray)
+        # Remove from $MEU array any object that has MoveRequestStatus value.
+        # it means that the object should not go through the iteration anymore
+        ForEach ($element in $outArray)
         {
             if ($element.MoveRequestStatus)
             {
@@ -131,7 +132,15 @@
 
     # region export to a CSV
     Write-PSFMessage -Level Output -Message "Saving CSV on $($outfile)"
-    $outArray | Export-CSV $outfile -notypeinformation
+    try
+    {
+        $outArray | Export-CSV $outfile -NoTypeInformation -ErrorAction Stop
+    }
+    catch
+    {
+        Write-PSFMessage -Level Output -Message "The path $($outfile) could not be found. The file will be saved on $($home)\desktop\MigratedUsers.csv"
+        $outArray | Export-CSV "$home\desktop\MigratedUsers.csv" -NoTypeInformation
+    }
 
     # region clean up variables and sessions
     Disconnect-ExchangeOnline -Confirm:$false -InformationAction Ignore -ErrorAction SilentlyContinue
