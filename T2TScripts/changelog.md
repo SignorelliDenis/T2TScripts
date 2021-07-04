@@ -1,5 +1,11 @@
 ﻿# Changelog
 
+## 2.1.5 (2021-07-05)
+- New: [[Export-ADPersonalAttribute] - Provide all custom attributes dump through -IncludeCustomAttributes](https://github.com/SignorelliDenis/T2TScripts/issues/63)
+- Fix: [Functions which export CSV must export using try/catch](https://github.com/SignorelliDenis/T2TScripts/issues/64)
+- Fix: [[Export-T2TAttributes] - Improve how we get ADUser properties](https://github.com/SignorelliDenis/T2TScripts/issues/62)
+- Fix: [Performance improvement](https://github.com/SignorelliDenis/T2TScripts/issues/61)
+
 ## 2.1.4 (2021-06-04)
 - New: Implementation of new parameters and properties option to dump
 - Fix: [[Export-T2TAttributes] UserListToImport.csv being exported even if no RemoteMailbox was found](https://github.com/SignorelliDenis/T2TScripts/issues/59)
