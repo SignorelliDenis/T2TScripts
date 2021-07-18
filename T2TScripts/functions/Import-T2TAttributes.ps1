@@ -60,7 +60,7 @@
 
     .NOTES
         Title: Import-T2TAttributes.ps1
-        Version: 2.1.5
+        Version: 2.1.6
         Date: 2021.01.03
         Author: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
         Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
