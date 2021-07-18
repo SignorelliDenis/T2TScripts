@@ -1,5 +1,10 @@
 ﻿# Changelog
 
+## 2.1.6 (2021-07-18)
+- Fix: [Export-T2TAttributes.md] Documentation improvement
+- Fix: [Export-T2TAttributes.ps1] Code adjustment to reduce few unnecessary lines
+
+
 ## 2.1.5 (2021-07-05)
 - New: [[Export-ADPersonalAttribute] - Provide all custom attributes dump through -IncludeCustomAttributes](https://github.com/SignorelliDenis/T2TScripts/issues/63)
 - Fix: [Functions which export CSV must export using try/catch](https://github.com/SignorelliDenis/T2TScripts/issues/64)

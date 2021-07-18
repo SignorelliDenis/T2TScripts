@@ -78,32 +78,28 @@ The **Export-T2TAttributes** will dump to a CSV the following RemoteMailbox prop
 
 - Alias
 - ArchiveGuid
-- CustomAttribute ¹
-- CustomAttribute Value ¹
 - DisplayName
 - EmailAddresses
 - ExchangeGuid
-- ExternalEmailAddress ²
+- ExternalEmailAddress ¹
 - FirstName
 - LastName
 - legacyExchangeDN
-- LitigationHoldEnabled ³
-- MailboxLocations ⁴
+- LitigationHoldEnabled ²
+- MailboxLocations ³
 - msExchBlockedSendersHash
 - msExchSafeRecipientsHash
 - msExchSafeSendersHash
 - Name
 - PrimarySMTPAddress
 - SamAccountName
-- SingleItemRecoveryEnabled ³
+- SingleItemRecoveryEnabled ²
 
-¹ *The custom attributes number and value that will be dumped is chosen according to the user’s input before running the function*
+¹ *The ExternalEmailAddress is defined by the **mail.onmicrosoft.com** [(MOERA)](https://docs.microsoft.com/en-us/troubleshoot/azure/active-directory/proxyaddresses-attribute-populate#terminology) SMTP address found on the source user object proxyAddresses property. The function will convert the MOERA address according to the domain mapping CSV but only to the proxyAddresses property. The ExternalEmailAddress value remains the same.*
 
-² *The ExternalEmailAddress is defined by the **mail.onmicrosoft.com** [(MOERA)](https://docs.microsoft.com/en-us/troubleshoot/azure/active-directory/proxyaddresses-attribute-populate#terminology) SMTP address found on the source user object proxyAddresses property. The function will convert the MOERA address according to the domain mapping CSV but only to the proxyAddresses property. The ExternalEmailAddress value remains the same.*
+² *These properties are converted to a number which represents the ELC mailbox flag.*
 
-³ *These properties are converted to a number which represents the ELC mailbox flag.*
-
-⁴ *The function does not really dump the MailboxLocations attribute to the CSV but it dumps the Alias from any users that might have an Auto-Expanding archive mailbox to a TXT called AUXUser. Then you can use the AUXUser.txt to start the export PST using Content Search or eDiscovery and manually import these PST in the target tenant.*
+³ *The function does not really dump the MailboxLocations attribute to the CSV but it dumps the Alias from any users that might have an Auto-Expanding archive mailbox to a TXT called AUXUser. Then you can use the AUXUser.txt to start the export PST using Content Search or eDiscovery and manually import these PST in the target tenant.*
 
 
 ## Contact attributes
@@ -111,20 +107,16 @@ The **Export-T2TAttributes** will dump to a CSV the following RemoteMailbox prop
 If `-IncludeContacts` is used, **Export-T2TAttributes** will dump to a CSV the following contact AD properties:
 
 - Alias
-- CustomAttribute ¹
-- CustomAttribute Value ¹
 - DisplayName
 - EmailAddresses
-- ExternalEmailAddress ²
+- ExternalEmailAddress ¹
 - FirstName
 - LastName
 - legacyExchangeDN
 - Name
 - PrimarySMTPAddress
 
-¹ *The custom attributes number and value that will be dumped is chosen according to the user’s input before running the function*
-
-² *The ExternalEmailAddress is defined by the **mail.onmicrosoft.com** [(MOERA)](https://docs.microsoft.com/en-us/troubleshoot/azure/active-directory/proxyaddresses-attribute-populate#terminology) SMTP address found on the source user object proxyAddresses property. The function will convert the MOERA address according to the domain mapping CSV but only to the proxyAddresses property. The ExternalEmailAddress value remains the same.*
+¹ *The ExternalEmailAddress is defined by the **mail.onmicrosoft.com** [(MOERA)](https://docs.microsoft.com/en-us/troubleshoot/azure/active-directory/proxyaddresses-attribute-populate#terminology) SMTP address found on the source user object proxyAddresses property. The function will convert the MOERA address according to the domain mapping CSV but only to the proxyAddresses property. The ExternalEmailAddress value remains the same.*
 
 
 ## Common RemoteMailbox and Contact attributes

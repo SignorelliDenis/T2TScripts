@@ -91,7 +91,7 @@
 
     .NOTES
         Title: Export-T2TAttributes.ps1
-        Version: 2.1.5
+        Version: 2.1.6
         Date: 2021.02.04
         Authors: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
         Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
@@ -361,7 +361,6 @@
         if ($BypassAutoExpandingArchiveCheck.IsPresent)
         {
             try
-
             {
                 # Save necessary properties from EXO object to variable avoiding AUX check
                 $EXOMailbox = Get-EXOMailbox -Identity $i.Alias -PropertySets Retention,Hold,Archive,StatisticsSeed -ErrorAction Stop
@@ -378,7 +377,6 @@
             if ($OrgAUXStatus.AutoExpandingArchiveEnabled -eq '$True')
             {
                 try
-
                 {
                     # If AUX is enable at org side, doesn't metter if the mailbox has it explicitly enabled
                     $EXOMailbox = Get-EXOMailbox -Identity $i.Alias -Properties ExchangeGuid,MailboxLocations,LitigationHoldEnabled,SingleItemRecoveryEnabled,ArchiveDatabase,ArchiveGuid -ErrorAction Stop
@@ -393,7 +391,6 @@
             else
             {
                 try
-
                 {
                     # If AUX isn't enable at org side, we check if the mailbox has it explicitly enabled
                     $EXOMailbox = Get-EXOMailbox -Identity $i.Alias -Properties ExchangeGuid,MailboxLocations,LitigationHoldEnabled,SingleItemRecoveryEnabled,ArchiveDatabase,ArchiveGuid,AutoExpandingArchiveEnabled -ErrorAction Stop
@@ -546,7 +543,6 @@
         if ($ADUser.msExchSafeSendersHash.Length -gt 0)
         {
             $SafeSender = [System.BitConverter]::ToString($ADUser.msExchSafeSendersHash)
-            #$Safesender = $SafeSender.Replace("-","")
             [void]$object.Add("SafeSender",$SafeSender.Replace("-",""))
         }
         else
@@ -557,7 +553,6 @@
         if ($ADUser.msExchSafeRecipientsHash.Length -gt 0)
         {
             $SafeRecipient = [System.BitConverter]::ToString($ADUser.msExchSafeRecipientsHash)
-            #$SafeRecipient = $SafeRecipient.Replace("-","")
             [void]$object.Add("SafeRecipient",$SafeRecipient.Replace("-",""))
         }
         else
@@ -568,7 +563,6 @@
         if ($ADUser.msExchBlockedSendersHash.Length -gt 0)
         {
             $BlockedSender = [System.BitConverter]::ToString($ADUser.msExchBlockedSendersHash)
-            #$BlockedSender = $BlockedSender.Replace("-","")
             [void]$object.Add("BlockedSender",$BlockedSender.Replace("-",""))
         }
         else
