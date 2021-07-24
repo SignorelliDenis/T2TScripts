@@ -242,7 +242,7 @@
         $tmpUser = $null
         $UPN = $user.Alias+$UPNSuffix
         
-        # region define parameters to be used with New-MailUser
+        # region splatting params to be used with New-MailUser
         # PrimarySmtpAddress will be set properly down the road
         $param = @{
             UserPrincipalName=$upn

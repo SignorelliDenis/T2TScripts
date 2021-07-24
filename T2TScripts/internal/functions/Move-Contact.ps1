@@ -145,7 +145,7 @@
                 $Replace = @{}
                 $tmpContact = $null
 
-                # region defining param to be used with New-MailContact
+                # region splatting paramd to be used with New-MailContact
                 # PrimarySmtpAddress will be set properly down the road
                 $contactparam = @{
                     ExternalEmailAddress=$user.ExternalEmailAddress
