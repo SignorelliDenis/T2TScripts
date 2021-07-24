@@ -91,7 +91,7 @@
 
     .NOTES
         Title: Export-T2TAttributes.ps1
-        Version: 2.1.6
+        Version: 2.1.7
         Date: 2021.02.04
         Authors: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
         Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
@@ -157,8 +157,7 @@
         [Parameter(Mandatory=$false,
         HelpMessage="SwitchParameter which indicates that the function
         must export all attributes in the Address tab such as: street,
-        P.O. Box, City, State/Province, ZIP Code and Country
-            ")]
+        P.O. Box, City, State/Province, ZIP Code and Country")]
         [switch]$IncludeAddress,
 
         [Parameter(Mandatory=$false,
@@ -290,7 +289,6 @@
     if ( $PreferredDC )
     {
         try
-
         {
             Set-AdServerSettings -ViewEntireForest $true -PreferredServer $PreferredDC -ErrorAction Stop
         }
@@ -437,10 +435,7 @@
         {
             $ELCValue = $ELCValue + 16
         }
-        if ($ELCValue -ge 0)
-        {
-            [void]$object.Add("ELCValue",$ELCValue)
-        }
+        [void]$object.Add("ELCValue",$ELCValue)
         
         # Get the ArchiveGuid from EXO if it exist. The reason that we don't rely on
         # "-ArchiveStatus" parameter is that may not be trustable in certain scenarios

@@ -1,5 +1,10 @@
 ﻿# Changelog
 
+## 2.1.7 (2021-07-24)
+- Fix: [[Import-T2TAttributes] Splatting New-MailUser cmdlet](https://github.com/SignorelliDenis/T2TScripts/issues/68)
+- Fix: [[Move-Contacts] Splatting New-MailContact cmdlet](https://github.com/SignorelliDenis/T2TScripts/issues/69)
+
+
 ## 2.1.6 (2021-07-18)
 - Fix: [Export-T2TAttributes.md] Documentation improvement
 - Fix: [Export-T2TAttributes.ps1] Code adjustment to reduce few unnecessary lines

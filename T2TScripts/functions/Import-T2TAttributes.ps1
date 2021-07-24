@@ -60,7 +60,7 @@
 
     .NOTES
         Title: Import-T2TAttributes.ps1
-        Version: 2.1.6
+        Version: 2.1.7
         Date: 2021.01.03
         Author: Denis Vilaca Signorelli (denis.signorelli@microsoft.com)
         Contributors: Agustin Gallegos (agustin.gallegos@microsoft.com)
@@ -164,7 +164,6 @@
     $CheckOrganization = ($ImportUserList[0].psobject.Properties).Where({$_.Name -eq "title"})
     $CheckManager = ($ImportUserList[0].psobject.Properties).Where({$_.Name -eq "Manager"})
     $CheckCustomAttributes = ($ImportUserList[0].psobject.Properties).Where({$_.Name -eq "extensionAttribute1"})
-
     if ($Password)
     {
         $pwstr = $Password
@@ -243,22 +242,29 @@
         $tmpUser = $null
         $UPN = $user.Alias+$UPNSuffix
         
-        # If OU was passed through param, honor it.
-        # Otherwise create the MEU without OU specification
+        # region define parameters to be used with New-MailUser
+        # PrimarySmtpAddress will be set properly down the road
+        $param = @{
+            UserPrincipalName=$upn
+            ExternalEmailAddress=$user.ExternalEmailAddress
+            FirstName=$user.FirstName
+            LastName=$user.LastName
+            SamAccountName=$user.SamAccountName
+            Alias=$user.alias
+            PrimarySmtpAddress=$upn
+            Name=$User.Name
+            DisplayName=$user.DisplayName
+            Password=$pw
+            ResetPasswordOnNextLogon=$resetpwrd
+        }
         if ($OU)
         {
-            $tmpUser = New-MailUser -UserPrincipalName $upn -ExternalEmailAddress $user.ExternalEmailAddress  `
-            -FirstName $user.FirstName -LastName $user.LastName -SamAccountName $user.SamAccountName -Alias `
-            $user.alias -PrimarySmtpAddress $upn -Name $User.Name -DisplayName $user.DisplayName -Password `
-            $pw -ResetPasswordOnNextLogon $resetpwrd -OrganizationalUnit $OU
-        }
-        else
-        {
-            $tmpUser = New-MailUser -UserPrincipalName $upn -ExternalEmailAddress $user.ExternalEmailAddress -FirstName `
-            $user.FirstName -LastName $user.LastName -SamAccountName $user.SamAccountName -Alias $user.alias -PrimarySmtpAddress `
-            $upn -Name $User.Name -DisplayName $user.DisplayName -Password $pw -ResetPasswordOnNextLogon $resetpwrd
+            [void]$param.Add("OrganizationalUnit",$OU)
         }
 
+        # MEU creation
+        $tmpUser = New-MailUser @param
+        
         # Convert legacyDN to X500 and add all proxyAddresses to array
         $x500 = "x500:" + $user.legacyExchangeDN
         $proxy = $user.EmailAddresses.Replace(";",",")
