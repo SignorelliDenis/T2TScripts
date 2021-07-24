@@ -67,7 +67,7 @@ Refer to the following links to review the parameters, requirements and instruct
 
 5 - Start the migration batch to move the mailboxes refered in the last steps.
 
-7 - Once the migration batch reaches 95% as Synced status, run the `Update-T2TAttributes -Destination` in the destination environment. You will be required to provide the same CSV used in the step 3 and 4. Once the functions finishes, it will export a new CSV called MigratedUsers.csv containing the results.
+7 - Once the migration batch reaches 95% as Synced status, run the `Update-T2TAttributes -Destination` in the destination environment and then complete the batch. You will be required to provide the same CSV used in the step 3 and 4. Once the functions finishes, it will export a new CSV called MigratedUsers.csv containing the results.
 
 8 - From the source environment, run the `Update-T2TAttributes -Source`. The function will require the MigratedUsers.csv generated in the step 7.
 

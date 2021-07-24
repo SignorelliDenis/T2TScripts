@@ -145,23 +145,26 @@
                 $Replace = @{}
                 $tmpContact = $null
 
-                # If OU was passed through param, honor it.
-                # Otherwise create the MEU without OU specification
+                # region splatting paramd to be used with New-MailContact
+                # PrimarySmtpAddress will be set properly down the road
+                $contactparam = @{
+                    ExternalEmailAddress=$user.ExternalEmailAddress
+                    PrimarySmtpAddress=$user.PrimarySMTPAddress
+                    FirstName=$user.FirstName
+                    LastName=$user.LastName
+                    Alias=$user.alias
+                    Name=$user.Name
+                    DisplayName=$user.DisplayName
+                }
                 if ($OUContacts)
                 {
-                    $tmpContact = New-MailContact -ExternalEmailAddress $user.ExternalEmailAddress -PrimarySmtpAddress `
-                    $user.PrimarySMTPAddress -FirstName $user.FirstName -LastName $user.LastName -Alias $user.alias -Name `
-                    $user.Name -DisplayName $user.DisplayName -OrganizationalUnit $OUContacts
+                    $contactparam.Add("OrganizationalUnit",$OUContacts)
                 }
-                else
-                {
-                    $tmpContact = New-MailContact -ExternalEmailAddress $user.ExternalEmailAddress -PrimarySmtpAddress `
-                    $user.PrimarySMTPAddress -FirstName $user.FirstName -LastName $user.LastName -Alias $user.alias -Name `
-                    $user.Name -DisplayName $user.DisplayName
-                }
+
+                # region create mail-contact
+                $tmpContact = New-MailContact @contactparam
                 
-                # we must resolve the GUID in order to
-                # use Set-ADObject cmdlet down the road
+                # we must resolve the GUID to use Set-ADObject cmdlet further
                 $ResolvedGUID = Get-MailContact -Identity $user.Alias | Select-Object GUID
 
                 # Convert legacyDN to X500 and add all EmailAddresses to array
